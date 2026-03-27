@@ -31,9 +31,39 @@ dependencies:
   flutter:
     sdk: flutter
 
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^1.0.8
+  # --- الترجمة وتعدد اللغات ---
+  easy_localization: ^3.0.7 # مكتبة الترجمة وتغيير لغة التطبيق بسهولة
+  # --- إدارة الحالة (State Management) ---
+  flutter_bloc: ^9.1.0 # المكتبة الأساسية لنمط الـ Bloc
+  provider: ^6.1.2 # مكتبة بروفايدر (موجودة سابقاً)
+  # --- الشبكة والروابط (Networking) ---
+  dio: ^5.7.0 # مكتبة متطورة لطلبات HTTP
+  internet_connection_checker: ^1.0.0+1 # فحص حالة اتصال الإنترنت
+  # --- التصميم والأيقونات ---
+  font_awesome_flutter: ^10.7.0 # أيقونات Font Awesome
+  flutter_staggered_grid_view: ^0.7.0 # شبكة عرض متداخلة
+  flutter_svg: ^2.0.7 # دعم ملفات الصور المتجهة SVG
+  carousel_slider: ^5.0.0 # سلايدر لعرض الصور المتحركة
+  lottie: ^2.6.0 # تشغيل رسوم Lottie المتحركة
+  cupertino_icons: ^1.0.8 # أيقونات نظام iOS
+  # --- التنبيهات (Toasts & Snackbars) ---
+  awesome_snackbar_content: any # تخصيص رسائل السناك بار
+  cherry_toast: ^1.13.0 # مكتبة تنبيهات Cherry الجميلة
+  fluttertoast: ^8.2.2 # مكتبة التوست التقليدية
+  another_flushbar: ^1.10.24 # رسائل تنبيهية (Top/Bottom)
+  # --- تخزين البيانات ومعالجة الصور ---
+  shared_preferences: ^2.2.2 # تخزين البيانات البسيطة (مثل اللغة المختارة)
+  cached_network_image: ^3.2.3 # تحميل الصور مع تخزين مؤقت
+  image_picker: ^1.0.7 # اختيار صور من المعرض أو الكاميرا
+  image: ^4.0.17 # معالجة الصور برمجياً
+  flutter_image_compress: ^2.3.0 # ضغط الصور
+  # --- النماذج والتحقق (Forms & Validation) ---
+  flutter_form_builder: ^10.1.0 # بناء نماذج بسرعة
+  form_builder_validators: ^11.2.0 # أدوات التحقق من صحة البيانات
+  # --- أدوات أخرى ---
+  file_picker: ^10.3.3 # اختيار ملفات
+  flutter_colorpicker: ^1.1.0 # واجهة اختيار الألوان
+  http: ^1.2.0 # مكتبة الروابط الأساسية
 
 dev_dependencies:
   flutter_test:
