@@ -1,4 +1,5 @@
 // lib/views/widgets/modern_side_rail.dart
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -61,7 +62,7 @@ class ModernSideRail extends StatelessWidget {
               fontSize: 9,
               color: Colors.grey,
             ),
-            destinations: const [
+            destinations:  [
 
               NavigationRailDestination(
                 icon: Icon(Icons.play_circle_outline),
@@ -89,8 +90,7 @@ class ModernSideRail extends StatelessWidget {
                   padding: EdgeInsets.only(top: 6),
                   child: Icon(CupertinoIcons.house_fill),
                 ),
-                label: Text('الرئيسية'),
-              ),
+                label: Text('home'.tr())),
 
               NavigationRailDestination(
                 icon: Padding(
