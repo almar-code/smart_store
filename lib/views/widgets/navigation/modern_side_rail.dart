@@ -1,9 +1,9 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
-import '../../core/constants/app_colors.dart';
-import '../../core/constants/app_icons.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_icons.dart';
 
 class ModernSideRail extends StatefulWidget {
   final int currentIndex;
@@ -65,12 +65,41 @@ class _ModernSideRailState extends State<ModernSideRail> {
                 child: ListView(
                   padding: EdgeInsets.zero,
                   children: [
-                    _buildMenuItem(0, Icons.play_circle_outline,Icons.play_circle,"Reels",size: 20,),
-                    _buildMenuItem(1,Icons.auto_awesome_outlined,Icons.auto_awesome,"New",size: 21,),
+                    _buildMenuItem(
+                      0,
+                      Icons.play_circle_outline,
+                      Icons.play_circle,
+                      "Reels",
+                      size: 20,
+                    ),
+                    _buildMenuItem(
+                      1,
+                      Icons.auto_awesome_outlined,
+                      Icons.auto_awesome,
+                      "New",
+                      size: 21,
+                    ),
                     _buildMenuItem(2, Icons.home_outlined, Icons.home, "Home"),
-                    _buildMenuItem(3,CupertinoIcons.cart,CupertinoIcons.cart_fill,"Cart",size: 19,),
-                    _buildMenuItem(4,Icons.person_outline, Icons.person,"Omar",),
-                    _buildMenuItem( 5,Icons.favorite_outline,Icons.favorite,"Favorite",size: 20,),
+                    _buildMenuItem(
+                      3,
+                      CupertinoIcons.cart,
+                      CupertinoIcons.cart_fill,
+                      "Cart",
+                      size: 19,
+                    ),
+                    _buildMenuItem(
+                      4,
+                      Icons.person_outline,
+                      Icons.person,
+                      "Omar",
+                    ),
+                    _buildMenuItem(
+                      5,
+                      Icons.favorite_outline,
+                      Icons.favorite,
+                      "Favorite",
+                      size: 20,
+                    ),
                   ],
                 ),
               ),

@@ -2,8 +2,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
-import '../widgets/modern_bottom_nav_bar.dart';
-import '../widgets/modern_side_rail.dart'; // الكلاس الجديد
+import '../widgets/appbar/modern_app_bar.dart';
+import '../widgets/appbar/modern_com_appbar.dart';
+import '../widgets/floatingActionButton/cart_screen.dart';
+import '../widgets/navigation/modern_bottom_nav_bar.dart';
+import '../widgets/navigation/modern_side_rail.dart'; // الكلاس الجديد
 import 'favorites/favorites_screen.dart';
 import 'home/home_screen.dart';
 import 'cart/cart_screen.dart';
@@ -34,21 +37,43 @@ class MainWrapperScreen extends StatelessWidget {
               bool isDesktop = constraints.maxWidth > 800;
 
               return Scaffold(
+                floatingActionButton:  CartFloatingButton(),
+
+                appBar: isDesktop
+                    ? null
+                    : ModernAppBar(
+                  currentIndex: currentIndex,
+                  onSearchTap: () => {/* منطق البحث */},
+                  onCartTap: () => context.read<NavigationCubit>().updateIndex(3),
+                ),
                 backgroundColor: isDesktop ? Colors.white : Colors.white,
                 body: Row(
                   children: [
-                    // --- استخدام كلاس اللابتوب المنفصل ---
                     if (isDesktop)
                       ModernSideRail(
                         currentIndex: currentIndex,
                         onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
                       ),
 
-                    // --- المحتوى الرئيسي ---
                     Expanded(
-                      child:IndexedStack(
-                        index: currentIndex,
-                        children: screens,
+                      child: Column(
+                        children: [
+                          // 4. نضع الأبار هنا كـ Widget عادية في حالة الديسكتوب فقط
+                          if (isDesktop)
+                            SearchAppbar(
+                              currentIndex: currentIndex,
+                              onSearchTap: () {},
+                              onCartTap: () => context.read<NavigationCubit>().updateIndex(3),
+                            ),
+
+                          // 5. محتوى الصفحات (Home, Reels, etc.)
+                          Expanded(
+                            child: IndexedStack(
+                              index: currentIndex,
+                              children: screens,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -56,7 +81,7 @@ class MainWrapperScreen extends StatelessWidget {
 
                 // --- استخدام كلاس الجوال المنفصل ---
                 bottomNavigationBar: isDesktop
-                    ? const SizedBox.shrink()
+                    ?  SizedBox.shrink()
                     : ModernBottomNavBar(
                   currentIndex: currentIndex,
                   onTap: (index) => context.read<NavigationCubit>().updateIndex(index),

@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../core/constants/app_colors.dart';
+import '../../../core/constants/app_colors.dart';
+import 'package:easy_localization/easy_localization.dart';
 
 class ModernBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -15,8 +16,8 @@ class ModernBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 25),
-      padding: const EdgeInsets.only(top: 5),
+      margin:  EdgeInsets.fromLTRB(16, 0, 16, 25),
+      padding:  EdgeInsets.only(top: 5),
       decoration: BoxDecoration(
         color: Colors.white.withOpacity(0.95),
         // إضافة انحناء كامل للحواف
@@ -30,7 +31,7 @@ class ModernBottomNavBar extends StatelessWidget {
           BoxShadow(
             color: Colors.black.withOpacity(0.08),
             blurRadius: 20,
-            offset: const Offset(0, 10), // الظل للأسفل ليعطي إيحاء بالارتفاع
+            offset:  Offset(0, 10), // الظل للأسفل ليعطي إيحاء بالارتفاع
           ),
         ],
       ),
@@ -45,7 +46,7 @@ class ModernBottomNavBar extends StatelessWidget {
         selectedFontSize: 12,
         showSelectedLabels: true,    // إظهار النص للمختار
         showUnselectedLabels: false,
-        items: const [
+        items:  [
           BottomNavigationBarItem(
             icon: Icon(Icons.play_circle_outline, size: 22),
             activeIcon: Icon(Icons.play_circle_fill, size: 26),
@@ -54,17 +55,16 @@ class ModernBottomNavBar extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Icon(Icons.auto_awesome_outlined, size: 22),
             activeIcon: Icon(Icons.auto_awesome, size: 26),
-            label: 'جديد',
+            label: 'new'.tr(),
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.home, size: 22),
             activeIcon: Icon(CupertinoIcons.house_fill, size: 26),
-            label: 'الرئيسية',
-          ),
+            label: 'home'.tr()),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.cart, size: 22),
             activeIcon: Icon(CupertinoIcons.cart_fill, size: 26),
-            label: 'السلة',
+            label: 'cart'.tr(),
           ),
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.person, size: 22),
