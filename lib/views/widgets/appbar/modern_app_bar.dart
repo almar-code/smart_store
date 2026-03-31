@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'app_title.dart';
+import '../../../core/constants/app_icons.dart';
+import 'constant/app_search.dart';
+import 'constant/app_title.dart';
 
 class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
   final int currentIndex; // نمرر رقم الصفحة الحالية
@@ -42,37 +44,7 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
                       onPressed: () => Scaffold.of(context).openDrawer(),
                     ),
                     if(currentIndex ==3)
-                    Stack(
-                      alignment: Alignment.topRight,
-                      children: [
-                        SizedBox(
-                          width: 35,
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                              vertical: 10,
-                              horizontal: 4,
-                            ),
-                            child: GestureDetector(
-                              onTap: onCartTap ,
-
-                              child: Icon(CupertinoIcons.cart, size: 21),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 5),
-                        Positioned(
-                          bottom: 23,
-                          child: Text(
-                            "3",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.red,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                      CartBadge(count: "3",onTap: onCartTap,),
                     if(currentIndex ==1)
                       IconButton(
                         icon: const Icon(CupertinoIcons.search, color: Colors.black),
@@ -81,6 +53,7 @@ class ModernAppBar extends StatelessWidget implements PreferredSizeWidget {
                   ],
                 ),
               ),
+              if(currentIndex ==2)
               Expanded(
                   flex: 3,
                   child: Center(

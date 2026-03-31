@@ -4,10 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
 import '../widgets/appbar/modern_app_bar.dart';
 import '../widgets/appbar/modern_com_appbar.dart';
-// import '../widgets/navigation/modern_bottom_nav_bar.dart';
-// import '../widgets/navigation/modern_side_rail.dart'; // الكلاس الجديد
-import '../widgets/modern_bottom_nav_bar.dart';
-import '../widgets/modern_side_rail.dart';
+import '../widgets/floatingActionButton/cart_screen.dart';
+import '../widgets/navigation/modern_bottom_nav_bar.dart';
+import '../widgets/navigation/modern_side_rail.dart'; // الكلاس الجديد
 import 'favorites/favorites_screen.dart';
 import 'home/home_screen.dart';
 import 'cart/cart_screen.dart';
@@ -38,6 +37,8 @@ class MainWrapperScreen extends StatelessWidget {
               bool isDesktop = constraints.maxWidth > 800;
 
               return Scaffold(
+                floatingActionButton:  CartFloatingButton(),
+
                 appBar: isDesktop
                     ? null
                     : ModernAppBar(

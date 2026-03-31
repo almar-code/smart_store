@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
-
-import 'app_title.dart';
+import '../../../core/constants/app_icons.dart';
+import 'constant/app_search.dart';
+import 'constant/app_title.dart';
 
 class SearchAppbar extends StatelessWidget implements PreferredSizeWidget {
   final int currentIndex; // نمرر رقم الصفحة الحالية
@@ -42,6 +42,7 @@ class SearchAppbar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               ),
               Expanded(flex: 5, child: SizedBox()),
+              if(currentIndex ==2)
               Expanded(
                 flex: 2,
                 child: Center(
@@ -53,14 +54,18 @@ class SearchAppbar extends StatelessWidget implements PreferredSizeWidget {
                   ),
                 )
               ),
+              if(currentIndex ==3)
+              Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Expanded(
+                    child: CartBadge(count: "3"),
+                ),
+              ),
               SizedBox(width: 10,),
-              if(currentIndex ==3 || currentIndex ==2)
+              if(currentIndex ==2)
                 Expanded(
                   child: Row(
                     children: [
-
-
-                      if(currentIndex ==2)
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.grey[100],
@@ -76,7 +81,6 @@ class SearchAppbar extends StatelessWidget implements PreferredSizeWidget {
                           ),
                         ),
                       SizedBox(width: 10,),
-                      if(currentIndex ==2)
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.grey[100],
@@ -92,7 +96,6 @@ class SearchAppbar extends StatelessWidget implements PreferredSizeWidget {
                           ),
                         ),
                       SizedBox(width: 10,),
-                      if(currentIndex ==2)
                         Container(
                           decoration: BoxDecoration(
                             color: Colors.grey[100],
