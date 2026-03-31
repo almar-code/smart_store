@@ -64,6 +64,8 @@ dependencies:
   file_picker: ^10.3.3 # اختيار ملفات
   flutter_colorpicker: ^1.1.0 # واجهة اختيار الألوان
   http: ^1.2.0 # مكتبة الروابط الأساسية
+  flutter_spinkit : any # مكتبة CircularProgress
+  flutter_screenutil : any  # مكتبة العرض على مختلف الشاشات
 
 dev_dependencies:
   flutter_test:
