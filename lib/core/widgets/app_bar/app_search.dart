@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import '../../constants/app_colors.dart';
 
+class App_Search extends StatelessWidget {
+  final double widthFactor;
 
-class CustomSearchBar extends StatelessWidget {
-  final double widthFactor; // للتحكم في عرض الشريط (مثلاً 0.2 للابتوب و 0.7 للجوال)
-
-  const CustomSearchBar({super.key, this.widthFactor = 0.4});
+  const App_Search({super.key, this.widthFactor = 0.4});
 
   @override
   Widget build(BuildContext context) {
@@ -36,12 +36,12 @@ class CustomSearchBar extends StatelessWidget {
                 style:  TextStyle(fontSize: 12, color: Colors.black),
                 decoration: const InputDecoration(
                   hintText: 'search here...',
-                  hintStyle: TextStyle(color: Colors.grey, fontSize: 12),
+                  hintStyle: TextStyle(color: AppColors.iconColor, fontSize: 12),
                   border: InputBorder.none,
                   contentPadding: EdgeInsets.symmetric(vertical: 12),
                 ),
                 onTap: () {
-                  // منطق الانتقال لصفحة البحث
+
                 },
               ),
             ),

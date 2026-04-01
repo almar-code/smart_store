@@ -2,8 +2,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
-import '../widgets/appbar/modern_app_bar.dart';
-import '../widgets/appbar/modern_com_appbar.dart';
 import '../widgets/floatingActionButton/cart_screen.dart';
 import '../widgets/navigation/modern_bottom_nav_bar.dart';
 import '../widgets/navigation/modern_side_rail.dart'; // الكلاس الجديد
@@ -22,7 +20,7 @@ class MainWrapperScreen extends StatelessWidget {
     final List<Widget> screens = [
       const ReelScreen(),
       const NewScreen(),
-      const HomeScreen(),
+       HomeScreen(),
       const CartScreen(),
       const ProfileScreen(),
       const FavoritesScreen(),
@@ -39,13 +37,7 @@ class MainWrapperScreen extends StatelessWidget {
               return Scaffold(
                 floatingActionButton:  CartFloatingButton(),
 
-                appBar: isDesktop
-                    ? null
-                    : ModernAppBar(
-                  currentIndex: currentIndex,
-                  onSearchTap: () => {/* منطق البحث */},
-                  onCartTap: () => context.read<NavigationCubit>().updateIndex(3),
-                ),
+
                 backgroundColor: isDesktop ? Colors.white : Colors.white,
                 body: Row(
                   children: [
@@ -58,13 +50,6 @@ class MainWrapperScreen extends StatelessWidget {
                     Expanded(
                       child: Column(
                         children: [
-                          // 4. نضع الأبار هنا كـ Widget عادية في حالة الديسكتوب فقط
-                          if (isDesktop)
-                            SearchAppbar(
-                              currentIndex: currentIndex,
-                              onSearchTap: () {},
-                              onCartTap: () => context.read<NavigationCubit>().updateIndex(3),
-                            ),
 
                           // 5. محتوى الصفحات (Home, Reels, etc.)
                           Expanded(

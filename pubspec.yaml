@@ -33,6 +33,7 @@ dependencies:
 
   # --- الترجمة وتعدد اللغات ---
   easy_localization: ^3.0.7 # مكتبة الترجمة وتغيير لغة التطبيق بسهولة
+  flutter_screenutil: ^5.9.0
   # --- إدارة الحالة (State Management) ---
   flutter_bloc: ^9.1.0 # المكتبة الأساسية لنمط الـ Bloc
   provider: ^6.1.2 # مكتبة بروفايدر (موجودة سابقاً)
@@ -91,7 +92,6 @@ flutter:
   assets:
      - assets/images/
      - assets/translations/
-     - lib/core/widgets/logo/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
