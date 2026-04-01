@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:easy_localization/easy_localization.dart';
 
+import '../../logic/navigation/navigation_cubit.dart';
+import 'app_colors.dart';
 class SocialIcon extends StatefulWidget {
   final IconData icon;
   final Color color;
@@ -40,7 +44,20 @@ class _SocialIconState extends State<SocialIcon> {
     );
   }
 }
+class DrawerMenuButton extends StatelessWidget {
+  const DrawerMenuButton({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.menu, color: Colors.black),
+      onPressed: () {
+        // استدعاء دالة فتح الدراور من الكوبيت مباشرة
+        context.read<NavigationCubit>().openDrawer();
+      },
+    );
+  }
+}
 class CartBadge extends StatelessWidget {
   final String count; // عدد المنتجات (مثلاً "3")
   final VoidCallback? onTap; // ماذا يحدث عند الضغط

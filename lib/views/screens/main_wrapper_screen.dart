@@ -2,8 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
-import '../widgets/appbar/modern_app_bar.dart';
-import '../widgets/appbar/modern_com_appbar.dart';
+import '../widgets/drawer/drawer.dart';
 import '../widgets/floatingActionButton/cart_screen.dart';
 import '../widgets/navigation/modern_bottom_nav_bar.dart';
 import '../widgets/navigation/modern_side_rail.dart'; // الكلاس الجديد
@@ -15,14 +14,18 @@ import 'profile/profile_screen.dart';
 import 'reels/reels_screen.dart';
 
 class MainWrapperScreen extends StatelessWidget {
-  const MainWrapperScreen({super.key});
+  MainWrapperScreen({super.key});
+
+  // المفتاح هنا للتحكم في السكافولد الرئيسي
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
+    // نمرر المفتاح للـ HomeScreen لكي يتمكن من فتح الدراور
     final List<Widget> screens = [
       const ReelScreen(),
       const NewScreen(),
-      const HomeScreen(),
+      const HomeScreen(), // تمرير المفتاح هنا
       const CartScreen(),
       const ProfileScreen(),
       const FavoritesScreen(),
@@ -35,17 +38,13 @@ class MainWrapperScreen extends StatelessWidget {
           return LayoutBuilder(
             builder: (context, constraints) {
               bool isDesktop = constraints.maxWidth > 800;
-
               return Scaffold(
+                key: context.read<NavigationCubit>().scaffoldKey,
+                // الدراور يظهر فقط في الموبايل
+                drawer: isDesktop ? null : const AppDrawer(),
                 floatingActionButton:  CartFloatingButton(),
 
-                appBar: isDesktop
-                    ? null
-                    : ModernAppBar(
-                  currentIndex: currentIndex,
-                  onSearchTap: () => {/* منطق البحث */},
-                  onCartTap: () => context.read<NavigationCubit>().updateIndex(3),
-                ),
+
                 backgroundColor: isDesktop ? Colors.white : Colors.white,
                 body: Row(
                   children: [
@@ -58,13 +57,6 @@ class MainWrapperScreen extends StatelessWidget {
                     Expanded(
                       child: Column(
                         children: [
-                          // 4. نضع الأبار هنا كـ Widget عادية في حالة الديسكتوب فقط
-                          if (isDesktop)
-                            SearchAppbar(
-                              currentIndex: currentIndex,
-                              onSearchTap: () {},
-                              onCartTap: () => context.read<NavigationCubit>().updateIndex(3),
-                            ),
 
                           // 5. محتوى الصفحات (Home, Reels, etc.)
                           Expanded(

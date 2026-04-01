@@ -11,7 +11,7 @@ class CartFloatingButton extends StatelessWidget {
       },
       splashColor: Colors.transparent,
       hoverElevation: 4,
-      backgroundColor: Colors.white30,
+      backgroundColor: Colors.white,
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: CartBadge(count: "3")

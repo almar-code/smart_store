@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
+import '../../../core/widgets/app_logo.dart';
 
 class ModernSideRail extends StatefulWidget {
   final int currentIndex;
@@ -69,22 +70,22 @@ class _ModernSideRailState extends State<ModernSideRail> {
                       0,
                       Icons.play_circle_outline,
                       Icons.play_circle,
-                      "Reels",
+                      tr('reel'),
                       size: 20,
                     ),
                     _buildMenuItem(
                       1,
                       Icons.auto_awesome_outlined,
                       Icons.auto_awesome,
-                      "New",
+                      tr('new'),
                       size: 21,
                     ),
-                    _buildMenuItem(2, Icons.home_outlined, Icons.home, "Home"),
+                    _buildMenuItem(2, Icons.home_outlined, Icons.home, tr('home')),
                     _buildMenuItem(
                       3,
                       CupertinoIcons.cart,
                       CupertinoIcons.cart_fill,
-                      "Cart",
+                      tr('cart'),
                       size: 19,
                     ),
                     _buildMenuItem(
@@ -95,9 +96,9 @@ class _ModernSideRailState extends State<ModernSideRail> {
                     ),
                     _buildMenuItem(
                       5,
-                      Icons.favorite_outline,
-                      Icons.favorite,
-                      "Favorite",
+                      CupertinoIcons.heart,
+                      CupertinoIcons.heart_fill,
+                      tr('favorite'),
                       size: 20,
                     ),
                   ],
@@ -115,17 +116,12 @@ class _ModernSideRailState extends State<ModernSideRail> {
 
   Widget _buildLogo() {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 13),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Row(
         children: [
           // 🔥 اللوجو
-          SizedBox(
-            width: 40,
-            height: 40,
-            child: Image.asset('assets/images/logo.png', fit: BoxFit.contain),
-          ),
+          Logo(width: 36,height: 36,),
 
-          const SizedBox(width: 3),
 
           // 🔥 النص يظهر فقط عند التوسع
           if (isExpanded)
@@ -149,16 +145,16 @@ class _ModernSideRailState extends State<ModernSideRail> {
   }
 
   Widget _buildMenuItem(
-    int index,
-    IconData icon,
-    IconData activeIcon,
-    String label, {
-    double size = 22,
-  }) {
+      int index,
+      IconData icon,
+      IconData activeIcon,
+      String label, {
+        double size = 22,
+      }) {
     final bool isSelected = widget.currentIndex == index;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       child: InkWell(
         borderRadius: BorderRadius.circular(12),
         onTap: () => widget.onTap(index),
@@ -179,7 +175,7 @@ class _ModernSideRailState extends State<ModernSideRail> {
                 child: Icon(
                   isSelected ? activeIcon : icon,
                   size: size,
-                  color: isSelected ? AppColors.primary : AppColors.textColor,
+                  color: isSelected ? AppColors.primary : AppColors.iconColor,
                 ),
               ),
 

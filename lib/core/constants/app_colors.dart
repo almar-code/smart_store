@@ -6,7 +6,7 @@ class AppColors {
   static const Color primary = Color.fromARGB(255, 3, 195, 131);
   static const Color boxShadow = Color.fromARGB(128, 23, 22, 22);
   static const Color iconColor = Color.fromARGB(255, 0, 0, 0);
-  static const Color borderColor = Color.fromARGB(150, 158, 158, 158);
+  static const Color borderColor = Color.fromARGB(66, 158, 158, 158);
   static const Color textColor = Color.fromARGB(255, 0, 0, 0);
 
   // ألوان إضافية مقترحة لتناسب الـ SaaS Style

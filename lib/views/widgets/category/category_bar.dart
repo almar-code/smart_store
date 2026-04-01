@@ -1,7 +1,8 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import '../../core/constants/app_shadow.dart';
-import '../../core/widgets/circularProgress.dart';
-import '../../core/constants/app_colors.dart';
+import '../../../core/constants/app_shadow.dart';
+import '../../../core/widgets/circularProgress.dart';
+import '../../../core/constants/app_colors.dart';
 class CategoryBar extends StatelessWidget {
   const CategoryBar({super.key});
 
@@ -12,30 +13,46 @@ class CategoryBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.symmetric(horizontal: BorderSide(color: AppColors.borderColor)),
+      ),
       width: double.infinity,
       // نستخدم ScreenUtil لتحديد الارتفاع ليكون متناسقاً
-      height: 30,
+      height: 34,
       child: FutureBuilder(
         future: getData(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgress(size: 20));
+            return Center(child: CircularProgress(size: (isDesktop)?20:15));
           }
 
           final List<Map<String, dynamic>> categories = List.generate(
-            10,
+            20,
                 (index) => {"id": index, "cate_name": "Category $index"},
           );
 
-          return SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+          return Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
             child: Row(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center, // 4. توسيط العناصر داخله
               children: [
-                _buildInkWellItem(context, "الكل"),
-                ...categories.map((item) => _buildInkWellItem(context, item["cate_name"])).toList(),
+                _buildInkWellItem(context, tr('all')),
+                Expanded(
+                  child: Center(
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      physics: const BouncingScrollPhysics(),
+                      child: Row(
+                        children: [
+                          ...categories.map((item) => _buildInkWellItem(context, item["cate_name"])).toList(),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           );
