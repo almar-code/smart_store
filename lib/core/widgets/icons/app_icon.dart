@@ -30,3 +30,24 @@ class AppIcon extends StatelessWidget {
     );
   }
 }
+
+class ArrowForwardIcon extends StatelessWidget {
+  final double size;
+  final Color? color;
+
+  // جعلنا الحجم مطلوباً، واللون اختيارياً (يأخذ لون التطبيق الافتراضي)
+  const ArrowForwardIcon({
+    super.key,
+    this.size = 11,
+    this.color =AppColors.primary,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Icon(
+      Icons.arrow_forward_ios,
+      size: size,
+      color: color,
+    );
+  }
+}

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 class Logo extends StatelessWidget {
   final double width;
   final double height;
