@@ -6,7 +6,8 @@ class AppIcon extends StatelessWidget {
   final IconData icon;
   final Color color;
   final double size;
-  AppIcon({super.key,required this.icon,this.color=AppColors.iconColor,this.size=20});
+  final VoidCallback? onPressed;
+  AppIcon({super.key,required this.icon,this.color=AppColors.iconColor,this.size=20,this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +24,7 @@ class AppIcon extends StatelessWidget {
             color:color,
             size: size,
           ),
-          onPressed: (){},
+          onPressed: onPressed,
         ),
       ),
     );
