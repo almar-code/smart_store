@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:easy_localization/easy_localization.dart';
-
 import '../../logic/navigation/navigation_cubit.dart';
-import 'app_colors.dart';
 class SocialIcon extends StatefulWidget {
   final IconData icon;
   final Color color;
@@ -44,6 +40,7 @@ class _SocialIconState extends State<SocialIcon> {
     );
   }
 }
+
 class DrawerMenuButton extends StatelessWidget {
   const DrawerMenuButton({super.key});
 
@@ -55,50 +52,6 @@ class DrawerMenuButton extends StatelessWidget {
         // استدعاء دالة فتح الدراور من الكوبيت مباشرة
         context.read<NavigationCubit>().openDrawer();
       },
-    );
-  }
-}
-class CartBadge extends StatelessWidget {
-  final String count; // عدد المنتجات (مثلاً "3")
-  final VoidCallback? onTap; // ماذا يحدث عند الضغط
-
-  const CartBadge({
-    super.key,
-    required this.count,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      alignment: Alignment.topRight,
-      children: [
-        SizedBox(
-          width: 35,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 10,
-              horizontal: 4,
-            ),
-            child: GestureDetector(
-              onTap: onTap, // ربط الضغطة هنا
-              child: const Icon(CupertinoIcons.cart, size: 21),
-            ),
-          ),
-        ),
-        const SizedBox(height: 5),
-        Positioned(
-          bottom: 23,
-          child: Text(
-            count, // القيمة المتغيرة
-            style: const TextStyle(
-              fontSize: 12,
-              color: Colors.red,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
