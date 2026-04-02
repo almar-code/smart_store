@@ -11,6 +11,7 @@ void main() async {
       path: 'assets/translations',
       fallbackLocale: const Locale('ar'),
       startLocale: const Locale('en'),
+      // startLocale: const Locale('ar'),
       child:  MyApp(),
     ),
   );

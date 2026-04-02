@@ -9,7 +9,9 @@ import 'package:easy_localization/easy_localization.dart';
 
 import '../../../core/constants/app_icons.dart';
 import '../../widgets/category/category_bar.dart';
+import '../../widgets/discounts/discounts.dart';
 import '../../widgets/drawer/drawer.dart';
+import '../../widgets/sliderEds/sliderEds.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -51,7 +53,21 @@ class HomeScreen extends StatelessWidget {
       ),
 
 
-      body: CategoryBar(),
+      body: Column(
+        spacing: 10,
+        children: [
+          CategoryBar(),
+          isDesktop ? Row(
+            children: [
+              Expanded(child: SliderEds()),
+              Expanded(
+                  flex: 2,
+                  child: Discounts()),
+            ],
+          ):SliderEds(),
+          isDesktop?SizedBox():Discounts()
+        ],
+      ),
     );
   }
 }
