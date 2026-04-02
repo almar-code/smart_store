@@ -6,12 +6,10 @@ import 'package:smart_store/core/widgets/app_logo.dart';
 import 'package:smart_store/core/widgets/icons/app_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:easy_localization/easy_localization.dart';
-
 import '../../../core/constants/app_icons.dart';
 import '../../../core/widgets/titleBar.dart';
 import '../../widgets/category/category_bar.dart';
 import '../../widgets/discounts/discounts.dart';
-import '../../widgets/drawer/drawer.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 
 class HomeScreen extends StatelessWidget {
