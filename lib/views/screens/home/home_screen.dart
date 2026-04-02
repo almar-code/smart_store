@@ -8,6 +8,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../core/constants/app_icons.dart';
+import '../../../core/widgets/titleBar.dart';
 import '../../widgets/category/category_bar.dart';
 import '../../widgets/discounts/discounts.dart';
 import '../../widgets/drawer/drawer.dart';
@@ -53,20 +54,25 @@ class HomeScreen extends StatelessWidget {
       ),
 
 
-      body: Column(
-        spacing: 10,
-        children: [
-          CategoryBar(),
-          isDesktop ? Row(
-            children: [
-              Expanded(child: SliderEds()),
-              Expanded(
-                  flex: 2,
-                  child: Discounts()),
-            ],
-          ):SliderEds(),
-          isDesktop?SizedBox():Discounts()
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          spacing: 10,
+          children: [
+            CategoryBar(),
+            isDesktop ? Row(
+              spacing: 12,
+              children: [
+                Expanded(child: SliderEds()),
+                Expanded(
+                    flex: 2,
+                    child: Discounts()),
+              ],
+            ):SliderEds(),
+            isDesktop?SizedBox():Discounts(),
+            TitleBar(title: tr('forYou'),)
+          ],
+        ),
       ),
     );
   }

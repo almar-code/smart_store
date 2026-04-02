@@ -28,7 +28,6 @@ class Discounts extends StatelessWidget {
               ),
             ],
           ),
-          padding: const EdgeInsets.symmetric(horizontal: 12),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -90,7 +89,7 @@ class DiscountsUI extends StatelessWidget {
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: products.length + 1,
-        padding: const EdgeInsets.symmetric(horizontal: 8),
+
         itemBuilder: (context, index) {
 
           // 🔥 كرت مشاهدة المزيد
