@@ -77,15 +77,15 @@ class Discounts extends StatelessWidget {
 class DiscountsUI extends StatelessWidget {
   DiscountsUI({super.key});
   final List<Map<String, dynamic>> products = List.generate(
-    10,
-        (index) => {"price": 100, "newPrice":70, "discount":30},
+    9,
+        (index) => {"image" : "assets/images/${index}.jpg","price": 100, "newPrice":70, "discount":30},
   );
 
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     return SizedBox(
-      height: 190,
+      height: isDesktop ? 190 : 180,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: products.length + 1,
@@ -130,7 +130,7 @@ class DiscountsUI extends StatelessWidget {
           final item = products[index];
 
           return Container(
-            width: isDesktop ? 130 :100,
+            width: isDesktop ? 125 :100,
             margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 10),
             decoration: BoxDecoration(
               color: AppColors.background,
@@ -148,8 +148,8 @@ class DiscountsUI extends StatelessWidget {
                         top: Radius.circular(7),
                       ),
                       child: Image.asset(
-                        'assets/images/a4.jpg',
-                        height: 120,
+                        item['image'],
+                        height: isDesktop ? 130 :120,
                         width: double.infinity,
                         fit: BoxFit.cover,
                       ),
@@ -181,31 +181,43 @@ class DiscountsUI extends StatelessWidget {
                   ],
                 ),
 
-                SizedBox(height: 6),
+                SizedBox(height: 10),
 
                 // 💰 السعر
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 6),
-                  child: Column(
-                    children: [
-                      Text(
-                        "${item['newPrice']} \$",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 14,
-                          color:  AppColors.primary,
+                 Row(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                  spacing: 8,
+                  children: [
+                    Row(
+                      spacing: 1,
+                      children: [
+                        Text(
+                          "${item['newPrice']}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 13,
+                            color:  AppColors.primary,
+                          ),
                         ),
-                      ),
-                      Text(
-                        "${item['price']} \$",
-                        style: TextStyle(
-                          fontSize: 11,
-                          color: AppColors.textSecondary,
-                          decoration: TextDecoration.lineThrough,
+                        Text(
+                          "\$",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 12,
+                            color:  AppColors.primary,
+                          ),
                         ),
+                      ],
+                    ),
+                    Text(
+                      "${item['price']} \$",
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.textSecondary,
+                        decoration: TextDecoration.lineThrough,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),
