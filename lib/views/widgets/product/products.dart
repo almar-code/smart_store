@@ -1,0 +1,211 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_shadow.dart';
+class AllProducts extends StatefulWidget {
+   final int? subCategoryID;
+   final int? productID;
+   final bool showAddToCart ;
+  const AllProducts({super.key,this.subCategoryID,this.productID,this.showAddToCart=false});
+
+  @override
+  State<AllProducts> createState() => _AllProductsState();
+}
+
+class _AllProductsState extends State<AllProducts> {
+  @override
+  Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
+    List<Map<String, dynamic>> products = List.generate(
+      9,
+          (index) => {"image" : "assets/images/${index}.jpg","price": 100, "newPrice":70, "discount":30,"colors":[{"colorName":"اسود","code":"#000000"},{"colorName":"بني","code":"#A0522D"},{"colorName":"رمادي","code":"#D3D3D3"},{"colorName":"green","code":"#470299"}]},
+    );
+    return  MasonryGridView.count(
+      scrollDirection: Axis.vertical,
+      crossAxisCount:isDesktop ? 6 : 2,
+      mainAxisSpacing: 15, //مسافة بين العنصر والذي تحتة
+      crossAxisSpacing: 12, //مسافة بين العنصر والذي جنبة
+      shrinkWrap: true, //حجم حسب الاب
+      itemCount: products.length,
+      physics: NeverScrollableScrollPhysics(), //توقيف الشريط
+      itemBuilder: (context, index) {
+        var item=products[index];
+        return Container(
+          padding: EdgeInsets.only(bottom: 10),
+          decoration: BoxDecoration(
+            color: AppColors.background,
+            borderRadius: BorderRadius.circular(7),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.05),
+                blurRadius: 15,
+                offset: const Offset(0, 5),
+              ),
+              ...AppShadow.commonShadow, // دمج ظلالك الخاصة
+            ],
+          ),
+          child: Column(
+            spacing: 6,
+            children: [
+              //  الصورة + badge الخصم
+              Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.vertical(
+                      top: Radius.circular(7),
+                    ),
+                    child: Image.asset(
+                      item['image'],
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+
+                  //  اللوان المنتج
+                  Positioned(
+                    top: 7,
+                    right: 7,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 2,horizontal: 2,),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.3),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Row(
+                        spacing: 5,
+                        children: [
+                          Row(
+                            spacing: 5,
+                            children: [
+                              (item['colors'].length <= 3) ? SizedBox() : Text(
+                                "+${item['colors'].length-3}",
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              ...item['colors'].take(3).map((color){
+                                return SizedBox(
+                                width: 17,
+                                height: 17,
+                                child: CircleAvatar(
+                                  backgroundColor: AppColors.hexToColor(color["code"]),
+                                )
+                              );}).toList(),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 6,
+                    left: 6,
+                    child:GestureDetector(
+                      onTap: () {
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.6),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          CupertinoIcons.heart,
+                          color:  AppColors.iconColor,
+                          size: 18,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Positioned(
+                    bottom: 36,
+                    left: 8,
+                    child:GestureDetector(
+                      onTap: () {
+                      },
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        padding: const EdgeInsets.all(3),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.6),
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.person_2_outlined,
+                          color: AppColors.iconColor,
+                          size: 15,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: SizedBox(
+                  width: double.infinity,
+                  child: Text(
+                    'Kagole abaya',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: AppColors.textColor,
+                      fontWeight: FontWeight.bold,
+                    ),),
+                ),
+              ),
+              // 💰 السعر
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  spacing: 8,
+                  children: [
+                    Row(
+                      spacing: 1,
+                      children: [
+                        Text(
+                          "${item['newPrice']}",
+                          style: TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                            color:  AppColors.primary,
+                          ),
+                        ),
+                        Text(
+                          "\$",
+                          style: TextStyle(
+                            fontWeight: FontWeight.w300,
+                            fontSize: 11,
+                            color:  AppColors.primary,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      "${item['price']} \$",
+                      style: TextStyle(
+                        fontSize: 11,
+                        color: AppColors.textSecondary,
+                        decoration: TextDecoration.lineThrough,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+
+      // حجم كل عنصر
+    );
+  }
+}
+
+
