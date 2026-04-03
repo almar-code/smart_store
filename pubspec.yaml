@@ -66,6 +66,7 @@ dependencies:
   flutter_colorpicker: ^1.1.0 # واجهة اختيار الألوان
   http: ^1.2.0 # مكتبة الروابط الأساسية
   flutter_spinkit : any # مكتبة CircularProgress
+  shimmer: ^3.0.0
 
 
 dev_dependencies:
