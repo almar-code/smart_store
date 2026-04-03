@@ -12,6 +12,7 @@ import '../../widgets/category/category_bar.dart';
 import '../../widgets/discounts/discounts.dart';
 import '../../widgets/product/products.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
+import '../../widgets/subcategory/subcategory_bar.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -72,6 +73,8 @@ class HomeScreen extends StatelessWidget {
                             child: Discounts()),
                       ],
                     ):SliderEds(),
+                    isDesktop?SizedBox():SubcategoryBar(),
+                    isDesktop?SubcategoryBar():SizedBox(),
                     isDesktop?SizedBox():Discounts(),
                     TitleBar(title: tr('forYou'),),
                     SizedBox(child: AllProducts()),
