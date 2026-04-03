@@ -44,7 +44,6 @@ class UserProfileOrLogin extends StatelessWidget {
                   : null,
             ),
             const SizedBox(width: 12),
-
             InkWell(
               onTap: isLoggedIn ? onProfileTap : onLoginTap,
               child: Text(
@@ -52,7 +51,7 @@ class UserProfileOrLogin extends StatelessWidget {
                 style: TextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.bold,
-                  color: !isLoggedIn ? AppColors.primary : AppColors.iconColor,
+                  color: !isLoggedIn ? AppColors.primary : AppColors.textColor,
                 ),
               ),
             ),

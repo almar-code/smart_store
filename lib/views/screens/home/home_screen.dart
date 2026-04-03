@@ -60,22 +60,26 @@ class HomeScreen extends StatelessWidget {
             CategoryBar(),
             Expanded(
               child: SingleChildScrollView(
-                child: Column(
-                  spacing: 10,
-                  children: [
-                    isDesktop ? Row(
-                      spacing: 12,
-                      children: [
-                        Expanded(child: SliderEds()),
-                        Expanded(
-                            flex: 2,
-                            child: Discounts()),
-                      ],
-                    ):SliderEds(),
-                    isDesktop?SizedBox():Discounts(),
-                    TitleBar(title: tr('forYou'),),
-                    SizedBox(child: AllProducts()),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 15.0),
+                  child: Column(
+                    spacing: 10,
+                    children: [
+                      isDesktop ? Row(
+                        spacing: 12,
+                        children: [
+                          Expanded(child: SliderEds()),
+                          Expanded(
+                              flex: 2,
+                              child: Discounts()),
+                        ],
+                      ):SliderEds(),
+                      isDesktop?SizedBox():Discounts(),
+
+                      TitleBar(title: tr('forYou'),),
+                      SizedBox(child: AllProducts()),
+                    ],
+                  ),
                 ),
               ),
             ),

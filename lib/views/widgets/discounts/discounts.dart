@@ -119,6 +119,7 @@ class DiscountsUI extends StatelessWidget {
                   ),
 
                   SizedBox(height: 8),
+                  SizedBox(height: 8),
 
                   ViewMoreText(fontSize: 13,),
 
