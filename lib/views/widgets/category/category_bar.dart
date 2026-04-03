@@ -34,10 +34,11 @@ class CategoryBar extends StatelessWidget {
           );
 
           return Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+            padding: EdgeInsets.symmetric(vertical: 6),
             child: Row(
               mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center, // 4. توسيط العناصر داخله
+              mainAxisAlignment: MainAxisAlignment.center,
+              spacing: 6,// 4. توسيط العناصر داخله
               children: [
                 _buildInkWellItem(context, tr('all')),
                 Expanded(
@@ -46,6 +47,7 @@ class CategoryBar extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       physics: const BouncingScrollPhysics(),
                       child: Row(
+                        spacing: 6,
                         children: [
                           ...categories.map((item) => _buildInkWellItem(context, item["cate_name"])).toList(),
                         ],
@@ -75,7 +77,6 @@ class CategoryBar extends StatelessWidget {
   // تصميم العنصر (البطاقة مع الظل الثابت)
   Widget _buildCategoryItem(String title) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 3),
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       alignment: Alignment.center,
       decoration: BoxDecoration(

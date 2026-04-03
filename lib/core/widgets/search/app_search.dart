@@ -15,7 +15,7 @@ class App_Search extends StatelessWidget {
       height: 35,
       decoration: BoxDecoration(
         color: Colors.grey[200],
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(13),
       ),
       child: Row(
         children: [

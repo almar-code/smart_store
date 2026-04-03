@@ -6,11 +6,11 @@ import 'package:smart_store/core/widgets/app_logo.dart';
 import 'package:smart_store/core/widgets/icons/app_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:easy_localization/easy_localization.dart';
-
 import '../../../core/constants/app_icons.dart';
+import '../../../core/widgets/titleBar.dart';
 import '../../widgets/category/category_bar.dart';
 import '../../widgets/discounts/discounts.dart';
-import '../../widgets/drawer/drawer.dart';
+import '../../widgets/product/products.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -53,20 +53,34 @@ class HomeScreen extends StatelessWidget {
       ),
 
 
-      body: Column(
-        spacing: 10,
-        children: [
-          CategoryBar(),
-          isDesktop ? Row(
-            children: [
-              Expanded(child: SliderEds()),
-              Expanded(
-                  flex: 2,
-                  child: Discounts()),
-            ],
-          ):SliderEds(),
-          isDesktop?SizedBox():Discounts()
-        ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          children: [
+            CategoryBar(),
+            Expanded(
+              child: SingleChildScrollView(
+                child: Column(
+                  spacing: 10,
+                  children: [
+                    isDesktop ? Row(
+                      spacing: 12,
+                      children: [
+                        Expanded(child: SliderEds()),
+                        Expanded(
+                            flex: 2,
+                            child: Discounts()),
+                      ],
+                    ):SliderEds(),
+                    isDesktop?SizedBox():Discounts(),
+                    TitleBar(title: tr('forYou'),),
+                    SizedBox(child: AllProducts()),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
