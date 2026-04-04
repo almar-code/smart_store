@@ -1,7 +1,8 @@
 {
   "home": "Home",
   "cart": "Cart",
-  "shopping": "ٍShopping",
+  "cartShopping": "Cart",
+  "shopping": "Shopping",
   "new": "New",
   "reel": "reels",
   "firstHomeWord": "H",
@@ -12,5 +13,11 @@
   "discounts": "Discounts",
   "viewMore": "view more",
   "forYou": "For you",
-  "login": "Login"
+  "login": "Login",
+  "checkout": "Checkout",
+  "discount": "Discount",
+  "subtotal": "Subtotal",
+  "total": "Total",
+  "color": "color",
+  "size": "size"
 }

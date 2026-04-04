@@ -6,11 +6,18 @@
   "reel": "ريلز",
   "firstHomeWord": "الر",
   "secondHomeWord": "ئيسية",
+  "cartShopping": "سلة",
   "shopping": "التسوق",
   "all": "كل الاقسام",
   "searchHere": "إبحث هنا..",
   "discounts": "الخصومات",
   "viewMore": "المزيد",
   "forYou": "لأجلك",
-  "login": "تسجيل الدخول"
+  "login": "تسجيل الدخول",
+  "checkout": "إتمام الدفع",
+  "discount": "الخصم",
+  "subtotal": "الإجمالي",
+  "total": "الصافي",
+  "color": "أللون",
+  "size": "المقاس"
 }
