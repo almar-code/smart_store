@@ -42,7 +42,7 @@ class MainWrapperScreen extends StatelessWidget {
                 key: context.read<NavigationCubit>().scaffoldKey,
                 // الدراور يظهر فقط في الموبايل
                 drawer: isDesktop ? null : const AppDrawer(),
-                floatingActionButton:  CartFloatingButton(),
+
 
 
                 backgroundColor: isDesktop ? Colors.white : Colors.white,

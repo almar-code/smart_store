@@ -10,6 +10,7 @@ import '../../../core/constants/app_icons.dart';
 import '../../../core/widgets/titleBar.dart';
 import '../../widgets/category/category_bar.dart';
 import '../../widgets/discounts/discounts.dart';
+import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../../widgets/product/products.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 
@@ -86,6 +87,7 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
+      floatingActionButton: CartFloatingButton(),
     );
   }
 }
