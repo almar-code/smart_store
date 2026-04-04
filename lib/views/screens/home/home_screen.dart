@@ -13,6 +13,7 @@ import '../../widgets/discounts/discounts.dart';
 import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../../widgets/product/products.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
+import '../../widgets/subcategory/subcategory_bar.dart';
 
 class HomeScreen extends StatelessWidget {
 
@@ -65,7 +66,7 @@ class HomeScreen extends StatelessWidget {
                   padding: const EdgeInsets.only(bottom: 15.0),
                   child: Column(
                     spacing: 10,
-                    children: [
+                    children:[
                       isDesktop ? Row(
                         spacing: 12,
                         children: [
@@ -75,8 +76,9 @@ class HomeScreen extends StatelessWidget {
                               child: Discounts()),
                         ],
                       ):SliderEds(),
+                      isDesktop?SizedBox():SubcategoryBar(),
+                      isDesktop?SubcategoryBar():SizedBox(),
                       isDesktop?SizedBox():Discounts(),
-
                       TitleBar(title: tr('forYou'),),
                       SizedBox(child: AllProducts()),
                     ],
