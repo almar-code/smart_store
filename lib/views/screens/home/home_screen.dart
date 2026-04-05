@@ -14,9 +14,7 @@ import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../../widgets/product/products.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 import '../../widgets/subcategory/subcategory_bar.dart';
-
 class HomeScreen extends StatelessWidget {
-
   const HomeScreen({super.key});
   @override
   Widget build(BuildContext context) {
@@ -27,6 +25,8 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         leading: isDesktop
             ? null
             : DrawerMenuButton(),
@@ -49,6 +49,9 @@ class HomeScreen extends StatelessWidget {
             ),
 
           AppIcon(icon: CupertinoIcons.heart),
+          AppIcon(icon: Icons.dark_mode_outlined,onPressed: (){
+            (context.locale == Locale("ar")) ? context.setLocale(Locale("en")) : context.setLocale(Locale("ar"));
+          },),
           AppIcon(icon: CupertinoIcons.person),
           SizedBox(width: 10),
         ],
@@ -65,7 +68,7 @@ class HomeScreen extends StatelessWidget {
                 child: Padding(
                   padding: const EdgeInsets.only(bottom: 15.0),
                   child: Column(
-                    spacing: 10,
+                    spacing: 8,
                     children:[
                       isDesktop ? Row(
                         spacing: 12,
@@ -76,9 +79,8 @@ class HomeScreen extends StatelessWidget {
                               child: Discounts()),
                         ],
                       ):SliderEds(),
-                      isDesktop?SizedBox():SubcategoryBar(),
-                      isDesktop?SubcategoryBar():SizedBox(),
-                      isDesktop?SizedBox():Discounts(),
+                      if(!isDesktop) SubcategoryBar(),
+                      isDesktop?SubcategoryBar():Discounts(),
                       TitleBar(title: tr('forYou'),),
                       SizedBox(child: AllProducts()),
                     ],

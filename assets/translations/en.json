@@ -19,5 +19,9 @@
   "subtotal": "Subtotal",
   "total": "Total",
   "color": "color",
-  "size": "size"
+  "size": "size",
+  "cart_empty_title": "YOUR CART IS EMPTY",
+  "cart_empty_subtitle": "Sign in to view your cart and start shopping",
+  "sign_in_register": "SIGN IN / REGISTER",
+  "shop_now": "SHOP NOW"
 }
