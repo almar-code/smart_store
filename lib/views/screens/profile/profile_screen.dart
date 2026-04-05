@@ -9,21 +9,19 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) =>  Scaffold(
     appBar: AppBar(
-      title:UserProfileOrLogin(
-        avatarRadius:20,
-        isLoggedIn: false,
-        userName: "Ali Mutahar",
-        userImageUrl: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png", // أو اتركها null للأيقونة
-        onLoginTap: () {
-        },
-        onProfileTap: () {
-        },
-      ),
-      actions: [
-        AppIcon(icon: CupertinoIcons.settings),
+        toolbarHeight: 90, // تحديد نفس ارتفاع الودجيت
+        titleSpacing: 0,
+     title:  UserProfileOrLogin(
+       avatarRadius:20,
+       isLoggedIn: true,
+       userName: "Ali Mutahar",
+       userImageUrl: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png", // أو اتركها null للأيقونة
+       onLoginTap: () {
+       },
+       onProfileTap: () {
+       },
+     )
 
-
-      ],
     ),
       body: Center(child: Text("Profile Page")
       ));
