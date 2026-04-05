@@ -12,47 +12,44 @@ class AppDrawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Drawer(
+
       backgroundColor: AppColors.background,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              UserProfileOrLogin(
-                isLoggedIn: false, // هنا نضع المتغير الحقيقي من الـ Cubit الخاص بك
-                userName: "Ali Mutahar",
-                userImageUrl: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png", // أو اتركها null للأيقونة
-                onLoginTap: () {
-                  // اذهب لصفحة تسجيل الدخول
-                },
-                onProfileTap: () {
-                  // اذهب لصفحة الملف الشخصي
-                },
-              ),
-              IconButton(
-                icon: const Icon(
-                  CupertinoIcons.xmark_seal, // أيقونة السهم بشكل عصري
-                  color: Colors.black,
-                  size: 20,
-                ),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-              ),
-            ],
-          ),
 
-          CategoryBar(),
-          CategoryItem(
-            title: "الإلكترونيات",
-            imagePath: "assets/images/imageedit_1_7845290883.jpg",
-            onTap: () {},
+        children: [
+          Expanded(
+            flex: 0,
+            child: UserProfileOrLogin(
+              isLoggedIn: false,
+              isDrawer:true,
+              userName: "Ali Mutahar",
+              userImageUrl: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
+              onLoginTap: () {
+              },
+              onProfileTap: () {
+              },
+            ),
           ),
-          CategoryItem(
-            title: "الملابس النسائية",
-            imagePath: "assets/images/pexels-rdne-7249734.jpg",
-            onTap: () {},
+          Expanded(flex: 0, child: CategoryBar()),
+          Expanded(
+            flex: 4,
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+
+                CategoryItem(
+                  title: "عبايه رغد ",
+                  imagePath: "assets/images/imageedit_1_7845290883.jpg",
+                  onTap: () {},
+                ),
+                CategoryItem(
+                  title: "الفخامه ",
+                  imagePath: "assets/images/pexels-rdne-7249734.jpg",
+                  onTap: () {},
+                ),
+              ],
+            ),
           ),
         ],
       ),
