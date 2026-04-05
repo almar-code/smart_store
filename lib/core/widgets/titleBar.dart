@@ -14,8 +14,7 @@ class TitleBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: double.infinity,
-      margin: const EdgeInsets.symmetric( vertical: 8),
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 7),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
       decoration: BoxDecoration(
         // استخدام التدرج اللوني يعطي عمقاً فخماً
        color: AppColors.background,

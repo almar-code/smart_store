@@ -8,11 +8,12 @@ class Flasheds extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
     return Shimmer.fromColors(
       baseColor: Colors.grey.shade300,
       highlightColor: Colors.grey.shade100,
       child: Container(
-        height: 200,
+        height: isDesktop ? 185 : 160,
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         decoration: BoxDecoration(
           color: Colors.white,
@@ -133,7 +134,7 @@ class DiscountsShimmer extends StatelessWidget {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
 
     return SizedBox(
-      height: isDesktop ? 170 : 180,
+      height: isDesktop ? 170 : 155,
       child: Shimmer.fromColors(
         baseColor: Colors.grey.shade300,
         highlightColor: Colors.grey.shade100,

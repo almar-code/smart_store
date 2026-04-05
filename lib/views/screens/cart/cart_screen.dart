@@ -26,6 +26,8 @@ class CartScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
+          elevation: 0,
+          scrolledUnderElevation: 0,
         leading:Icon(
           CupertinoIcons.cart,
           color:  AppColors.iconColor,

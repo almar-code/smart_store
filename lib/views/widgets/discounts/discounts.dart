@@ -14,9 +14,9 @@ class Discounts extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     return Column(
+      spacing: 5,
       children: [
         Container(
-          height: 45, // زدنا الارتفاع قليلاً ليناسب الصورة والنص بوضوح
           width: double.infinity,
           decoration: BoxDecoration(
             color: AppColors.background,
@@ -89,7 +89,7 @@ class DiscountsUI extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     return SizedBox(
-      height: isDesktop ? 170 : 180,
+      height: isDesktop ? 170 : 155,
       child: FutureBuilder(
         future: getDiscounts(),
         builder: (context, asyncSnapshot) {

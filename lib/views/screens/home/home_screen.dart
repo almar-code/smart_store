@@ -30,13 +30,13 @@ class HomeScreen extends StatelessWidget {
         leading: isDesktop
             ? null
             : DrawerMenuButton(),
-        titleSpacing:isDesktop?10: 0,
+        titleSpacing:isDesktop ? 10 : 1,
         title: isDesktop
             ?  AppTitle(firstPart: tr('firstHomeWord'),secondPart: tr('secondHomeWord'),fontSize: 20,): Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Logo(),
-            const SizedBox(width: 8),
+            const SizedBox(width: 6),
             AppTitle(),
           ],
         ),

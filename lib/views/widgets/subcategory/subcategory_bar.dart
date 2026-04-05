@@ -11,7 +11,7 @@ class SubcategoryBar extends StatelessWidget {
       30,
           (index) => {
         "name": " جديدة${index + 1}",
-        "image": "assets/images/a${index + 1}.jpg"
+        "image": "assets/images/${index}.jpg"
       },
     );
   }
@@ -31,10 +31,11 @@ class SubcategoryBar extends StatelessWidget {
         int rowCount =(categories.length > 30) ? 2 : 1;
         double height =(categories.length > 30) ? 180 : 83;
         return SizedBox(
-          height: isDesktop ? height : 83, // مهم جدًا
+          height: isDesktop ? height : 70, // مهم جدًا
           child:GridView.builder(
             physics: const BouncingScrollPhysics(),
             scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.only(top: 2),
             itemCount: categories.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
               crossAxisCount: isDesktop ? rowCount : 1, // صفين في اللابتوب - صف في الجوال
@@ -50,7 +51,7 @@ class SubcategoryBar extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.asset(
-                      (index < 11) ? item["image"] :"assets/images/a4.jpg",
+                      (index < 10) ? item["image"] :"assets/images/a4.jpg",
                       width: isDesktop ? 55 : 45,
                       height: isDesktop ? 55 : 45,
                       fit: BoxFit.cover,

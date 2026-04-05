@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 class Logo extends StatelessWidget {
   final double width;
   final double height;
-  Logo({super.key,this.width=30,this.height=30});
+  Logo({super.key,this.width=27,this.height=27});
   @override
   Widget build(BuildContext context) {
     return  Image.asset(
