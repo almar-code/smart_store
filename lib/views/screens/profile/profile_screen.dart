@@ -24,5 +24,6 @@ class ProfileScreen extends StatelessWidget {
 
     ),
       body: Center(child: Text("Profile Page")
-      ));
+      )
+  );
 }

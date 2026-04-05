@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
+import '../../core/constants/app_colors.dart';
 import '../widgets/drawer/drawer.dart';
 import '../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../widgets/navigation/modern_bottom_nav_bar.dart';
@@ -30,7 +31,14 @@ class MainWrapperScreen extends StatelessWidget {
       const ProfileScreen(),
       const FavoritesScreen(),
     ];
-
+    final List<bool> extendBodyPages = [
+      true,  // Reels
+      true,  // New
+      true, // Home (مثلاً فيها nav داخلية)
+      false, // Cart
+      true, // Profile
+      true, // Favorites
+    ];
     return BlocProvider(
       create: (context) => NavigationCubit(),
       child: BlocBuilder<NavigationCubit, int>(
@@ -39,13 +47,14 @@ class MainWrapperScreen extends StatelessWidget {
             builder: (context, constraints) {
               bool isDesktop = constraints.maxWidth > 800;
               return Scaffold(
+                extendBody: extendBodyPages[currentIndex],
                 key: context.read<NavigationCubit>().scaffoldKey,
+
                 // الدراور يظهر فقط في الموبايل
                 drawer: isDesktop ? null : const AppDrawer(),
 
 
-
-                backgroundColor: isDesktop ? Colors.white : Colors.white,
+                // backgroundColor: AppColors.background,
                 body: Row(
                   children: [
                     if (isDesktop)
@@ -73,11 +82,12 @@ class MainWrapperScreen extends StatelessWidget {
 
                 // --- استخدام كلاس الجوال المنفصل ---
                 bottomNavigationBar: isDesktop
-                    ?  SizedBox.shrink()
+                    ?  SizedBox()
                     : ModernBottomNavBar(
                   currentIndex: currentIndex,
                   onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
                 ),
+
               );
             },
           );

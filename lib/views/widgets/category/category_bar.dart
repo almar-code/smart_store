@@ -51,7 +51,7 @@ class CategoryBar extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       physics: const BouncingScrollPhysics(),
                       child: Row(
-                        spacing: 6,
+                        spacing: 8,
                         children: [
                           ...categories.map((item) => _buildInkWellItem(context, item["cate_name"])).toList(),
                         ],
@@ -84,7 +84,7 @@ class CategoryBar extends StatelessWidget {
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
       alignment: Alignment.center,
       decoration: BoxDecoration(
-        color: AppColors.background,
+        color: AppColors.backgroundSecondary,
         borderRadius: BorderRadius.circular(5), // حواف دائرية خفيفة
         boxShadow: AppShadow.commonShadow,
         border: Border.all(color: Colors.grey.withOpacity(0.1)), // إطار خفيف جداً

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 import 'package:smart_store/core/widgets/search/app_search.dart';
 import 'package:smart_store/core/widgets/app_title.dart';
@@ -7,22 +8,28 @@ import 'package:smart_store/core/widgets/icons/app_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:easy_localization/easy_localization.dart';
 import '../../../core/constants/app_icons.dart';
+import '../../../core/theme/bloc/theme_bloc.dart';
+import '../../../core/theme/bloc/theme_event.dart';
 import '../../../core/widgets/titleBar.dart';
+import '../../../logic/navigation/navigation_cubit.dart';
 import '../../widgets/category/category_bar.dart';
 import '../../widgets/discounts/discounts.dart';
 import '../../widgets/floatingActionButton/cartFloatingButton.dart';
+import '../../widgets/navigation/modern_bottom_nav_bar.dart';
 import '../../widgets/product/products.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 import '../../widgets/subcategory/subcategory_bar.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
+
+  get currentIndex => null;
   @override
   Widget build(BuildContext context) {
     // استخدام MediaQuery هنا يضمن تحديث الواجهة فوراً عند تصغير المتصفح
     bool isDesktop = MediaQuery.of(context).size.width > 800;
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
@@ -49,8 +56,8 @@ class HomeScreen extends StatelessWidget {
             ),
 
           AppIcon(icon: CupertinoIcons.heart),
-          AppIcon(icon: Icons.dark_mode_outlined,onPressed: (){
-            (context.locale == Locale("ar")) ? context.setLocale(Locale("en")) : context.setLocale(Locale("ar"));
+          AppIcon(icon:  AppColors.isDark ? Icons.wb_sunny_outlined : Icons.dark_mode_outlined,onPressed: (){
+            context.read<ThemeBloc>().add(ToggleThemeEvent());
           },),
           AppIcon(icon: CupertinoIcons.person),
           SizedBox(width: 10),
@@ -91,7 +98,10 @@ class HomeScreen extends StatelessWidget {
           ],
         ),
       ),
-      floatingActionButton: CartFloatingButton(),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(bottom: 80),
+        child: CartFloatingButton(),
+      ),
     );
   }
 }

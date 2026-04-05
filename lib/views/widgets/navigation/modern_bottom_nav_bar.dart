@@ -18,15 +18,15 @@ class ModernBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin:  EdgeInsets.fromLTRB(16, 0, 16, 25),
-      padding:  EdgeInsets.only(top: 5),
+      margin:  EdgeInsets.only(bottom: 14,left: 14,right: 14),
+      // padding:  EdgeInsets.only(top: 5),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.95),
+        color: AppColors.background,
         // إضافة انحناء كامل للحواف
-        borderRadius: BorderRadius.circular(25),
+        borderRadius: BorderRadius.circular(20),
         // حدود خفيفة جداً لتعريف الشكل
         border: Border.all(
-          color: Colors.grey.shade200.withOpacity(0.5),
+          color: Colors.transparent,
           width: 1,
         ),
         boxShadow: [
@@ -43,6 +43,7 @@ class ModernBottomNavBar extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         backgroundColor: Colors.transparent,
         elevation: 0,
+
         selectedItemColor: AppColors.primary,
         unselectedItemColor: AppColors.iconColor,
         selectedFontSize: 12,

@@ -75,7 +75,7 @@ class UserProfileOrLogin extends StatelessWidget {
           isDrawer?
           IconButton(
             alignment: Alignment.topRight,
-            icon: const Icon(
+            icon:  Icon(
               CupertinoIcons.xmark_square_fill,
               color: AppColors.primary,
               size: 22,
