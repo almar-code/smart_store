@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
+import '../../../core/constants/app_shadow.dart';
 import '../../../core/widgets/app_logo.dart';
+import '../../../core/widgets/itemCount.dart';
 
 class ModernSideRail extends StatefulWidget {
   final int currentIndex;
@@ -81,12 +83,27 @@ class _ModernSideRailState extends State<ModernSideRail> {
                       size: 21,
                     ),
                     _buildMenuItem(2, Icons.home_outlined, Icons.home, tr('home')),
-                    _buildMenuItem(
-                      3,
-                      CupertinoIcons.cart,
-                      CupertinoIcons.cart_fill,
-                      tr('cart'),
-                      size: 19,
+                    Badge(
+                      alignment: Alignment.topCenter,
+                      backgroundColor: Colors.transparent,
+                      isLabelVisible:isExpanded ?true:false ,
+                      label: Container(
+                        margin:  EdgeInsets.only(top: 30),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(7),
+                          boxShadow: AppShadow.commonShadow,
+                        ),
+                        padding: EdgeInsets.symmetric(horizontal:7),
+                        child: ItemCount(color:Colors.white,fontSize: 8,),
+                      ),
+                      child: _buildMenuItem(
+                        3,
+                        CupertinoIcons.cart,
+                        CupertinoIcons.cart_fill,
+                        tr('cart'),
+                        size: 19,
+                      ),
                     ),
                     _buildMenuItem(
                       4,
@@ -170,12 +187,19 @@ class _ModernSideRailState extends State<ModernSideRail> {
           child: Row(
             mainAxisSize: MainAxisSize.max, // 🔥 مهم
             children: [
-              SizedBox(
-                width: 48,
-                child: Icon(
-                  isSelected ? activeIcon : icon,
-                  size: size,
-                  color: isSelected ? AppColors.primary : AppColors.iconColor,
+              Badge(
+                isLabelVisible:(index == 3 ) ?true:false ,
+                backgroundColor: Colors.transparent,
+                alignment: Alignment.topRight,
+                padding: EdgeInsets.only(bottom: 13,right: 15 ),
+                label:isExpanded ? SizedBox() : ItemCount(fontSize: 11,),
+                child: SizedBox(
+                  width: 48,
+                  child: Icon(
+                    isSelected ? activeIcon : icon,
+                    size: size,
+                    color: isSelected ? AppColors.primary : AppColors.iconColor,
+                  ),
                 ),
               ),
 

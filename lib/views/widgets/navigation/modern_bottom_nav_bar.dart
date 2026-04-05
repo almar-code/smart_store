@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../core/widgets/itemCount.dart';
+
 class ModernBottomNavBar extends StatelessWidget {
   final int currentIndex;
   final Function(int) onTap;
@@ -62,7 +64,12 @@ class ModernBottomNavBar extends StatelessWidget {
             activeIcon: Icon(CupertinoIcons.house_fill, size: 26),
             label: 'home'.tr()),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.cart, size: 22),
+            icon: Badge(
+                backgroundColor: Colors.transparent,
+                alignment: Alignment.topRight,
+                padding: EdgeInsets.only(bottom: 13,left: 8),
+                label: ItemCount(fontSize: 11,),
+                child: Icon(CupertinoIcons.cart, size: 22)),
             activeIcon: Icon(CupertinoIcons.cart_fill, size: 26),
             label: 'cart'.tr(),
           ),
