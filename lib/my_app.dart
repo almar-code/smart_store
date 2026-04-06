@@ -46,9 +46,9 @@ class MyApp extends StatelessWidget {
             ),
           ),
 
-          home:  MainWrapperScreen(),
+          home: MainWrapperScreen(),
         );
-      },
-    );
-  }
+      }
+        );
+      }
 }
