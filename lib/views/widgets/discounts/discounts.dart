@@ -36,7 +36,7 @@ class Discounts extends StatelessWidget {
                 children: [
                   // الصورة المصغرة
                   Image.asset(
-                    'assets/images/discount.jpg',
+                    'assets/images/discount.png',
                     height: isDesktop?28:20,
                     width: isDesktop?28:20,
                     fit: BoxFit.contain,
@@ -146,7 +146,7 @@ class DiscountsUI extends StatelessWidget {
                 height: 130,
                 margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                 decoration: BoxDecoration(
-                  color: AppColors.background,
+                  color: AppColors.backgroundSecondary,
                   borderRadius: BorderRadius.circular(7),
                   boxShadow: AppShadow.commonShadow,
                 ),

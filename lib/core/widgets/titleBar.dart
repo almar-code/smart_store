@@ -19,17 +19,11 @@ class TitleBar extends StatelessWidget {
         // استخدام التدرج اللوني يعطي عمقاً فخماً
        color: AppColors.background,
         borderRadius: BorderRadius.circular(7), // حواف أكثر انحناءً للمسة عصرية
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 15,
-            offset: const Offset(0, 5),
-          ),
-          ...AppShadow.commonShadow, // دمج ظلالك الخاصة
-        ],
+        boxShadow:AppShadow.commonShadow, // دمج ظلالك الخاصة
+
         border: Border.all(
-          color: Colors.white.withOpacity(0.2), // إطار مضيء خفيف (Inner Glow)
-          width: 1.5,
+          color:AppColors.borderColor, // إطار مضيء خفيف (Inner Glow)
+          width: 1,
         ),
       ),
       child: Row(
@@ -47,7 +41,7 @@ class TitleBar extends StatelessWidget {
           const SizedBox(width: 9),
           Text(
             title,
-            style: const TextStyle(
+            style:  TextStyle(
               fontSize: 12,
               fontWeight: FontWeight.bold,
               letterSpacing: 0.5,

@@ -13,11 +13,12 @@ class CartFloatingButton extends StatelessWidget {
       width: 50,
       height: 50,
       child: FloatingActionButton(
+
         onPressed: () {
         },
         splashColor: Colors.transparent,
         hoverElevation: 4,
-        backgroundColor: Colors.white,
+        backgroundColor:AppColors.background.withOpacity(0.9),
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Stack(

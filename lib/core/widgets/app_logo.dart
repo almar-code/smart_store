@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+
+import '../constants/app_colors.dart';
 class Logo extends StatelessWidget {
   final double width;
   final double height;
@@ -6,7 +8,7 @@ class Logo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Image.asset(
-      'assets/images/logo.png',
+      AppColors.isDark ? 'assets/images/ligth-mode-logo.gif' : 'assets/images/logo.png',
       width: width ,
       height: height,
       fit: BoxFit.contain,

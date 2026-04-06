@@ -10,7 +10,7 @@ class ViewMoreText extends StatelessWidget {
   const ViewMoreText({
     super.key,
     this.fontSize = 12, // القيمة الافتراضية 12
-    this.color =  AppColors.textColor,
+    this.color,
   });
 
   @override
@@ -19,7 +19,7 @@ class ViewMoreText extends StatelessWidget {
       tr('viewMore'),
       style: TextStyle(
         fontSize: fontSize,
-        color: color,
+        color: color ?? AppColors.textColor,
         fontWeight: FontWeight.bold,
       ),
     );

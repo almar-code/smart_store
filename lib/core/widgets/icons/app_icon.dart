@@ -4,10 +4,10 @@ import 'package:flutter/material.dart';
 import '../../constants/app_colors.dart';
 class AppIcon extends StatelessWidget {
   final IconData icon;
-  final Color color;
+  final Color? color;
   final double size;
   final VoidCallback? onPressed;
-  AppIcon({super.key,required this.icon,this.color=AppColors.iconColor,this.size=20,this.onPressed});
+  AppIcon({super.key,required this.icon,this.color,this.size=20,this.onPressed});
 
   @override
   Widget build(BuildContext context) {
@@ -19,13 +19,13 @@ class AppIcon extends StatelessWidget {
         width: isDesktop ? 40 : 30,
         height: isDesktop ? 40 : 30,
         decoration: BoxDecoration(
-          color: Colors.grey[100],
+          color: AppColors.backgroundSecondary,
           shape: BoxShape.circle,
         ),
         child: IconButton(
           icon:  Icon(
             icon,
-            color:color,
+            color:color ?? AppColors.iconColor,
             size: finalSize,
           ),
           onPressed: onPressed,
@@ -43,7 +43,7 @@ class ArrowForwardIcon extends StatelessWidget {
   const ArrowForwardIcon({
     super.key,
     this.size = 11,
-    this.color =AppColors.primary,
+    this.color,
   });
 
   @override
@@ -51,7 +51,7 @@ class ArrowForwardIcon extends StatelessWidget {
     return Icon(
       Icons.arrow_forward_ios,
       size: size,
-      color: color,
+      color: color ?? AppColors.primary,
     );
   }
 }

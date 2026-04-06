@@ -141,7 +141,7 @@ class CartScreen extends StatelessWidget {
                                     ),
                                     const SizedBox(height: 10),
                                     ///  السعر
-                                    const Text(
+                                    Text(
                                       "230 \$",
                                       style: TextStyle(
                                         fontSize: 14,
@@ -196,7 +196,7 @@ class CartScreen extends StatelessWidget {
         height:  isDesktop ? 55 : 85,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.background,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withOpacity(0.05),

@@ -32,11 +32,11 @@ class AllProducts extends StatelessWidget {
         return Container(
           padding: EdgeInsets.only(bottom: 10),
           decoration: BoxDecoration(
-            color: AppColors.background,
+            color: AppColors.backgroundSecondary,
             borderRadius: BorderRadius.circular(7),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withOpacity(0.05),
+                color: AppColors.boxShadow,
                 blurRadius: 15,
                 offset: const Offset(0, 5),
               ),
@@ -61,7 +61,7 @@ class AllProducts extends StatelessWidget {
 
                   //  اللوان المنتج
                   Positioned(
-                    top: 7,
+                    top: 3,
                     right: 7,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 2,horizontal: 2,),
@@ -69,25 +69,22 @@ class AllProducts extends StatelessWidget {
                         color: Colors.black.withOpacity(0.3),
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Row(
+                      child: Column(
                         spacing: 5,
                         children: [
-                          Row(
-                            spacing: 5,
-                            children: [
-                              (item['colors'].length <= 3) ? SizedBox() : Text(
-                                "+${item['colors'].length-3}",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              ...item['colors'].take(3).map((color){
-                                return CircleOfColor(code: color['code'],width: isDesktop ? 17 :15,height: isDesktop ? 17 :15);}).toList(),
-                            ],
+
+                          ...item['colors'].take(3).map((color){
+                            return CircleOfColor(code: color['code'],width: isDesktop ? 14 :12,height: isDesktop ? 14 :12);}).toList(),
+                          (item['colors'].length <= 3) ? SizedBox() : Text(
+                            "+${item['colors'].length-3}",
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: isDesktop ? 10 :9,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ],
+
                       ),
                     ),
                   ),
@@ -191,8 +188,9 @@ class AllProducts extends StatelessWidget {
                       ],
                     ),
                     Card(
-                      color: AppColors.background,
+                      color: AppColors.backgroundSecondary,
                       shape: RoundedRectangleBorder(
+                        side: BorderSide(color: AppColors.borderColor.withOpacity(0.1)),
                         borderRadius: BorderRadius.circular(5.0),
                       ),
                       child: Padding(

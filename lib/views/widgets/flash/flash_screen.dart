@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:shimmer/shimmer.dart';
 
+import '../../../core/constants/app_colors.dart';
+
 
 class Flasheds extends StatelessWidget {
   const Flasheds({super.key});
@@ -10,13 +12,13 @@ class Flasheds extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     return Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
+      baseColor: AppColors.baseColor,
+      highlightColor: AppColors.highlightColor,
       child: Container(
         height: isDesktop ? 185 : 160,
         margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: AppColors.backgroundSecondary,
           borderRadius: BorderRadius.circular(16),
         ),
       ),
@@ -34,8 +36,8 @@ class Flashsubcategory extends StatelessWidget {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
 
     return Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
+      baseColor: AppColors.baseColor,
+      highlightColor: AppColors.highlightColor,
       child:SizedBox(
         height: 80, // مهم جدًا
         child:GridView.builder(
@@ -55,7 +57,7 @@ class Flashsubcategory extends StatelessWidget {
                   width: isDesktop ? 55 : 45,
                   height: isDesktop ? 55 : 45,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: AppColors.backgroundSecondary,
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
@@ -64,7 +66,7 @@ class Flashsubcategory extends StatelessWidget {
                   width: 40,
                   height: 10,
                   decoration: BoxDecoration(
-                    color: Colors.grey.shade300,
+                    color: AppColors.backgroundSecondary,
                     borderRadius: BorderRadius.circular(5),
                   ),
                 )
@@ -84,8 +86,8 @@ class CategoryBarShimmer extends StatelessWidget {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
 
     return Shimmer.fromColors(
-      baseColor: Colors.grey.shade300,
-      highlightColor: Colors.grey.shade100,
+      baseColor: AppColors.baseColor,
+      highlightColor: AppColors.highlightColor,
       child: Container(
         height: 34,
         padding: const EdgeInsets.symmetric(vertical: 6),
@@ -119,7 +121,7 @@ class CategoryBarShimmer extends StatelessWidget {
       width: isDesktop ? 60 : 45,
       height: 17,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.backgroundSecondary,
         borderRadius: BorderRadius.circular(5),
       ),
     );
@@ -136,8 +138,8 @@ class DiscountsShimmer extends StatelessWidget {
     return SizedBox(
       height: isDesktop ? 170 : 155,
       child: Shimmer.fromColors(
-        baseColor: Colors.grey.shade300,
-        highlightColor: Colors.grey.shade100,
+        baseColor: AppColors.baseColor,
+        highlightColor: AppColors.highlightColor,
         child: ListView.builder(
           scrollDirection: Axis.horizontal,
           itemCount: 10,
@@ -146,7 +148,7 @@ class DiscountsShimmer extends StatelessWidget {
               width: isDesktop ? 125 : 100,
               margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AppColors.backgroundSecondary,
                 borderRadius: BorderRadius.circular(7),
               ),
               child: Column(
@@ -155,8 +157,8 @@ class DiscountsShimmer extends StatelessWidget {
                   // 🔲 صورة المنتج (Skeleton)
                   Container(
                     height: isDesktop ? 130 : 120,
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
+                    decoration:  BoxDecoration(
+                      color: AppColors.backgroundSecondary,
                       borderRadius: BorderRadius.vertical(
                         top: Radius.circular(7),
                       ),
@@ -188,7 +190,7 @@ class DiscountsShimmer extends StatelessWidget {
       width: width,
       height: 10,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.backgroundSecondary,
         borderRadius: BorderRadius.circular(4),
       ),
     );
@@ -211,11 +213,11 @@ class MasonryGridShimmer extends StatelessWidget {
       itemCount: 6,
       itemBuilder: (context, index) {
         return Shimmer.fromColors(
-          baseColor: Colors.grey.shade300,
-          highlightColor: Colors.grey.shade100,
+          baseColor: AppColors.baseColor,
+          highlightColor: AppColors.highlightColor,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: AppColors.backgroundSecondary,
               borderRadius: BorderRadius.circular(7),
             ),
             child: Stack(
@@ -230,7 +232,7 @@ class MasonryGridShimmer extends StatelessWidget {
                         width: 100,
                         height: 100,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: AppColors.backgroundSecondary,
                           borderRadius: BorderRadius.circular(7),
                         ),
                       ),
@@ -260,7 +262,7 @@ class MasonryGridShimmer extends StatelessWidget {
                                   width: 12,
                                   height: 12,
                                   decoration: BoxDecoration(
-                                    color: Colors.white,
+                                    color: AppColors.backgroundSecondary,
                                     shape: BoxShape.circle,
                                   ),
                                 ),
@@ -285,7 +287,7 @@ class MasonryGridShimmer extends StatelessWidget {
                     height: 32,
                     width: 90,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: AppColors.backgroundSecondary,
                       borderRadius: BorderRadius.circular(8),
                     ),
                   ),
@@ -303,7 +305,7 @@ class MasonryGridShimmer extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.backgroundSecondary,
         borderRadius: BorderRadius.circular(4),
       ),
     );

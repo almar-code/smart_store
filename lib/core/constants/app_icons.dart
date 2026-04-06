@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../logic/navigation/navigation_cubit.dart';
+import 'app_colors.dart';
 class SocialIcon extends StatefulWidget {
   final IconData icon;
   final Color color;
@@ -47,7 +48,7 @@ class DrawerMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.menu, color: Colors.black,size: 20,),
+      icon:  Icon(Icons.menu, color: AppColors.iconColor,size: 20,),
       onPressed: () {
         // استدعاء دالة فتح الدراور من الكوبيت مباشرة
         context.read<NavigationCubit>().openDrawer();
