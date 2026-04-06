@@ -15,6 +15,8 @@ void main() async {
       path: 'assets/translations',
       fallbackLocale: const Locale('ar'),
       startLocale: const Locale('en'),
+      saveLocale: true,
+      // startLocale: const Locale('en'),
       child: BlocProvider(
         create: (_) => ThemeBloc(),
         child: const MyApp(),

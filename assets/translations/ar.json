@@ -11,10 +11,22 @@
   "all": "كل الاقسام",
   "searchHere": "إبحث هنا..",
   "login": "تسجيل الدخول",
-  "log out": "تسجيل خروج",
+  "logout": "تسجيل خروج",
   "username": "لا يوجد اسم مستخدم..؟",
   "discounts": "الخصومات",
   "viewMore": "المزيد",
+  "application language": "اختر لغة التطبيق",
+  "choose language": "يرجى اختيار لغة الواجهة التي تفضلها لاستخدام التطبيق",
+  "cancel": "الغاء",
+  "order management": "إدارة الأوامر",
+  "shopping cart": "سلة الشراء",
+  "favorites": "المفضلة",
+  "messages": "الرسائل",
+  "my size": "مقاسي",
+  "help center": "مركز التعليمات",
+  "language": "لغة التطبيق",
+  "country": "البلد",
+  "currency": "العملة"
   "forYou": "لأجلك",
   "checkout": "إتمام الدفع",
   "discount": "الخصم",
@@ -26,4 +38,5 @@
   "cart_empty_subtitle": "سجل الدخول لعرض سلتك وابدأ التسوق",
   "sign_in_register": "تسجيل / إنشاء حساب",
   "shop_now": "تسوق الآن"
+
 }
