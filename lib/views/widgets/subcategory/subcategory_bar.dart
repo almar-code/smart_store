@@ -7,7 +7,7 @@ class SubcategoryBar extends StatelessWidget {
   Future<List<Map<String, dynamic>>> getCategories() async {
     await Future.delayed(const Duration(seconds: 3));
     return List.generate(
-      30,
+      11,
           (index) => {
         "name": "فئة جديدة ${index + 1}",
         "image": "assets/images/a${index + 1}.jpg"

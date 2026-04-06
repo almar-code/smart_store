@@ -10,9 +10,9 @@ void main() async {
       supportedLocales: [Locale('en'), Locale('ar')],
       path: 'assets/translations',
       fallbackLocale: const Locale('ar'),
-      startLocale: const Locale('en'),
-      // startLocale: const Locale('ar'),
-      child:  MyApp(),
+        // startLocale: const Locale('en'),
+        saveLocale: true,
+      child: MyApp()
     ),
   );
 }

@@ -7,11 +7,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      localizationsDelegates: context.localizationDelegates,
-      supportedLocales: context.supportedLocales,
+      // key: ValueKey(context.locale), // مهم لإعادة البناء عند تغيير اللغة
       locale: context.locale,
-      home: MainWrapperScreen(), // الشاشة التي تحتوي على الـ BottomNav
+      supportedLocales: context.supportedLocales,
+      localizationsDelegates: context.localizationDelegates,
+      home: MainWrapperScreen(),
     );
   }
 }
