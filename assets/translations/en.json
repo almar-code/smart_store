@@ -10,9 +10,22 @@
   "all": "All Categories",
   "searchHere": "search here...",
   "login": "Login",
-  "log out": "log out",
-  "username": "No User Name..?"
+  "logout": "Logout",
+  "username": "No User Name..?",
   "discounts": "Discounts",
   "viewMore": "view more",
-  
+  "application language": "choose the application language",
+  "choose language": "please choose interface language you prefer to use the application",
+  "cancel": "cancel",
+  "order management": "Order Management",
+  "shopping cart": "Shopping Cart",
+  "favorites": "Favorite Items",
+  "messages": "Messages",
+  "my size": "My Size",
+  "help center": "Help Center",
+  "language": "Application Language",
+  "country": "Country",
+  "currency": "Currency"
+
+
 }

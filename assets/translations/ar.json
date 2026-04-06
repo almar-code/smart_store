@@ -10,8 +10,21 @@
   "all": "كل الاقسام",
   "searchHere": "إبحث هنا..",
   "login": "تسجيل الدخول",
-  "log out": "تسجيل خروج",
-  "username": "لا يوجد اسم مستخدم..؟"
+  "logout": "تسجيل خروج",
+  "username": "لا يوجد اسم مستخدم..؟",
   "discounts": "الخصومات",
   "viewMore": "المزيد",
+  "application language": "اختر لغة التطبيق",
+  "choose language": "يرجى اختيار لغة الواجهة التي تفضلها لاستخدام التطبيق",
+  "cancel": "الغاء",
+  "order management": "إدارة الأوامر",
+  "shopping cart": "سلة الشراء",
+  "favorites": "المفضلة",
+  "messages": "الرسائل",
+  "my size": "مقاسي",
+  "help center": "مركز التعليمات",
+  "language": "لغة التطبيق",
+  "country": "البلد",
+  "currency": "العملة"
+
 }
