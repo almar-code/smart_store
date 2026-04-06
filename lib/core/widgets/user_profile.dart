@@ -89,7 +89,7 @@ class UserProfileOrLogin extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  isLoggedIn? "log out".tr():"login".tr(),
+            isLoggedIn? "logout".tr():"login".tr(),
                   style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold,),
                 ),
                 SizedBox(width: 5),
