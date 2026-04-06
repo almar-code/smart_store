@@ -47,7 +47,7 @@ class DrawerMenuButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return IconButton(
-      icon: const Icon(Icons.menu, color: Colors.black),
+      icon: const Icon(Icons.menu, color: Colors.black,size: 20,),
       onPressed: () {
         // استدعاء دالة فتح الدراور من الكوبيت مباشرة
         context.read<NavigationCubit>().openDrawer();

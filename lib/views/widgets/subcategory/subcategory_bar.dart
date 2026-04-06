@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../flash/flash_screen.dart';
 
 class SubcategoryBar extends StatelessWidget {
@@ -9,8 +10,8 @@ class SubcategoryBar extends StatelessWidget {
     return List.generate(
       11,
           (index) => {
-        "name": "فئة جديدة ${index + 1}",
-        "image": "assets/images/a${index + 1}.jpg"
+        "name": " جديدة${index + 1}",
+        "image": "assets/images/${index}.jpg"
       },
     );
   }
@@ -19,31 +20,28 @@ class SubcategoryBar extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
 
-    return SizedBox(
-      height: (isDesktop)?null:85,
-      child: FutureBuilder<List<Map<String, dynamic>>>(
-        future: getCategories(),
-        builder: (context, snapshot) {
-          final categories = snapshot.data ?? [];
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: getCategories(),
+      builder: (context, snapshot) {
+        final categories = snapshot.data ?? [];
 
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return Flashsubcategory();
-          }
-
-          return GridView.builder(
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Flashsubcategory();
+        }
+        int rowCount =(categories.length > 30) ? 2 : 1;
+        double height =(categories.length > 30) ? 180 : 83;
+        return SizedBox(
+          height: isDesktop ? height : 70, // مهم جدًا
+          child:GridView.builder(
             physics: const BouncingScrollPhysics(),
-            // السر هنا: في الكمبيوتر نخليه رأسي عشان ينزل سطر جديد، وفي الجوال أفقي
-            scrollDirection: isDesktop ? Axis.vertical : Axis.horizontal,
-            // تفعيل shrinkWrap لكي يأخذ الجريد مساحة عناصره فقط في الكمبيوتر
-            shrinkWrap: isDesktop,
+            scrollDirection: Axis.horizontal,
+            padding: EdgeInsets.only(top: 2),
             itemCount: categories.length,
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              // في الكمبيوتر: 13 عنصر في السطر | في الجوال: سطر واحد فقط
-              crossAxisCount: isDesktop ? 13 : 1,
-              mainAxisSpacing: 2,
-              crossAxisSpacing: isDesktop?10:0,
-              // التحكم في عرض/ارتفاع العنصر
-              mainAxisExtent: isDesktop ? 110 : 70,
+              crossAxisCount: isDesktop ? rowCount : 1, // صفين في اللابتوب - صف في الجوال
+              mainAxisSpacing: 8,
+              crossAxisSpacing: 8,
+              mainAxisExtent: isDesktop ? 80 : 55, // عرض العنصر
             ),
             itemBuilder: (context, index) {
               final item = categories[index];
@@ -53,9 +51,9 @@ class SubcategoryBar extends StatelessWidget {
                   ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Image.asset(
-                      item["image"],
-                      width: 55,
-                      height: 55,
+                      (index < 10) ? item["image"] :"assets/images/a4.jpg",
+                      width: isDesktop ? 55 : 45,
+                      height: isDesktop ? 55 : 45,
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -64,8 +62,8 @@ class SubcategoryBar extends StatelessWidget {
                     child: Text(
                       item["name"],
                       maxLines: 2,
-                      style: const TextStyle(
-                        fontSize: 11,
+                      style:  TextStyle(
+                        fontSize:  isDesktop ? 11 : 9,
                         fontWeight: FontWeight.bold,
 
                       ),
@@ -74,9 +72,9 @@ class SubcategoryBar extends StatelessWidget {
                 ],
               );
             },
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 }

@@ -10,12 +10,11 @@ import '../../../core/constants/app_icons.dart';
 import '../../../core/widgets/titleBar.dart';
 import '../../widgets/category/category_bar.dart';
 import '../../widgets/discounts/discounts.dart';
+import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../../widgets/product/products.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 import '../../widgets/subcategory/subcategory_bar.dart';
-
 class HomeScreen extends StatelessWidget {
-
   const HomeScreen({super.key});
   @override
   Widget build(BuildContext context) {
@@ -26,16 +25,18 @@ class HomeScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         leading: isDesktop
             ? null
             : DrawerMenuButton(),
-        titleSpacing:isDesktop?10: 0,
+        titleSpacing:isDesktop ? 10 : 1,
         title: isDesktop
             ?  AppTitle(firstPart: tr('firstHomeWord'),secondPart: tr('secondHomeWord'),fontSize: 20,): Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             Logo(),
-            const SizedBox(width: 8),
+            const SizedBox(width: 6),
             AppTitle(),
           ],
         ),
@@ -48,6 +49,9 @@ class HomeScreen extends StatelessWidget {
             ),
 
           AppIcon(icon: CupertinoIcons.heart),
+          AppIcon(icon: Icons.dark_mode_outlined,onPressed: (){
+            (context.locale == Locale("ar")) ? context.setLocale(Locale("en")) : context.setLocale(Locale("ar"));
+          },),
           AppIcon(icon: CupertinoIcons.person),
           SizedBox(width: 10),
         ],
@@ -61,30 +65,33 @@ class HomeScreen extends StatelessWidget {
             CategoryBar(),
             Expanded(
               child: SingleChildScrollView(
-                child: Column(
-                  spacing: 10,
-                  children: [
-                    isDesktop ? Row(
-                      spacing: 12,
-                      children: [
-                        Expanded(child: SliderEds()),
-                        Expanded(
-                            flex: 2,
-                            child: Discounts()),
-                      ],
-                    ):SliderEds(),
-                    isDesktop?SizedBox():SubcategoryBar(),
-                    isDesktop?SubcategoryBar():SizedBox(),
-                    isDesktop?SizedBox():Discounts(),
-                    TitleBar(title: tr('forYou'),),
-                    SizedBox(child: AllProducts()),
-                  ],
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 15.0),
+                  child: Column(
+                    spacing: 8,
+                    children:[
+                      isDesktop ? Row(
+                        spacing: 12,
+                        children: [
+                          Expanded(child: SliderEds()),
+                          Expanded(
+                              flex: 2,
+                              child: Discounts()),
+                        ],
+                      ):SliderEds(),
+                      if(!isDesktop) SubcategoryBar(),
+                      isDesktop?SubcategoryBar():Discounts(),
+                      TitleBar(title: tr('forYou'),),
+                      SizedBox(child: AllProducts()),
+                    ],
+                  ),
                 ),
               ),
             ),
           ],
         ),
       ),
+      floatingActionButton: CartFloatingButton(),
     );
   }
 }

@@ -31,6 +31,7 @@ class _SliderEdsState extends State<SliderEds> {
   }
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
     // إذا كان في حالة تحميل، نعرض مربعاً يلمع بنفس أبعاد السلايدر
     if (_isLoading) {
       return Flasheds();
@@ -40,7 +41,7 @@ class _SliderEdsState extends State<SliderEds> {
     return SizedBox(
       child: CarouselSlider(
         options: CarouselOptions(
-          height: 200,
+          height: isDesktop ? 185 : 160,
           autoPlay: true,
           autoPlayInterval: const Duration(seconds: 3),
           enlargeCenterPage: true,

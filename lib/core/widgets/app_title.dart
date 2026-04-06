@@ -5,8 +5,9 @@ class AppTitle extends StatelessWidget {
   final String firstPart ;
   final String secondPart;
   final double fontSize;
+  final String spacing;
 
-  AppTitle({super.key,this.firstPart="N",this.secondPart="ice",this.fontSize=17});
+  AppTitle({super.key,this.firstPart="N",this.secondPart="ice",this.fontSize=17,this.spacing=''});
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +23,7 @@ class AppTitle extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          TextSpan(text: spacing),
           TextSpan(
             text: secondPart,
             style: TextStyle(

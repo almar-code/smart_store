@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../core/constants/app_shadow.dart';
 import '../../../core/widgets/circularProgress.dart';
 import '../../../core/constants/app_colors.dart';
+import '../flash/flash_screen.dart';
 class CategoryBar extends StatelessWidget {
   const CategoryBar({super.key});
 
@@ -24,8 +25,11 @@ class CategoryBar extends StatelessWidget {
       child: FutureBuilder(
         future: getData(),
         builder: (context, snapshot) {
+          // if (snapshot.connectionState == ConnectionState.waiting) {
+          //   return Center(child: CircularProgress(size: (isDesktop)?20:15));
+          // }
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgress(size: (isDesktop)?20:15));
+            return CategoryBarShimmer();
           }
 
           final List<Map<String, dynamic>> categories = List.generate(

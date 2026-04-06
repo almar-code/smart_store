@@ -6,6 +6,7 @@
   "reel": "ريلز",
   "firstHomeWord": "الر",
   "secondHomeWord": "ئيسية",
+  "cartShopping": "سلة",
   "shopping": "التسوق",
   "all": "كل الاقسام",
   "searchHere": "إبحث هنا..",
@@ -26,5 +27,16 @@
   "language": "لغة التطبيق",
   "country": "البلد",
   "currency": "العملة"
+  "forYou": "لأجلك",
+  "checkout": "إتمام الدفع",
+  "discount": "الخصم",
+  "subtotal": "الإجمالي",
+  "total": "الصافي",
+  "color": "أللون",
+  "size": "المقاس",
+  "cart_empty_title": "سلة التسوق فارغة",
+  "cart_empty_subtitle": "سجل الدخول لعرض سلتك وابدأ التسوق",
+  "sign_in_register": "تسجيل / إنشاء حساب",
+  "shop_now": "تسوق الآن"
 
 }

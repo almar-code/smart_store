@@ -5,17 +5,13 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_shadow.dart';
-class AllProducts extends StatefulWidget {
+import '../../../core/widgets/colors/circleOfColor.dart';
+class AllProducts extends StatelessWidget {
    final int? subCategoryID;
    final int? productID;
    final bool showAddToCart ;
   const AllProducts({super.key,this.subCategoryID,this.productID,this.showAddToCart=false});
 
-  @override
-  State<AllProducts> createState() => _AllProductsState();
-}
-
-class _AllProductsState extends State<AllProducts> {
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
@@ -88,13 +84,7 @@ class _AllProductsState extends State<AllProducts> {
                                 ),
                               ),
                               ...item['colors'].take(3).map((color){
-                                return SizedBox(
-                                width: 17,
-                                height: 17,
-                                child: CircleAvatar(
-                                  backgroundColor: AppColors.hexToColor(color["code"]),
-                                )
-                              );}).toList(),
+                                return CircleOfColor(code: color['code'],width: isDesktop ? 17 :15,height: isDesktop ? 17 :15);}).toList(),
                             ],
                           ),
                         ],
@@ -164,37 +154,56 @@ class _AllProductsState extends State<AllProducts> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                 child: Row(
-                  spacing: 8,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Row(
-                      spacing: 1,
+                      spacing: 8,
                       children: [
-                        Text(
-                          "${item['newPrice']}",
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 12,
-                            color:  AppColors.primary,
-                          ),
+                        Row(
+                          spacing: 1,
+                          children: [
+                            Text(
+                              "${item['newPrice']}",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 12,
+                                color:  AppColors.primary,
+                              ),
+                            ),
+                            Text(
+                              "\$",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w300,
+                                fontSize: 11,
+                                color:  AppColors.primary,
+                              ),
+                            ),
+                          ],
                         ),
                         Text(
-                          "\$",
+                          "${item['price']} \$",
                           style: TextStyle(
-                            fontWeight: FontWeight.w300,
                             fontSize: 11,
-                            color:  AppColors.primary,
+                            color: AppColors.textSecondary,
+                            decoration: TextDecoration.lineThrough,
                           ),
                         ),
                       ],
                     ),
-                    Text(
-                      "${item['price']} \$",
-                      style: TextStyle(
-                        fontSize: 11,
-                        color: AppColors.textSecondary,
-                        decoration: TextDecoration.lineThrough,
+                    Card(
+                      color: AppColors.background,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
                       ),
-                    ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(horizontal:10.0,vertical: 2),
+                        child: Icon(
+                          CupertinoIcons.cart_badge_plus,
+                          color:  AppColors.iconColor,
+                          size: 18,
+                        ),
+                      ),
+                    )
                   ],
                 ),
               ),
@@ -207,5 +216,3 @@ class _AllProductsState extends State<AllProducts> {
     );
   }
 }
-
-

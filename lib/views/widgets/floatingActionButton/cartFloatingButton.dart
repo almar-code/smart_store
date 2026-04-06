@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_store/core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/itemCount.dart';
@@ -8,21 +9,35 @@ class CartFloatingButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () {
-      },
-      splashColor: Colors.transparent,
-      hoverElevation: 4,
-      backgroundColor: Colors.white,
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      child: Badge(
-        backgroundColor: Colors.transparent,
-        alignment: Alignment.topCenter,
-        padding: EdgeInsets.only(bottom: 0,left: 20),
-        label: ItemCount(),
-        child: AppIcon(icon: CupertinoIcons.cart,size: 25,),
-      )
+    return SizedBox(
+      width: 50,
+      height: 50,
+      child: FloatingActionButton(
+        onPressed: () {
+        },
+        splashColor: Colors.transparent,
+        hoverElevation: 4,
+        backgroundColor: Colors.white,
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Stack(
+          // alignment: Alignment.topRight,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(9.0),
+              child: Icon(
+                CupertinoIcons.cart,
+                color:AppColors.iconColor,
+                size: 20,
+              ),
+            ),
+        Positioned(
+            top: 1,
+            right: 1,
+            child: ItemCount())
+          ],
+        )
+      ),
     );
   }
 }

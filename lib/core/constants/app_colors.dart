@@ -9,7 +9,7 @@ class AppColors {
   static const Color borderColor = Color.fromARGB(66, 158, 158, 158);
   static const Color textColor = Color.fromARGB(255, 0, 0, 0);
   static const Color redColor = Color(0xFFE53935);      // للتنبيهات والأخطاء
-
+  static const Color buttonColor = Color(0xFF1FAF9F);
 
   // ألوان إضافية مقترحة لتناسب الـ SaaS Style
   static const Color background = Color(0xFFFFFFFF); // خلفية فاتحة ومريحة

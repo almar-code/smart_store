@@ -11,9 +11,13 @@ class AppIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
+    double finalSize = isDesktop ? size : size - 5;
     return  Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 6),
+      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 6 : 4),
       child: Container(
+        width: isDesktop ? 40 : 30,
+        height: isDesktop ? 40 : 30,
         decoration: BoxDecoration(
           color: Colors.grey[100],
           shape: BoxShape.circle,
@@ -22,7 +26,7 @@ class AppIcon extends StatelessWidget {
           icon:  Icon(
             icon,
             color:color,
-            size: size,
+            size: finalSize,
           ),
           onPressed: onPressed,
         ),

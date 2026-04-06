@@ -84,7 +84,7 @@ class UserProfileOrLogin extends StatelessWidget {
               Navigator.of(context).pop();
             },
           ):InkWell(
-           onTap: isLoggedIn ? onProfileTap : onLoginTap,
+            onTap: isLoggedIn ? onProfileTap : onLoginTap,
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
