@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import '../../screens/product/product_screen.dart';
 import '../flash/flash_screen.dart';
+import '../product/product.dart';
 
 class SubcategoryBar extends StatelessWidget {
   const SubcategoryBar({super.key});
@@ -45,31 +47,36 @@ class SubcategoryBar extends StatelessWidget {
             ),
             itemBuilder: (context, index) {
               final item = categories[index];
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10),
-                    child: Image.asset(
-                      (index < 10) ? item["image"] :"assets/images/a4.jpg",
-                      width: isDesktop ? 55 : 45,
-                      height: isDesktop ? 55 : 45,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Expanded(
-                    child: Text(
-                      item["name"],
-                      maxLines: 2,
-                      style:  TextStyle(
-                        fontSize:  isDesktop ? 11 : 9,
-                        fontWeight: FontWeight.bold,
-
+              return InkWell(
+                onTap: (){
+                  Navigator.push(context,MaterialPageRoute(builder: (context)=>ProductScreens(category: 1,subCategoryID: 2,)));
+                },
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: Image.asset(
+                        (index < 10) ? item["image"] :"assets/images/a4.jpg",
+                        width: isDesktop ? 55 : 45,
+                        height: isDesktop ? 55 : 45,
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  ),
-                ],
+                    const SizedBox(height: 8),
+                    Expanded(
+                      child: Text(
+                        item["name"],
+                        maxLines: 2,
+                        style:  TextStyle(
+                          fontSize:  isDesktop ? 11 : 9,
+                          fontWeight: FontWeight.bold,
+
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               );
             },
           ),

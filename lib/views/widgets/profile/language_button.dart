@@ -31,12 +31,12 @@ class LanguageButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, color: isSelected ? AppColors.surface : AppColors.iconColor, size: 20),
+            // Icon(icon, color: isSelected ? AppColors.surface : AppColors.iconColor, size: 20),
             const SizedBox(width: 10),
             Text(
               title,
               style: TextStyle(
-                color: isSelected ? AppColors.surface : AppColors.iconColor,
+                // color: isSelected ? AppColors.surface : AppColors.iconColor,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 fontSize: 16,
               ),
