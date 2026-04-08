@@ -98,7 +98,7 @@ class AllProducts extends StatelessWidget {
                         duration: const Duration(milliseconds: 200),
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.6),
+                          color: AppColors.backgroundSecondary,
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
@@ -119,7 +119,7 @@ class AllProducts extends StatelessWidget {
                         duration: const Duration(milliseconds: 200),
                         padding: const EdgeInsets.all(3),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.6),
+                          color: AppColors.backgroundSecondary.withOpacity(0.9),
                           shape: BoxShape.circle,
                         ),
                         child: Icon(

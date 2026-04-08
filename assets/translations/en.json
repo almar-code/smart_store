@@ -26,7 +26,7 @@
   "help center": "Help Center",
   "language": "Application Language",
   "country": "Country",
-  "currency": "Currency"
+  "currency": "Currency",
   "forYou": "For you",
   "checkout": "Checkout",
   "discount": "Discount",
@@ -37,5 +37,9 @@
   "cart_empty_title": "YOUR CART IS EMPTY",
   "cart_empty_subtitle": "Sign in to view your cart and start shopping",
   "sign_in_register": "SIGN IN / REGISTER",
-  "shop_now": "SHOP NOW"
+  "shop_now": "SHOP NOW",
+  "firstFavorites": "My",
+  "secondFavorites" : "Favorites",
+  "firstNewWord" : "Our",
+  "secondNewWord" : "new"
 }

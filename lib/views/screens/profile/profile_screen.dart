@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/user_profile.dart';
 import '../../widgets/profile/profile_list.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -9,6 +10,7 @@ class ProfileScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     context.locale;
     return Scaffold(
+      backgroundColor: AppColors.background,
     appBar: AppBar(
 
     ),

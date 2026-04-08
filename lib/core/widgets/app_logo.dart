@@ -8,7 +8,7 @@ class Logo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return  Image.asset(
-      AppColors.isDark ? 'assets/images/ligth-mode-logo.gif' : 'assets/images/logo.png',
+      AppColors.isDark.value ? 'assets/images/ligth-mode-logo.gif' : 'assets/images/logo.png',
       width: width ,
       height: height,
       fit: BoxFit.contain,

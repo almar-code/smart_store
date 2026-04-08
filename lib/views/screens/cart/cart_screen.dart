@@ -7,11 +7,13 @@ import '../../../core/constants/app_shadow.dart';
 import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/colors/circleOfColor.dart';
+import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../widgets/cart/emptyCart.dart';
 import '../../widgets/flash/flash_screen.dart';
 
 class CartScreen extends StatelessWidget {
-  const CartScreen({super.key});
+  final bool screenOnly;
+  const CartScreen({super.key,this.screenOnly =false});
   @override
   Widget build(BuildContext context){
     bool isDesktop = MediaQuery.of(context).size.width > 800;
@@ -31,10 +33,13 @@ class CartScreen extends StatelessWidget {
         leading:Icon(
           CupertinoIcons.cart,
           color:  AppColors.iconColor,
-          size: isDesktop?25: 20,
+          size: isDesktop ? 22 : 20,
         ),
-        titleSpacing:isDesktop?0: 0,
-        title: AppTitle(firstPart: tr('cartShopping'),secondPart: tr('shopping'),fontSize: isDesktop?18: 15,spacing: ' ',)
+        titleSpacing:isDesktop ? 0 : 0,
+        title: AppTitle(firstPart: tr('cartShopping'),secondPart: tr('shopping'),fontSize: isDesktop?18: 15,spacing: ' ',),
+        actions: [
+        screenOnly ? ArrowBack() : SizedBox(),
+        ],
       ),
       body:Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0,horizontal: 20),
@@ -237,7 +242,7 @@ class CartScreen extends StatelessWidget {
                 SizedBox(width:isDesktop ? 30 : 0,),
                 isDesktop ? SizedBox(
                   width:600,
-                  child: AppButton(label: tr('checkout'),icon: Icons.credit_card,),
+                  child: AppButton(label: tr('checkout'),icon: Icons.credit_card,onTap: (){},),
                 ) : Expanded(
                   child: AppButton(label: tr('checkout'),icon: Icons.credit_card,),
                 ),

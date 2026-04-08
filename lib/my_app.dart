@@ -13,10 +13,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<ThemeBloc, ThemeState>(
-      builder: (context, state) {
-        return MaterialApp(
-          key: ValueKey(state.isDark),
-          debugShowCheckedModeBanner: false,
+        builder: (context, state) {
+          return MaterialApp(
+            key: ValueKey(state.isDark),
+            debugShowCheckedModeBanner: false,
 
           // 🌍 الترجمة
           localizationsDelegates: context.localizationDelegates,

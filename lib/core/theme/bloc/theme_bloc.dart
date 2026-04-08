@@ -17,7 +17,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     await prefs.setBool("isDark", newValue);
 
     // ربط الألوان
-    AppColors.isDark = newValue;
+    AppColors.isDark.value = newValue;
 
     emit(ThemeState(newValue));
   }
@@ -27,7 +27,7 @@ class ThemeBloc extends Bloc<ThemeEvent, ThemeState> {
     final isDark = prefs.getBool("isDark") ?? false;
 
     // تحميل الحالة
-    AppColors.isDark = isDark;
+    AppColors.isDark.value = isDark;
 
     emit(ThemeState(isDark));
   }

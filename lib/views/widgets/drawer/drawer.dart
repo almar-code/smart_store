@@ -21,7 +21,7 @@ class AppDrawer extends StatelessWidget {
           Expanded(
             flex: 0,
             child: UserProfileOrLogin(
-              isLoggedIn: false,
+              isLoggedIn: true,
               isDrawer:true,
               userName: "Ali Mutahar",
               userImageUrl: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
