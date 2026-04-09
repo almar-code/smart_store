@@ -16,7 +16,7 @@ import '../../widgets/category/category_bar.dart';
 import '../../widgets/discounts/discounts.dart';
 import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../../widgets/navigation/modern_bottom_nav_bar.dart';
-import '../../widgets/product/products.dart';
+import '../../widgets/product/all_products.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 import '../../widgets/subcategory/subcategory_bar.dart';
 import '../favorites/favorites_screen.dart';
