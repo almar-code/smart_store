@@ -49,7 +49,7 @@ class ArrowForwardIcon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Icon(
-      Icons.arrow_forward_ios,
+      Icons.arrow_forward_ios_outlined,
       size: size,
       color: color ?? AppColors.primary,
     );

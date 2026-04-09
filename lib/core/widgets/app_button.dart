@@ -10,12 +10,13 @@ class AppButton extends StatelessWidget {
   final double fontSize;
   final double iconSize;
   final String label;
-  const AppButton({super.key,this.color  ,this.fontSize  =14,this.iconSize  =14,this.icon ,this.label='checkout',this.borderColor = Colors.white,this.textColor =Colors.white});
+  final VoidCallback? onTap;
+  const AppButton({super.key,this.color  ,this.fontSize  =14,this.iconSize  =14,this.icon ,this.label='checkout',this.borderColor = Colors.white,this.textColor =Colors.white,this.onTap ,});
 
   @override
   Widget build(BuildContext context) {
     return MaterialButton(
-      onPressed: () {},
+      onPressed: onTap ?? (){},
       // padding: const EdgeInsets.symmetric(vertical: 15),
       color: color ?? AppColors.buttonColor,
       shape: RoundedRectangleBorder(

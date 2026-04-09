@@ -1,8 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:smart_store/core/constants/app_colors.dart';
+import '../../../core/widgets/app_button.dart';
 import 'custom_tile.dart';
-import 'language_button.dart';
 
 class ProfileList extends StatelessWidget {
   const ProfileList({super.key});
@@ -24,7 +25,6 @@ class ProfileList extends StatelessWidget {
           title: "language".tr(),
           onTap: () => _showProfessionalLanguagePicker(context),
         ),
-
         CustomTile(icon: CupertinoIcons.location_solid, title: "country".tr(), onTap: () {}),
         CustomTile(icon: CupertinoIcons.money_dollar_circle, title: "currency".tr(), onTap: () {}),
       ],
@@ -55,17 +55,23 @@ class ProfileList extends StatelessWidget {
                 style: TextStyle(fontSize: 14, color: CupertinoColors.systemGrey),
               ),
               const SizedBox(height: 25),
-              LanguageButton(title: 'اللغة العربية', icon: CupertinoIcons.flag_fill, langCode: 'ar'),
+              AppButton(textColor :(context.locale.languageCode == 'ar') ?Colors.white :AppColors.textColor ,borderColor:AppColors.borderColor,label: 'العربية' ,color: (context.locale.languageCode == 'ar') ? AppColors.primary : AppColors.background,icon: Icons.translate_outlined,onTap:  ()  {
+                 context.setLocale(Locale('ar'));
+                Navigator.pop(context);
+              },),
               const SizedBox(height: 12),
-              LanguageButton(title: 'English Language', icon: CupertinoIcons.flag, langCode: 'en'),
+              AppButton(textColor :(context.locale.languageCode == 'en') ?Colors.white :AppColors.textColor ,borderColor:AppColors.borderColor,label: 'English' ,color: (context.locale.languageCode == 'en') ? AppColors.primary : AppColors.background,icon: Icons.translate_outlined,onTap:  ()  {
+                 context.setLocale(Locale('en'));
+                Navigator.pop(context);
+              },),
             ],
           ),
           actions: [
-            CupertinoDialogAction(
-              isDestructiveAction: true,
-              onPressed: () => Navigator.pop(context),
-              child:  Text('cancel'.tr()),
-            ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0,vertical: 5),
+              child: AppButton(borderColor : Colors.transparent,onTap: () => Navigator.pop(context) , label:'cancel'.tr() , color: AppColors.redColor,),
+            )
+
           ],
         );
       },

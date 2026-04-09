@@ -19,6 +19,7 @@ import '../../widgets/navigation/modern_bottom_nav_bar.dart';
 import '../../widgets/product/all_products.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 import '../../widgets/subcategory/subcategory_bar.dart';
+import '../favorites/favorites_screen.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -55,8 +56,8 @@ class HomeScreen extends StatelessWidget {
               child: App_Search(widthFactor:0.3),
             ),
 
-          AppIcon(icon: CupertinoIcons.heart),
-          AppIcon(icon:  AppColors.isDark ? Icons.wb_sunny_outlined : Icons.dark_mode_outlined,onPressed: (){
+          AppIcon(icon: CupertinoIcons.heart,onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true,))),),
+          AppIcon(icon:  AppColors.isDark.value ? Icons.wb_sunny_outlined : Icons.dark_mode_outlined,onPressed: (){
             context.read<ThemeBloc>().add(ToggleThemeEvent());
           },),
           AppIcon(icon: CupertinoIcons.person),

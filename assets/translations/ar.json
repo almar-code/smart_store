@@ -37,6 +37,10 @@
   "cart_empty_title": "سلة التسوق فارغة",
   "cart_empty_subtitle": "سجل الدخول لعرض سلتك وابدأ التسوق",
   "sign_in_register": "تسجيل / إنشاء حساب",
-  "shop_now": "تسوق الآن"
+  "shop_now": "تسوق الآن",
+  "firstFavorites": "مفضلا",
+  "secondFavorites" : "تي",
+  "firstNewWord" : "جديد",
+  "secondNewWord" : "نا"
 
 }
