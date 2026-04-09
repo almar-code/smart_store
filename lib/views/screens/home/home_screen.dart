@@ -10,6 +10,7 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/theme/bloc/theme_bloc.dart';
 import '../../../core/theme/bloc/theme_event.dart';
+import '../../../core/widgets/icons/favorite_icon.dart';
 import '../../../core/widgets/titleBar.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
 import '../../widgets/category/category_bar.dart';
@@ -20,6 +21,7 @@ import '../../widgets/product/products.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 import '../../widgets/subcategory/subcategory_bar.dart';
 import '../favorites/favorites_screen.dart';
+import '../search/search_screen.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
@@ -51,12 +53,14 @@ class HomeScreen extends StatelessWidget {
 
         actions: [
           if (isDesktop)
-            const Padding(
-              padding: EdgeInsets.symmetric(horizontal: 10),
-              child: App_Search(widthFactor:0.3),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: InkWell(
+                onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),
+                  child: const App_Search(widthFactor:0.3)),
             ),
-
-          AppIcon(icon: CupertinoIcons.heart,onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true,))),),
+          FavoriteIcon(),
+          // AppIcon(icon: CupertinoIcons.heart,onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true,))),),
           AppIcon(icon:  AppColors.isDark.value ? Icons.wb_sunny_outlined : Icons.dark_mode_outlined,onPressed: (){
             context.read<ThemeBloc>().add(ToggleThemeEvent());
           },),

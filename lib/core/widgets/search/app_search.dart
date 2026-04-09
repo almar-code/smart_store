@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../views/screens/search/search_screen.dart';
 import '../../constants/app_colors.dart';
 
 class App_Search extends StatelessWidget {
@@ -41,9 +42,7 @@ class App_Search extends StatelessWidget {
                   border: InputBorder.none,
                   contentPadding: const EdgeInsets.symmetric(vertical: 12),
                 ),
-                onTap: () {
-
-                },
+                onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),
               ),
             ),
           ),

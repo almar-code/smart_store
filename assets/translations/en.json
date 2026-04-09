@@ -41,5 +41,6 @@
   "firstFavorites": "My",
   "secondFavorites" : "Favorites",
   "firstNewWord" : "Our",
-  "secondNewWord" : "new"
+  "secondNewWord" : "new",
+  "searchHistory" : "Search history"
 }
