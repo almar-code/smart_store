@@ -9,6 +9,7 @@ import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/icons/favorite_icon.dart';
 import '../../../core/widgets/search/app_search.dart';
+import '../../../core/widgets/titleBar.dart';
 import '../../widgets/product/products.dart';
 
 class SearchScreen extends StatelessWidget {
@@ -31,54 +32,73 @@ class SearchScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          children: [
-            Container(
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                // إضافة ظل خفيف جداً لتمييز البار العلوي
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.03),
-                    blurRadius: 5,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            spacing: 15,
+            children: [
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: AppColors.background,
+                  // إضافة ظل خفيف جداً لتمييز البار العلوي
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.03),
+                      blurRadius: 5,
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      tr('searchHistory'),
+                      style: TextStyle(
+                        fontSize: isDesktop?15:12,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textColor,
+                      ),
+                    ),
+          
+                    // الجزء الأيسر: زر مشاهدة المزيد
+                    InkWell(
+                      onTap: () {
+                        // اضف التنقل لصفحة العروض هنا
+                      },
+                      child: Row(
+                        children: [
+                          Icon(CupertinoIcons.delete,color: AppColors.iconColor,size: 15,),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              Wrap(
+                direction: Axis.horizontal,
+                // الـ alignment الأساسي (للأفقي)
+                alignment: WrapAlignment.start,
+                // الـ crossAxisAlignment (للرأسي داخل السطر الواحد)
+                crossAxisAlignment: WrapCrossAlignment.start,
+                // مسافات بين العناصر لضمان عدم الالتصاق
+                spacing: 8.0,
+                runSpacing: 8.0,
                 children: [
-                  Text(
-                    tr('searchHistory'),
-                    style: TextStyle(
-                      fontSize: isDesktop?15:12,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textColor,
-                    ),
-                  ),
-
-                  // الجزء الأيسر: زر مشاهدة المزيد
-                  InkWell(
-                    onTap: () {
-                      // اضف التنقل لصفحة العروض هنا
-                    },
-                    child: Row(
-                      children: [
-                        Icon(CupertinoIcons.delete,color: AppColors.iconColor,size: 15,),
-                      ],
-                    ),
-                  ),
+                  _buildInkWellItem(context,"abayas"),
+                  _buildInkWellItem(context,"abayas"),
+                  _buildInkWellItem(context,"abayas kajol"),
+                  _buildInkWellItem(context,"abayas"),
+                  _buildInkWellItem(context,"abayas"),
                 ],
               ),
-            ),
-            Wrap(
-              children: [
-                _buildInkWellItem(context,"abayas")
-              ],
-            )
-
-          ],
+              TitleBar(title: tr('SearchResults'),),
+              AllProducts(),
+          
+            ],
+          ),
         ),
       ),);
   }
@@ -96,8 +116,7 @@ class SearchScreen extends StatelessWidget {
   Widget _buildCategoryItem(String title) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-      alignment: Alignment.center,
-
+      // alignment: Alignment.center,
       decoration: BoxDecoration(
         color: AppColors.backgroundSecondary,
         borderRadius: BorderRadius.circular(5), // حواف دائرية خفيفة
