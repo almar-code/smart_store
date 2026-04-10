@@ -26,7 +26,7 @@ class MainWrapperScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // نمرر المفتاح للـ HomeScreen لكي يتمكن من فتح الدراور
     final List<Widget> screens = [
-      const ReelScreen(),
+      const ReelScreen(pageIndex: 0),
       const NewScreen(),
       const HomeScreen(), // تمرير المفتاح هنا
       const CartScreen(),
