@@ -1,20 +1,25 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../core/widgets/app_title.dart';
-import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/cart_icon.dart';
 import '../../../core/widgets/icons/favorite_icon.dart';
 import '../../../core/widgets/search/app_search.dart';
-import '../favorites/favorites_screen.dart';
+import '../../../core/widgets/titleBar.dart';
+import '../../widgets/new/date_new.dart';
+import '../../widgets/new/img_new.dart';
+import '../../widgets/new/sub-new.dart' show TitleBar, DiscountsUI;
+import '../../widgets/sliderEds/sliderEds.dart';
 
 class NewScreen extends StatelessWidget {
   const NewScreen({super.key});
   @override
+
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     return  Scaffold(
@@ -48,6 +53,60 @@ class NewScreen extends StatelessWidget {
             SizedBox(width: 10),
           ],
         ),
-        body: Center(child: Text("Favorites Page")));
+        body:BlocProvider(
+          create: (context) => NewInBloc(),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListView(
+            children: [
+              isDesktop?SizedBox(
+                height: 200,
+                child: Row(
+                  spacing: 10,
+                  children: [
+                    Expanded(child: SliderEds(images: [
+                      'assets/images/new_ar.png',
+                      'assets/images/new_phon_ar_10.png',
+                      'assets/images/new_phon_ar_9.png',
+                    ])),
+                    Expanded(child: SheinNewInDates())
+                  ],
+                ),
+              ):SliderEds(images: [
+                'assets/images/new_ar.png',
+                'assets/images/new_phon_ar_10.png',
+                'assets/images/new_phon_ar_9.png',
+              ]),
+              isDesktop?SizedBox(): Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: SheinNewInDates(),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 10),
+                child: Text("top Collection".tr(),style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold),),
+              ),
+             isDesktop? SizedBox():Row(
+                spacing: 10,
+                children: [
+                  Expanded(child: cardImage(imagePath: "new_phon_ar_6.png")),
+                  Expanded(child: cardImage(imagePath: "new_phon_ar_4.png")),
+                ],
+              ),
+              SizedBox(height: 25,),
+              Column(
+                spacing: 10,
+                children: [
+                  TitleBar(title: 'الراقيه',),
+                  DiscountsUI(),
+                  TitleBar(title: 'الراقيه',),
+                  DiscountsUI(),
+                ],
+              )
+
+            ],
+            ),
+          )
+       )
+    );
   }
 }

@@ -312,6 +312,40 @@ class MasonryGridShimmer extends StatelessWidget {
   }
 }
 
+
+class NewInShimmer extends StatelessWidget {
+  const NewInShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+
+    return Container(
+      height: 70,
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: AppColors.ContainerColor,
+      ),
+      child: Shimmer.fromColors(
+        baseColor: AppColors.baseColor,
+        highlightColor: AppColors.highlightColor,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: 6, // عدد افتراضي أثناء التحميل
+          itemBuilder: (context, index) => Container(
+            width: 70,
+            margin: const EdgeInsets.symmetric(horizontal: 8),
+            decoration: BoxDecoration(
+              color: AppColors.backgroundSecondary,
+              borderRadius: BorderRadius.circular(7),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class VideoLoadingShimmer extends StatelessWidget {
   const VideoLoadingShimmer({super.key});
 
