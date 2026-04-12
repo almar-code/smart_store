@@ -6,7 +6,7 @@ class CircularProgress extends StatelessWidget {
   final double size;
   const CircularProgress({
     super.key,
-    this.size = 50.0,
+    this.size = 25.0,
   });
   @override
   Widget build(BuildContext context) {

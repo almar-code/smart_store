@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
           return MaterialApp(
-            key: ValueKey(state.isDark),
+            // key: ValueKey(state.isDark),
             debugShowCheckedModeBanner: false,
 
           // 🌍 الترجمة

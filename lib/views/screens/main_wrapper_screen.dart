@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
 import '../../core/constants/app_colors.dart';
+import '../../core/theme/bloc/theme_bloc.dart';
+import '../../core/theme/bloc/theme_state.dart';
 import '../widgets/drawer/drawer.dart';
 import '../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../widgets/navigation/modern_bottom_nav_bar.dart';
@@ -24,7 +26,7 @@ class MainWrapperScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // نمرر المفتاح للـ HomeScreen لكي يتمكن من فتح الدراور
     final List<Widget> screens = [
-      const ReelScreen(),
+      const ReelScreen(pageIndex: 0),
       const NewScreen(),
       const HomeScreen(), // تمرير المفتاح هنا
       const CartScreen(),
@@ -43,7 +45,10 @@ class MainWrapperScreen extends StatelessWidget {
       create: (context) => NavigationCubit(),
       child: BlocBuilder<NavigationCubit, int>(
         builder: (context, currentIndex) {
-          return LayoutBuilder(
+          return BlocBuilder<ThemeBloc, ThemeState>(
+  builder: (context, state) {
+    return LayoutBuilder(
+      key: ValueKey(state.isDark),
             builder: (context, constraints) {
               bool isDesktop = constraints.maxWidth > 800;
               return Scaffold(
@@ -91,6 +96,8 @@ class MainWrapperScreen extends StatelessWidget {
               );
             },
           );
+  },
+);
         },
       ),
     );

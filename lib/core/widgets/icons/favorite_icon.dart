@@ -9,18 +9,19 @@ import '../itemCount.dart';
 class FavoriteIcon extends StatelessWidget {
   final Color? color;
   final double size;
-  FavoriteIcon({super.key,this.color,this.size=20});
+  final bool showBg;
+  FavoriteIcon({super.key,this.color,this.size=20,this.showBg =true});
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     double finalSize = isDesktop ? size : size - 5;
     return  Padding(
-      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 6 : 4),
+      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 5 : 4),
       child: Container(
         width: isDesktop ? 40 : 30,
         height: isDesktop ? 40 : 30,
         decoration: BoxDecoration(
-          color: AppColors.backgroundSecondary,
+          color: showBg ? AppColors.backgroundSecondary : Colors.transparent,
           shape: BoxShape.circle,
         ),
         child: Stack(
@@ -34,9 +35,9 @@ class FavoriteIcon extends StatelessWidget {
               onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true,))),
             ),
             Positioned(
-                top: 1,
-                right: 1,
-                child:  FavoriteCount(fontSize: 9,)
+                top: isDesktop ? 4 : 1,
+                right: isDesktop ? 4 : 1,
+                child:  FavoriteCount(fontSize: 8,)
             )
           ],
         ),

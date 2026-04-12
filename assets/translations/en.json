@@ -42,5 +42,10 @@
   "secondFavorites" : "Favorites",
   "firstNewWord" : "Our",
   "secondNewWord" : "new",
-  "top Collection": "Top Collection"
+  "top Collection": "Top Collection",
+  "searchHistory" : "Search history",
+  "SearchResults" : "Search results",
+  "productDisplay" : "Product display"
+
+
 }
