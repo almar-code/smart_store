@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import '../flash/flash_screen.dart'; // تأكد من إضافة المكتبة
 
 class SliderEds extends StatefulWidget {
-  const SliderEds({super.key});
+  final List<String> images;
+   SliderEds({super.key,required this.images});
 
   @override
   State<SliderEds> createState() => _SliderEdsState();
@@ -12,15 +13,6 @@ class SliderEds extends StatefulWidget {
 
 class _SliderEdsState extends State<SliderEds> {
   bool _isLoading = true; // حالة التحميل
-
-  final List<String> imgList = [
-    'assets/images/E3.jpg',
-    'assets/images/a4.jpg',
-    'assets/images/E.jpg',
-    'assets/images/E2.jpg',
-    'assets/images/a4.jpg',
-  ];
-
   @override
   void initState() {
     super.initState();
@@ -49,13 +41,13 @@ class _SliderEdsState extends State<SliderEds> {
           enlargeStrategy: CenterPageEnlargeStrategy.scale,
           viewportFraction: 0.9,
         ),
-        items: imgList
+        items:  widget.images
             .map(
               (item) => ClipRRect(
             borderRadius: BorderRadius.circular(16),
             child: Image.asset(
               item,
-              fit: BoxFit.cover,
+              fit: BoxFit.fill,
               width: double.infinity,
             ),
           ),
