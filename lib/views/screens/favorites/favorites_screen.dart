@@ -6,6 +6,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
+import '../../widgets/product/products.dart';
 
 class FavoritesScreen extends StatelessWidget {
   final bool screenOnly;
@@ -32,6 +33,9 @@ class FavoritesScreen extends StatelessWidget {
 
           ],
         ),
-        body: Center(child: Text("Favorites Page")));
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: AllProducts(),
+        ),);
 }
 }

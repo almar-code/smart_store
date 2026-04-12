@@ -67,6 +67,9 @@ dependencies:
   http: ^1.2.0 # مكتبة الروابط الأساسية
   flutter_spinkit : any # مكتبة CircularProgress
   shimmer: ^3.0.0
+  video_player: ^2.8.2
+  lucide_icons : any
+  phosphor_flutter: ^2.1.0
 
 
 dev_dependencies:
@@ -95,6 +98,7 @@ flutter:
   assets:
      - assets/images/
      - assets/translations/
+     - assets/videos/
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
