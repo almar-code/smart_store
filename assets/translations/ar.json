@@ -41,6 +41,9 @@
   "firstFavorites": "مفضلا",
   "secondFavorites" : "تي",
   "firstNewWord" : "جديد",
-  "secondNewWord" : "نا"
+  "secondNewWord" : "نا",
+  "searchHistory" : "سجل البحث",
+  "SearchResults" : "نتائج البحث",
+  "productDisplay" : "عرض المنتج"
 
 }

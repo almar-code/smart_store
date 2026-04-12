@@ -311,3 +311,21 @@ class MasonryGridShimmer extends StatelessWidget {
     );
   }
 }
+
+class VideoLoadingShimmer extends StatelessWidget {
+  const VideoLoadingShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: Color(0xFF2A2A2A),
+      highlightColor: Color(0xFF3A3A3A) ,
+      period: const Duration(milliseconds: 1200),
+      child: Container(
+        width: double.infinity,
+        height: double.infinity,
+        color:  Color(0xFF2A2A2A),
+      ),
+    );
+  }
+}
