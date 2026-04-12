@@ -1,18 +1,16 @@
-import 'dart:math';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:lucide_icons/lucide_icons.dart';
+import 'package:smart_store/views/screens/reels/store_profile.dart';
 import 'package:video_player/video_player.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/theme/bloc/theme_bloc.dart' show ThemeBloc;
-import '../../../core/theme/bloc/theme_state.dart';
-import '../../../core/widgets/circularProgress.dart';
+import '../../../core/widgets/app_logo.dart';
+import '../../../core/widgets/app_title.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
 import '../../widgets/flash/flash_screen.dart';
+import '../../widgets/reels/store_profile_image.dart';
 class ReelScreen extends StatelessWidget {
   final int pageIndex;
 
@@ -27,14 +25,30 @@ class ReelScreen extends StatelessWidget {
 
         return Scaffold(
           backgroundColor: AppColors.background,
+            appBar: isDesktop ? AppBar(
+              backgroundColor: AppColors.background,
+              title:  Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  StoreProfileImage(
+                imagePath: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
+                radius: 20,
+              ),
+                  const SizedBox(width: 6),
+                  AppTitle(fontSize: 22,),
+                ],
+              ),) : null,
           body: isDesktop
               ? Row(
             children: [
               SizedBox(
-                width: 412,
-                child: Reels(isPageActive: isActivePage),
+                width: 400,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 8.0),
+                  child: Reels(isPageActive: isActivePage),
+                ),
               ),
-              const Expanded(child: SizedBox()),
+              const Expanded(child: StoreProfile()),
             ],
           )
               : Reels(isPageActive: isActivePage),
@@ -144,13 +158,16 @@ class _ReelItemState extends State<ReelItem> {
       videoController.seekTo(Duration.zero); // 👈 مهم
     }
   }
-
   @override
   void dispose() {
     videoController.dispose();
     super.dispose();
   }
+  void stopPlay() {
+    if (!videoController.value.isInitialized) return;
 
+    videoController.pause();
+  }
   void togglePlay() {
     if (!videoController.value.isInitialized) return;
 
@@ -162,17 +179,14 @@ class _ReelItemState extends State<ReelItem> {
 
     setState(() {});
   }
-
   void forward() {
     final pos = videoController.value.position;
     videoController.seekTo(pos + const Duration(seconds: 5));
   }
-
   void rewind() {
     final pos = videoController.value.position;
     videoController.seekTo(pos - const Duration(seconds: 5));
   }
-
   void speedUp(bool fast) {
     videoController.setPlaybackSpeed(fast ? 2.0 : 1.0);
   }
@@ -186,10 +200,8 @@ class _ReelItemState extends State<ReelItem> {
 
       onLongPressStart: (_) => speedUp(true),
       onLongPressEnd: (_) => speedUp(false),
-
       onDoubleTapDown: (details) {
         final width = MediaQuery.of(context).size.width;
-
         if (details.localPosition.dx > width / 2) {
           forward();
         } else {
@@ -199,7 +211,7 @@ class _ReelItemState extends State<ReelItem> {
 
       child: Stack(
         children: [
-          /// 🎬 الفيديو
+          ///  الفيديو
           SizedBox.expand(
             child: videoController.value.isInitialized
                 ? FittedBox(
@@ -215,7 +227,7 @@ class _ReelItemState extends State<ReelItem> {
             : const VideoLoadingShimmer(),
           ),
 
-          /// ▶️ أيقونة التشغيل
+          ///  أيقونة التشغيل
           if (!videoController.value.isPlaying)
             Center(
               child: Container(
@@ -300,17 +312,16 @@ class _ReelItemState extends State<ReelItem> {
             ),
           ),
 
-          /// 👤 معلومات + المنتج
+          ///  معلومات + المنتج
           PositionedDirectional(
             start: 10,
-            bottom: 87,
+            bottom:isDesktop ? 10 : 87,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (widget.reel["productId"] != null)
                   GestureDetector(
                     onTap: () {
-                      print("Go to product ${widget.reel["productId"]}");
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -330,18 +341,24 @@ class _ReelItemState extends State<ReelItem> {
 
                 const SizedBox(height: 10),
 
-                Row(
-                  children: const [
-                    CircleAvatar(
-                      backgroundImage:
-                      NetworkImage("assets/images/Gemini_Generated_Image_ez61caez61caez61.png"),
-                    ),
-                    SizedBox(width: 10),
-                    Text(
-                      "Nice Store",
-                      style: TextStyle(color: Colors.white),
-                    ),
-                  ],
+                InkWell(
+                  onTap:(){
+                    stopPlay();
+                    Navigator.of(context,).push(MaterialPageRoute(builder: (context) => StoreProfile()));
+                  },
+                  child: Row(
+                    children:  [
+                      StoreProfileImage(
+                        imagePath: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
+                        radius: 20,
+                      ),
+                      SizedBox(width: 7),
+                      Text(
+                        "Nice Store",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
