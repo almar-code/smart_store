@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import '../../screens/product/product_screen.dart';
+import '../../screens/product/products_screen.dart';
 import '../flash/flash_screen.dart';
-import '../product/product.dart';
 
 class SubcategoryBar extends StatelessWidget {
   const SubcategoryBar({super.key});
