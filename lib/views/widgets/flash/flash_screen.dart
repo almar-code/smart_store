@@ -16,7 +16,7 @@ class Flasheds extends StatelessWidget {
       highlightColor: AppColors.highlightColor,
       child: Container(
         height: isDesktop ? 185 : 160,
-        margin: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+        margin: const EdgeInsets.symmetric(horizontal: 15),
         decoration: BoxDecoration(
           color: AppColors.backgroundSecondary,
           borderRadius: BorderRadius.circular(16),

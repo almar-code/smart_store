@@ -6,7 +6,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_shadow.dart';
 import '../../../core/widgets/colors/circleOfColor.dart';
-import '../../screens/product/product_screen.dart';
+import '../../screens/product/products_screen.dart';
 class AllProducts extends StatelessWidget {
    final int? subCategoryID;
    final int? productID;
@@ -32,7 +32,7 @@ class AllProducts extends StatelessWidget {
         var item=products[index];
         return InkWell(
           onTap: (){
-            Navigator.push(context,MaterialPageRoute(builder: (context)=>ProductScreens(productID: 21,)));
+            Navigator.push(context,MaterialPageRoute(builder: (context)=>ProductsScreen(productID: 21,)));
           },
           child: Container(
             padding: EdgeInsets.only(bottom: 10),

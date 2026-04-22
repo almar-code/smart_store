@@ -20,6 +20,7 @@ import '../../widgets/navigation/modern_bottom_nav_bar.dart';
 import '../../widgets/product/all_products.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 import '../../widgets/subcategory/subcategory_bar.dart';
+import '../address/select_user_address_screen.dart';
 import '../favorites/favorites_screen.dart';
 import '../search/search_screen.dart';
 class HomeScreen extends StatelessWidget {
@@ -64,7 +65,7 @@ class HomeScreen extends StatelessWidget {
           AppIcon(icon:  AppColors.isDark.value ? Icons.wb_sunny_outlined : Icons.dark_mode_outlined,onPressed: (){
             context.read<ThemeBloc>().add(ToggleThemeEvent());
           },),
-          AppIcon(icon: CupertinoIcons.person),
+          AppIcon(icon: CupertinoIcons.person,onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectUsrAddress())),),
           SizedBox(width: 10),
         ],
       ),

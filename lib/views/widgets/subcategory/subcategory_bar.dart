@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import '../../screens/product/product_screen.dart';
+import '../../screens/product/products_screen.dart';
 import '../flash/flash_screen.dart';
-import '../product/product.dart';
 
 class SubcategoryBar extends StatelessWidget {
   const SubcategoryBar({super.key});
@@ -49,7 +47,7 @@ class SubcategoryBar extends StatelessWidget {
               final item = categories[index];
               return InkWell(
                 onTap: (){
-                  Navigator.push(context,MaterialPageRoute(builder: (context)=>ProductScreens(category: 1,subCategoryID: 2,)));
+                  Navigator.push(context,MaterialPageRoute(builder: (context)=>ProductsScreen(category: 1,subCategoryID: 2,)));
                 },
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

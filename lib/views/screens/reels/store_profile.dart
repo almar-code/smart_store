@@ -4,15 +4,15 @@ import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../core/widgets/app_title.dart';
+import '../../../core/widgets/circleImage/circle_image.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
-import '../../widgets/reels/store_profile_image.dart';
 class StoreProfile extends StatelessWidget {
   const StoreProfile({super.key});
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     return DefaultTabController(
-      length: 3,
+      length: 2,
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: isDesktop ? null : AppBar(
@@ -47,7 +47,7 @@ class StoreProfile extends StatelessWidget {
                     children: [
 
                       /// صورة
-                      StoreProfileImage(
+                      CircleImage(
                         imagePath: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
                         radius: 30,
                       ),

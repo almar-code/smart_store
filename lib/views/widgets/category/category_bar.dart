@@ -82,7 +82,6 @@ class CategoryBar extends StatelessWidget {
   Widget _buildCategoryItem(String title) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
-      alignment: Alignment.center,
       decoration: BoxDecoration(
         color: AppColors.backgroundSecondary,
         borderRadius: BorderRadius.circular(5), // حواف دائرية خفيفة

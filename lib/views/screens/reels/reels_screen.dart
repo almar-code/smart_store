@@ -8,9 +8,9 @@ import 'package:video_player/video_player.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../core/widgets/app_title.dart';
+import '../../../core/widgets/circleImage/circle_image.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
 import '../../widgets/flash/flash_screen.dart';
-import '../../widgets/reels/store_profile_image.dart';
 class ReelScreen extends StatelessWidget {
   final int pageIndex;
 
@@ -30,7 +30,7 @@ class ReelScreen extends StatelessWidget {
               title:  Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  StoreProfileImage(
+                  CircleImage(
                 imagePath: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
                 radius: 20,
               ),
@@ -348,7 +348,7 @@ class _ReelItemState extends State<ReelItem> {
                   },
                   child: Row(
                     children:  [
-                      StoreProfileImage(
+                      CircleImage(
                         imagePath: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
                         radius: 20,
                       ),

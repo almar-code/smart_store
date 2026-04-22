@@ -6,6 +6,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/app_shadow.dart';
 import '../../../core/widgets/app_logo.dart';
+import '../../../core/widgets/icons/social_icons.dart';
 import '../../../core/widgets/itemCount.dart';
 
 class ModernSideRail extends StatefulWidget {
@@ -121,8 +122,7 @@ class _ModernSideRailState extends State<ModernSideRail> {
                   ],
                 ),
               ),
-
-              _buildBottomSection(),
+              SocialIcons(isExpanded: isExpanded,),
               const SizedBox(height: 20),
             ],
           ),
@@ -223,41 +223,6 @@ class _ModernSideRailState extends State<ModernSideRail> {
                     ),
                   ),
                 ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildBottomSection() {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 250),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 25.0),
-        child: Align(
-          alignment: Alignment.centerLeft,
-          child: Wrap(
-            direction: isExpanded ? Axis.horizontal : Axis.vertical,
-            // spacing: 12,
-            children: [
-              SocialIcon(
-                icon: FontAwesomeIcons.whatsapp,
-
-                color: Color(0xFF25D366),
-              ),
-              Icon(FontAwesomeIcons.instagram, color: Colors.transparent),
-              SocialIcon(
-                icon: FontAwesomeIcons.instagram,
-
-                color: Color(0xFFE1306C),
-              ),
-              Icon(FontAwesomeIcons.instagram, color: Colors.transparent),
-              SocialIcon(
-                icon: FontAwesomeIcons.facebook,
-
-                color: Color(0xFF1877F2),
-              ),
             ],
           ),
         ),

@@ -15,13 +15,14 @@ class AppButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
     return MaterialButton(
       onPressed: onTap ?? (){},
       // padding: const EdgeInsets.symmetric(vertical: 15),
       color: color ?? AppColors.buttonColor,
       shape: RoundedRectangleBorder(
         side: BorderSide(color: borderColor),
-        borderRadius: BorderRadius.circular(2),
+        borderRadius: BorderRadius.circular(isDesktop ? 6 : 3,),
       ),
       elevation: 0,
       child: Row(

@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 
-class StoreProfileImage extends StatelessWidget {
+class CircleImage extends StatelessWidget {
   final String imagePath;
   final double radius;
   final IconData icon;
 
-  const StoreProfileImage({
+  const CircleImage({
     super.key,
     required this.imagePath,
     this.radius = 25,

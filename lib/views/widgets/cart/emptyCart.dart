@@ -56,7 +56,7 @@ class EmptyCartScreen extends StatelessWidget {
               SizedBox(
                   width: double.infinity,
                   height: isDesktop? 50 :30,
-                  child:AppButton(label: tr('sign_in_register'),icon: Icons.person_2_outlined,color:AppColors.background ,textColor: Colors.black,borderColor: Colors.black,iconSize: 17,)
+                  child:AppButton(label: tr('sign_in_register'),icon: Icons.person_2_outlined,color:AppColors.background ,textColor: AppColors.textColor,borderColor: AppColors.borderColor,iconSize: 17,)
               ),
               const SizedBox(height: 15),
               SizedBox(

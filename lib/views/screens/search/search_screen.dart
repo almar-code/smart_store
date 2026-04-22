@@ -4,13 +4,10 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_shadow.dart';
-import '../../../core/widgets/app_title.dart';
-import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
-import '../../../core/widgets/icons/favorite_icon.dart';
 import '../../../core/widgets/search/app_search.dart';
 import '../../../core/widgets/titleBar.dart';
-import '../../widgets/product/products.dart';
+import '../../widgets/product/all_products.dart';
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});

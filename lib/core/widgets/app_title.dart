@@ -27,7 +27,7 @@ class AppTitle extends StatelessWidget {
           TextSpan(
             text: secondPart,
             style: TextStyle(
-              color: AppColors.iconColor,
+              color: AppColors.textColor,
               fontSize: fontSize,
               fontWeight: FontWeight.bold,
             ),

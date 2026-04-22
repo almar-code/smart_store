@@ -1,13 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
-import '../../widgets/product/products.dart';
-
+import '../../widgets/product/all_products.dart';
 class FavoritesScreen extends StatelessWidget {
   final bool screenOnly;
   const FavoritesScreen({super.key,this.screenOnly =false});

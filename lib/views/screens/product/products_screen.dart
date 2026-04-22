@@ -1,0 +1,59 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/icons/app_icon.dart';
+import '../../../core/widgets/icons/arrow_back_icon.dart';
+import '../../../core/widgets/icons/cart_icon.dart';
+import '../../../core/widgets/icons/favorite_icon.dart';
+import '../../../core/widgets/search/app_search.dart';
+import '../../widgets/product/all_products.dart';
+import '../../widgets/subcategory/subcategory_bar.dart';
+import '../search/search_screen.dart';
+
+class ProductsScreen extends StatelessWidget {
+  final int? subCategoryID;
+  final int? productID;
+  final int? category;
+  ProductsScreen({super.key,this.category,this.subCategoryID,this.productID});
+
+  @override
+  Widget build(BuildContext context) {
+    return  Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        leadingWidth: 0,
+        titleSpacing:3,
+        elevation: 0,
+        title: Row(
+          children: [
+            FavoriteIcon(),
+            CartIcon(),
+            SizedBox(width: 7,),
+            InkWell(
+                onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),
+                child: const App_Search(widthFactor:0.64)),
+          ],
+        ),
+        actions: [
+          ArrowBack()
+        ],),
+      body:Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: Column(
+          spacing: 10,
+          children: [
+            if( subCategoryID!= null && category !=null)
+              SubcategoryBar(),
+            Expanded(
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: AllProducts(productID: productID,subCategoryID: subCategoryID,showAddToCart: true,)),
+            )
+          ],
+        ),
+      )
+
+    );
+  }
+}

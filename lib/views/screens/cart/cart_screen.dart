@@ -10,6 +10,7 @@ import '../../../core/widgets/colors/circleOfColor.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../widgets/cart/emptyCart.dart';
 import '../../widgets/flash/flash_screen.dart';
+import '../address/select_user_address_screen.dart';
 
 class CartScreen extends StatelessWidget {
   final bool screenOnly;
@@ -20,7 +21,7 @@ class CartScreen extends StatelessWidget {
     Future<List<Map<String, dynamic>>> getProducts() async {
       await Future.delayed(const Duration(seconds: 3));
       return List.generate(
-        10,
+        0,
             (index) => {"p_name" : "Kajol abaya","size" : "52","image" : "assets/images/${index}.jpg","price": 100, "newPrice":70, "discount":30,"colors":{"colorName":"اسود","code":"#000000"}},
       );
     }
@@ -53,6 +54,9 @@ class CartScreen extends StatelessWidget {
               return EmptyCartScreen();
             }
             final products = asyncSnapshot.data ?? [];
+            if (products.length == 0) {
+              return EmptyCartScreen();
+            }
             return MasonryGridView.count(
                 scrollDirection: Axis.vertical,
                 crossAxisCount:isDesktop ? 4 : 1,
@@ -242,9 +246,9 @@ class CartScreen extends StatelessWidget {
                 SizedBox(width:isDesktop ? 30 : 0,),
                 isDesktop ? SizedBox(
                   width:600,
-                  child: AppButton(label: tr('checkout'),icon: Icons.credit_card,onTap: (){},),
+                  child: AppButton(label: tr('checkout'),icon: Icons.credit_card,onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectUsrAddress())),),
                 ) : Expanded(
-                  child: AppButton(label: tr('checkout'),icon: Icons.credit_card,),
+                  child: AppButton(label: tr('checkout'),icon: Icons.credit_card,onTap:  ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectUsrAddress())),),
                 ),
                 SizedBox(width: 10,),
                 Container(

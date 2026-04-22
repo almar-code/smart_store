@@ -23,7 +23,7 @@ class AppColors {
   static Color get redColor => const Color(0xFFE53935);
 
   static Color get buttonColor =>
-      isDark.value ? const Color(0xFF159A8C) : const Color(0xFF1FAF9F);
+      isDark.value ? const Color(0xFF00B387) : const Color(0xFF00B387);
 
   static Color get background =>
       isDark.value ? const Color(0xFF121212) : const Color(0xFFFFFFFF);
