@@ -44,6 +44,22 @@
   "secondNewWord" : "نا",
   "searchHistory" : "سجل البحث",
   "SearchResults" : "نتائج البحث",
-  "productDisplay" : "عرض المنتج"
-
+  "productDisplay" : "عرض المنتج",
+  "user" : "المستخدم",
+  "address" : "عنوان",
+  "addresses": "العناوين",
+  "my": "",
+  "myAddresses": "عناويني",
+  "list": "قائمة",
+  "add_address": "إضافة عنوان",
+  "add": "إضافة",
+  "city": "المدينة",
+  "street": "الشارع",
+  "building": "البناية / رقم الشقة",
+  "postal_code": "الرمز البريدي",
+  "notes": "ملاحظات إضافية",
+  "city_required": "اسم المدينة مطلوب",
+  "country_required": "اسم ألدولة مطلوب",
+  "street_required": "اسم الشارع مطلوب",
+  "invalid_number": "يجب إدخال أرقام فقط"
 }

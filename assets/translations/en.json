@@ -44,7 +44,22 @@
   "secondNewWord" : "new",
   "searchHistory" : "Search history",
   "SearchResults" : "Search results",
-  "productDisplay" : "Product display"
-
-
+  "productDisplay" : "Product display",
+  "user" : "User",
+  "address" : "Address",
+  "addresses": "Addresses",
+  "my": "My",
+  "myAddresses": "Addresses",
+  "list": "List",
+  "add_address": "Add Address",
+  "add": "Add",
+  "city": "City",
+  "street": "Street",
+  "building": "Building / Apt No.",
+  "postal_code": "Postal Code",
+  "notes": "Additional Notes",
+  "city_required": "City name is required",
+  "country_required": "Country name is required",
+  "street_required": "Street name is required",
+  "invalid_number": "Please enter numbers only"
 }
