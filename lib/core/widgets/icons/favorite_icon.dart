@@ -17,30 +17,31 @@ class FavoriteIcon extends StatelessWidget {
     double finalSize = isDesktop ? size : size - 5;
     return  Padding(
       padding: EdgeInsets.symmetric(horizontal: isDesktop ? 5 : 4),
-      child: Container(
-        width: isDesktop ? 40 : 30,
-        height: isDesktop ? 40 : 30,
-        decoration: BoxDecoration(
-          color: showBg ? AppColors.backgroundSecondary : Colors.transparent,
-          shape: BoxShape.circle,
-        ),
-        child: Stack(
-          children: [
-            IconButton(
-              icon:  Icon(
+      child: Stack(
+        children: [
+          Container(
+            width: isDesktop ? 35 : 30,
+            height: isDesktop ? 35 : 30,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: showBg ? AppColors.backgroundSecondary : Colors.transparent,
+              shape: BoxShape.circle,
+            ),
+            child: InkWell(
+              child:  Icon(
                 CupertinoIcons.heart,
                 color:color ?? AppColors.iconColor,
                 size: finalSize,
               ),
-              onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true,))),
+              onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true,))),
             ),
-            Positioned(
-                top: isDesktop ? 4 : 1,
-                right: isDesktop ? 4 : 1,
-                child:  FavoriteCount(fontSize: 8,)
-            )
-          ],
-        ),
+          ),
+          Positioned(
+              top: isDesktop ? 3 : 1,
+              right: isDesktop ? 3 : 1,
+              child:  FavoriteCount(fontSize: 8,)
+          )
+        ],
       ),
     );
   }

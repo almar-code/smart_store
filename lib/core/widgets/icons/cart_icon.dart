@@ -7,37 +7,39 @@ import '../itemCount.dart';
 class CartIcon extends StatelessWidget {
   final Color? color;
   final double size;
-  CartIcon({super.key,this.color,this.size=20});
+  final bool showBg;
+  CartIcon({super.key,this.color,this.size=19,this.showBg =true});
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     double finalSize = isDesktop ? size : size - 5;
     return  Padding(
-      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 6 : 4),
-      child: Container(
-        width: isDesktop ? 40 : 30,
-        height: isDesktop ? 40 : 30,
-        decoration: BoxDecoration(
-          color: AppColors.backgroundSecondary,
-          shape: BoxShape.circle,
-        ),
-        child: Stack(
-          children: [
-            IconButton(
-              icon:  Icon(
+      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 5 : 4),
+      child: Stack(
+        children: [
+          Container(
+            width: isDesktop ? 35 : 30,
+            height: isDesktop ? 35 : 30,
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+              color: showBg ? AppColors.backgroundSecondary : Colors.transparent,
+              shape: BoxShape.circle,
+            ),
+            child: InkWell(
+              child:  Icon(
                 CupertinoIcons.cart,
                 color:color ?? AppColors.iconColor,
                 size: finalSize,
               ),
-              onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => CartScreen(screenOnly: true,))),
+              onTap: ()=>()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => CartScreen(screenOnly: true,))),
             ),
-            Positioned(
-              top: 1,
-                right: 1,
-                child:  ItemCount(fontSize: 9,)
-            )
-          ],
-        ),
+          ),
+          Positioned(
+              top: isDesktop ? 1 : 0,
+              right: isDesktop ? 1 : 0,
+              child:  ItemCount(fontSize: 9,)
+          )
+        ],
       ),
     );
   }

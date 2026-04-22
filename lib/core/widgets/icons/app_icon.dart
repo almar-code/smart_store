@@ -16,8 +16,8 @@ class AppIcon extends StatelessWidget {
     return  Padding(
       padding: EdgeInsets.symmetric(horizontal: isDesktop ? 6 : 4),
       child: Container(
-        width: isDesktop ? 40 : 30,
-        height: isDesktop ? 40 : 30,
+        width: isDesktop ? 35 : 30,
+        height: isDesktop ? 35 : 30,
         decoration: BoxDecoration(
           color: AppColors.backgroundSecondary,
           shape: BoxShape.circle,
