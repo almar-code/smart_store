@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smart_store/views/widgets/product/product.dart';
-
+import 'product_details_screen.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/constants/app_icons.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/search/app_search.dart';
+import '../../widgets/product/all_products.dart';
+import '../../widgets/subcategory/subcategory_bar.dart';
 
 class ProductScreens extends StatelessWidget {
   final int? subCategoryID;
@@ -30,9 +30,26 @@ class ProductScreens extends StatelessWidget {
           AppIcon(icon: CupertinoIcons.heart),
           AppIcon(icon: CupertinoIcons.cart),
         ],),
-      body: Padding(
+      body:Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Product(category: category,subCategoryID: subCategoryID,productID: productID,),
+        child: Column(
+
+          children: [
+            if( subCategoryID!= null && category !=null)
+              SubcategoryBar(),
+            Expanded(
+
+              child: SingleChildScrollView(
+                  scrollDirection: Axis.vertical,
+                  child: AllProducts(productID: productID,
+                    subCategoryID: subCategoryID,
+                    showAddToCart: true,
+                      onProductTap: (id) {
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(productID: id)));
+                      })),
+            )
+          ],
+        ),
       ),
 
     );

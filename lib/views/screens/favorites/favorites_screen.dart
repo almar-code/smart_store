@@ -6,7 +6,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
-import '../../widgets/product/products.dart';
+import '../../widgets/product/all_products.dart';
 
 class FavoritesScreen extends StatelessWidget {
   final bool screenOnly;

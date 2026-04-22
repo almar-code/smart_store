@@ -6,7 +6,7 @@ class ItemCount extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Text('3',style: TextStyle(
+    return  Text('6',style: TextStyle(
       color: color,
       fontSize: fontSize,
       fontWeight: FontWeight.w600
