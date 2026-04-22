@@ -86,12 +86,26 @@ class HomeScreen extends StatelessWidget {
                       isDesktop ? Row(
                         spacing: 12,
                         children: [
-                          Expanded(child: SliderEds()),
+                          Expanded(child:
+                          SliderEds(
+                            images: [
+                              'assets/images/E3.jpg',
+                              'assets/images/a4.jpg',
+                              'assets/images/E.jpg',
+                            ],
+                          )),
                           Expanded(
                               flex: 2,
                               child: Discounts()),
                         ],
-                      ):SliderEds(),
+                      ):
+                      SliderEds(
+                        images: [
+                          'assets/images/E3.jpg',
+                          'assets/images/a4.jpg',
+                          'assets/images/E.jpg',
+                        ],
+                      ),
                       if(!isDesktop) SubcategoryBar(),
                       isDesktop?SubcategoryBar():Discounts(),
                       TitleBar(title: tr('forYou'),),

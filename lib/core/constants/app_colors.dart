@@ -40,6 +40,8 @@ class AppColors {
   static Color get highlightColor =>
       isDark.value ? const Color(0xFF3A3A3A) : Colors.grey.shade100;
 
+  static Color get ContainerColor =>
+      isDark.value ? const Color(0xFF121212) : Colors.white;
   static Color get error => const Color(0xFFE53935);
 
   /// 🔧 تحويل HEX إلى Color

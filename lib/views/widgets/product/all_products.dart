@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:smart_store/views/widgets/product/productdetailsheet.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_shadow.dart';
@@ -11,7 +12,8 @@ class AllProducts extends StatelessWidget {
    final int? subCategoryID;
    final int? productID;
    final bool showAddToCart ;
-  const AllProducts({super.key,this.subCategoryID,this.productID,this.showAddToCart=false});
+   final Function(int id)? onProductTap;
+  const AllProducts({super.key,this.subCategoryID,this.productID,this.showAddToCart=false,this.onProductTap});
 
   @override
   Widget build(BuildContext context) {
@@ -30,9 +32,17 @@ class AllProducts extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(), //توقيف الشريط
       itemBuilder: (context, index) {
         var item=products[index];
+        int currentId = index;
         return InkWell(
-          onTap: (){
-            Navigator.push(context,MaterialPageRoute(builder: (context)=>ProductsScreen(productID: 21,)));
+          onTap: () {
+            if (onProductTap != null) {
+              onProductTap!(currentId);
+            } else {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => ProductScreens(productID: currentId,subCategoryID: 2,category: 2,)),
+              );
+            }
           },
           child: Container(
             padding: EdgeInsets.only(bottom: 10),
@@ -192,18 +202,22 @@ class AllProducts extends StatelessWidget {
                           ),
                         ],
                       ),
-                      showAddToCart? Card(
-                        color: AppColors.backgroundSecondary,
-                        shape: RoundedRectangleBorder(
-                          side: BorderSide(color: AppColors.borderColor.withOpacity(0.1)),
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal:10.0,vertical: 2),
-                          child: Icon(
-                            CupertinoIcons.cart_badge_plus,
-                            color:  AppColors.iconColor,
-                            size: 18,
+                      showAddToCart? InkWell(
+                        onTap: () => ProductDetailsDialog.show(context),
+
+                        child: Card(
+                          color: AppColors.backgroundSecondary,
+                          shape: RoundedRectangleBorder(
+                            side: BorderSide(color: AppColors.borderColor.withOpacity(0.1)),
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(horizontal:10.0,vertical: 2),
+                            child: Icon(
+                              CupertinoIcons.cart_badge_plus,
+                              color:  AppColors.iconColor,
+                              size: 18,
+                            ),
                           ),
                         ),
                       ):SizedBox(),
@@ -216,7 +230,6 @@ class AllProducts extends StatelessWidget {
         );
       },
 
-      // حجم كل عنصر
     );
   }
 }

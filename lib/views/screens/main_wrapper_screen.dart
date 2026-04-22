@@ -20,7 +20,6 @@ class MainWrapperScreen extends StatelessWidget {
   MainWrapperScreen({super.key});
 
   // المفتاح هنا للتحكم في السكافولد الرئيسي
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
