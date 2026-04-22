@@ -19,6 +19,8 @@ class ProductScreens extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
+
     return  Scaffold(
       backgroundColor: AppColors.background,
       appBar: AppBar(
@@ -31,12 +33,13 @@ class ProductScreens extends StatelessWidget {
             FavoriteIcon(),
             CartIcon(),
             SizedBox(width: 7,),
-            InkWell(
-                onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),
-                child: const App_Search(widthFactor:0.64)),
+
           ],
         ),
         actions: [
+          InkWell(
+              onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),
+              child:  App_Search(widthFactor: isDesktop ?0.3 :0.64)),
           ArrowBack()
         ],),
       body:Padding(

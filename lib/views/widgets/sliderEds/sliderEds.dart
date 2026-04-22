@@ -5,7 +5,8 @@ import '../flash/flash_screen.dart'; // تأكد من إضافة المكتبة
 
 class SliderEds extends StatefulWidget {
   final List<String> images;
-   SliderEds({super.key,required this.images});
+  final bool scrollPhysics;
+   SliderEds({super.key,required this.images,this.scrollPhysics = false});
 
   @override
   State<SliderEds> createState() => _SliderEdsState();
@@ -38,8 +39,15 @@ class _SliderEdsState extends State<SliderEds> {
           autoPlayInterval: const Duration(seconds: 3),
           enlargeCenterPage: true,
           enlargeFactor: .15,
+
           enlargeStrategy: CenterPageEnlargeStrategy.scale,
           viewportFraction: 0.9,
+          // 1. يمنع المستخدم من التمرير يدوياً
+          scrollPhysics: widget.scrollPhysics ? null : NeverScrollableScrollPhysics(),
+          // 2. يمنع توقف التمرير التلقائي عند لمس الشاشة
+          pauseAutoPlayOnTouch: widget.scrollPhysics,
+          // 4. (اختياري) يمنع التوقف إذا كان المستخدم يمرر الصفحة الرئيسية (Scroll)
+          pauseAutoPlayInFiniteScroll: widget.scrollPhysics,
         ),
         items:  widget.images
             .map(

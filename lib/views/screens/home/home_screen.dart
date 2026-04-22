@@ -92,7 +92,7 @@ class HomeScreen extends StatelessWidget {
                               'assets/images/E3.jpg',
                               'assets/images/a4.jpg',
                               'assets/images/E.jpg',
-                            ],
+                            ],scrollPhysics: true
                           )),
                           Expanded(
                               flex: 2,
@@ -104,7 +104,7 @@ class HomeScreen extends StatelessWidget {
                           'assets/images/E3.jpg',
                           'assets/images/a4.jpg',
                           'assets/images/E.jpg',
-                        ],
+                        ],scrollPhysics: true
                       ),
                       if(!isDesktop) SubcategoryBar(),
                       isDesktop?SubcategoryBar():Discounts(),

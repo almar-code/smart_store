@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/widgets/app_logo.dart';
@@ -13,7 +12,7 @@ import '../../../core/widgets/search/app_search.dart';
 import '../../../core/widgets/titleBar.dart';
 import '../../widgets/new/date_new.dart';
 import '../../widgets/new/img_new.dart';
-import '../../widgets/new/sub-new.dart' show TitleBar, DiscountsUI;
+import '../../widgets/new/sub-new.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 
 class NewScreen extends StatelessWidget {
@@ -64,24 +63,28 @@ class NewScreen extends StatelessWidget {
                 child: Row(
                   spacing: 10,
                   children: [
-                    Expanded(child: SliderEds(images: [
+                    Expanded(
+                        flex: 1,
+                        child: SliderEds(images: [
                       'assets/images/new_ar.png',
                       'assets/images/new_phon_ar_10.png',
                       'assets/images/new_phon_ar_9.png',
                     ])),
-                    Expanded(child: SheinNewInDates())
+                    Expanded(
+                      flex: 2,
+                        child: SheinNewInDates())
                   ],
                 ),
               ):SliderEds(images: [
                 'assets/images/new_ar.png',
                 'assets/images/new_phon_ar_10.png',
                 'assets/images/new_phon_ar_9.png',
-              ]),
+              ],scrollPhysics: true,),
               isDesktop?SizedBox(): Padding(
                 padding: const EdgeInsets.symmetric(vertical: 10),
                 child: SheinNewInDates(),
               ),
-              Padding(
+              isDesktop ? SizedBox() :Padding(
                 padding: const EdgeInsets.only(bottom: 10),
                 child: Text("top Collection".tr(),style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold),),
               ),
@@ -96,10 +99,10 @@ class NewScreen extends StatelessWidget {
               Column(
                 spacing: 10,
                 children: [
-                  TitleBar(title: 'الراقيه',),
-                  DiscountsUI(),
-                  TitleBar(title: 'الراقيه',),
-                  DiscountsUI(),
+                  TitleBar(title: 'الراقيه',isViewMoreTextShow: true,),
+                  NewProducts(),
+                  TitleBar(title: 'الراقيه',isViewMoreTextShow: true,),
+                  NewProducts(),
                 ],
               )
 

@@ -3,10 +3,14 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/icons/app_icon.dart';
+import '../../../core/widgets/icons/arrow_back_icon.dart';
+import '../../../core/widgets/icons/cart_icon.dart';
+import '../../../core/widgets/icons/favorite_icon.dart';
 import '../../../core/widgets/search/app_search.dart';
 import '../../../core/widgets/titleBar.dart';
 import '../../widgets/product/all_products.dart';
 import '../../widgets/product/product_details.dart';
+import '../search/search_screen.dart';
 
 //خلينا الكلاس هناStatefulWidget علشان افتح السطر المليان واغلقه
 class ProductDetailsScreen extends StatefulWidget {
@@ -37,16 +41,22 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
-        surfaceTintColor: Colors.transparent,
+        leadingWidth: 0,
+        titleSpacing:3,
         elevation: 0,
-        leading:IconButton(icon:Icon(Icons.arrow_back_ios_new_rounded,size: 18,) ,onPressed: (){
-          Navigator.of(context).pop();
-        },),
+        title: Row(
+          children: [
+            FavoriteIcon(),
+            CartIcon(),
+            SizedBox(width: 7,),
 
-        title: Center(child: App_Search()),
+          ],
+        ),
         actions: [
-          AppIcon(icon: CupertinoIcons.heart),
-          AppIcon(icon: CupertinoIcons.cart),
+          InkWell(
+              onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),
+              child:  App_Search(widthFactor: isDesktop ?0.3 :0.64)),
+          ArrowBack()
         ],),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),

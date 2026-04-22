@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:smart_store/core/widgets/text/viewMoreText.dart';
 import '../constants/app_colors.dart';
 import '../constants/app_shadow.dart';
+import 'icons/app_icon.dart';
 
 class TitleBar extends StatelessWidget {
   final String title;
   final bool isDecoration ;
+  final bool isViewMoreTextShow ;
   final Color? color ;
   const TitleBar({
     super.key,
     this.title = "",
     this.isDecoration = true,
+    this.isViewMoreTextShow = false,
     this.color
   });
 
@@ -30,27 +34,39 @@ class TitleBar extends StatelessWidget {
         ),
       ) : null,
       child: Row(
-        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: isViewMoreTextShow ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
         children: [
-          // إضافة لمسة جمالية (خط عمودي صغير قبل النص)
-          Container(
-            width: 3,
-            height: 15,
-            decoration: BoxDecoration(
-              color: color ?? AppColors.primary, // لون التطبيق الأساسي
-              borderRadius: BorderRadius.circular(10),
-            ),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // إضافة لمسة جمالية (خط عمودي صغير قبل النص)
+              Container(
+                width: 3,
+                height: 15,
+                decoration: BoxDecoration(
+                  color: color ?? AppColors.primary, // لون التطبيق الأساسي
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              const SizedBox(width: 9),
+              Text(
+                title,
+                style:  TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
+                  color:  AppColors.textColor, // أو AppColors.text
+                ),
+              ),
+            ],
           ),
-          const SizedBox(width: 9),
-          Text(
-            title,
-            style:  TextStyle(
-              fontSize: 12,
-              fontWeight: FontWeight.bold,
-              letterSpacing: 0.5,
-              color:  AppColors.textColor, // أو AppColors.text
-            ),
-          ),
+          isViewMoreTextShow ?  Row(
+            children: [
+              ViewMoreText(),
+              SizedBox(width: 4),
+              ArrowForwardIcon()
+            ],
+          ) : SizedBox() ,
         ],
       ),
     );

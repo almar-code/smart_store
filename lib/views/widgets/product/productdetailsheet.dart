@@ -8,7 +8,6 @@ import '../../../core/widgets/titleBar.dart';
 
 class ProductDetailsDialog {
   static void show(BuildContext context) {
-    final isDesktop = MediaQuery.of(context).size.width > 800;
 
     showGeneralDialog(
       context: context,
@@ -18,6 +17,8 @@ class ProductDetailsDialog {
       transitionDuration: const Duration(milliseconds: 300),
 
       pageBuilder: (context, animation, secondaryAnimation) {
+        bool isDesktop = MediaQuery.of(context).size.width > 800;
+
         return Align(
           alignment: isDesktop
               ? (context.locale.languageCode == 'ar'
@@ -49,6 +50,8 @@ class ProductDetailsDialog {
       },
 
       transitionBuilder: (context, animation, secondaryAnimation, child) {
+        bool isDesktop = MediaQuery.of(context).size.width > 800;
+
         Offset beginOffset = isDesktop
             ? (context.locale.languageCode == 'ar'
             ? const Offset(1, 0)

@@ -6,12 +6,12 @@ import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/text/viewMoreText.dart';
 import '../flash/flash_screen.dart';
 
-class DiscountsUI extends StatelessWidget {
-  DiscountsUI({super.key});
-  Future<List<Map<String, dynamic>>> getDiscounts() async {
+class NewProducts extends StatelessWidget {
+  const NewProducts({super.key});
+  Future<List<Map<String, dynamic>>> getNewProducts() async {
     await Future.delayed(const Duration(seconds: 3));
     return List.generate(
-      6,
+      10,
           (index) => {"image" : "assets/images/${index}.jpg","price": 100, "newPrice":70, "discount":30},
     );
   }
@@ -20,9 +20,9 @@ class DiscountsUI extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     return SizedBox(
-      height: isDesktop ? 170 : 155,
+      height: isDesktop ? 180 : 165,
       child: FutureBuilder(
-          future: getDiscounts(),
+          future: getNewProducts(),
           builder: (context, asyncSnapshot) {
             final products = asyncSnapshot.data ?? [];
             if (asyncSnapshot.connectionState == ConnectionState.waiting) {
@@ -36,7 +36,7 @@ class DiscountsUI extends StatelessWidget {
 
                 // 🔥 كرت مشاهدة المزيد
                 if (index == products.length) {
-                  return Container(
+                  return (products.length > 9) ?  Container(
                     width: isDesktop ? 130 :100,
                     margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     decoration: BoxDecoration(
@@ -67,14 +67,13 @@ class DiscountsUI extends StatelessWidget {
 
                       ],
                     ),
-                  );
+                  ) : SizedBox();
                 }
 
                 final item = products[index];
 
                 return Container(
-                  width: isDesktop ? 125 :100,
-                  height: 140,
+                  width: isDesktop ? 115 :100,
                   margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: AppColors.backgroundSecondary,
@@ -82,6 +81,7 @@ class DiscountsUI extends StatelessWidget {
                     boxShadow: AppShadow.commonShadow,
                   ),
                   child: Column(
+                    spacing: 5,
                     children: [
 
                       Stack(
@@ -104,23 +104,59 @@ class DiscountsUI extends StatelessWidget {
 
                       // 💰 السعر
                       Column(
-
-                        spacing: 3,
+                        mainAxisSize: MainAxisSize.max,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 2,
                         children: [
-                          Text(
-                            "عبايه رغد",
-                            style: TextStyle(
-                              fontSize: 10,
-                              color: AppColors.textSecondary,
-                              fontWeight: FontWeight.bold,
-                            ),
+                          SizedBox(
+                            child: Text(
+                              'Kagole abaya',
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontSize: 10,
+                                color: AppColors.textColor,
+                                fontWeight: FontWeight.bold,
+                              ),),
                           ),
-
-                          Text(
-                            "${item['price']} \$",
-                            style: TextStyle(
-                              fontSize: 8,
-                              color: AppColors.textSecondary,
+                          // 💰 السعر
+                          SizedBox(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              spacing: 10,
+                              children: [
+                                Row(
+                                  spacing: 1,
+                                  children: [
+                                    Text(
+                                      "${item['newPrice']}",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 11,
+                                        color:  AppColors.primary,
+                                      ),
+                                    ),
+                                    Text(
+                                      "\$",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w300,
+                                        fontSize: 10,
+                                        color:  AppColors.primary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  "${item['price']} \$",
+                                  style: TextStyle(
+                                    fontSize: 10,
+                                    color: AppColors.textSecondary,
+                                    decoration: TextDecoration.lineThrough,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           ]

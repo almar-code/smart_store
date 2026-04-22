@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 import '../../../core/constants/app_shadow.dart';
 import '../flash/flash_screen.dart';
+import '../sliderEds/sliderEds.dart';
 import 'img_new.dart';
 
 class NewInState {
@@ -68,7 +69,11 @@ class SheinNewInDates extends StatelessWidget {
                    ],
                  ),
                ),
-               Expanded(child: cardImage(imagePath: "new_phon_ar_4.png")),
+               Expanded(child: SliderEds(images: [
+                 'assets/images/new_phon_ar_9.png',
+                 'assets/images/new_ar.png',
+                 'assets/images/new_phon_ar_10.png',
+               ])),
              ],
            ): dateButton(_days, state, context),
          );
