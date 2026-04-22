@@ -1,108 +1,71 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:easy_localization/easy_localization.dart';
-
 import '../constants/app_colors.dart';
-class UserProfileOrLogin extends StatelessWidget {
+import 'app_title.dart';
+import 'circleImage/circle_image.dart';
+class UserProfile extends StatelessWidget {
   final bool isLoggedIn;
-  final String? userName;
-  final String? userImageUrl;
-  final VoidCallback onLoginTap;
-  final VoidCallback onProfileTap;
-  final double avatarRadius;
   final bool isDrawer;
-
-  const UserProfileOrLogin({
-    super.key,
-    required this.isLoggedIn,
-    this.userName,
-    this.userImageUrl,
-    required this.onLoginTap,
-    required this.onProfileTap,
-    this.avatarRadius = 17,
-    this.isDrawer=false
-  });
+  const UserProfile({super.key,this.isLoggedIn = true,this.isDrawer = false});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height:isDrawer?80: 90,
-      padding: const EdgeInsets.only(top: 12, left: 8, right: 8, bottom: 1),
-      color: Colors.black12,
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: isLoggedIn? avatarRadius + 1 :avatarRadius,
-                backgroundColor: Colors.black,
-                child: CircleAvatar(
-                  radius: avatarRadius,
-                  backgroundColor: Colors.grey[300],
-                  backgroundImage: (isLoggedIn &&
-                      userImageUrl != null &&
-                      userImageUrl!.isNotEmpty)
-                      ? NetworkImage(userImageUrl!)
-                      : null,
-                  child: (!isLoggedIn || userImageUrl == null)
-                      ? Icon(
-                    Icons.person,
-                    size: avatarRadius * 1.2,
-                    color: Colors.white,
-                  )
-                      : null,
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
+    return isLoggedIn ? Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        InkWell(
+          onTap: isDrawer ? (){} :(){
+            showDialog(context: context, builder: (context){
+              return CircleAvatar(
+                backgroundColor: Colors.white.withOpacity(0),
+                child: CircleImage(
+                  imagePath:
+                  "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
+                  radius: 150,
+                  icon: CupertinoIcons.person,
                 ),
-              ),
-              Text(
-                isLoggedIn ? (userName ?? "User") : "username".tr(),
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.iconColor,
-                ),
-              ),
-              if (!isDrawer && isLoggedIn)
-                const Text(
-                  "omar.abdu20187@gmail.com",
-                  style: TextStyle(fontSize: 12, color: Colors.black54),
-                ),
-            ],
+              );
+            });
+          },
+          child: CircleImage(
+            imagePath:
+            "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
+            radius: isDesktop ? 23 : 20,
+            icon: CupertinoIcons.person,
           ),
-
-          isDrawer?
-          IconButton(
-            alignment: Alignment.topRight,
-            icon:  Icon(
-              CupertinoIcons.xmark_square_fill,
-              color: AppColors.primary,
-              size: 22,
+        ),
+        const SizedBox(width: 6),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Ali Mutahar',
+              style: TextStyle(
+                color: AppColors.textColor,
+                fontSize: isDesktop ? 17 : 15,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-          ):InkWell(
-            onTap: isLoggedIn ? onProfileTap : onLoginTap,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-            isLoggedIn? "logout".tr():"login".tr(),
-                  style: TextStyle(fontSize: 13,fontWeight: FontWeight.bold,),
-                ),
-                SizedBox(width: 5),
-                Icon(
-                  Icons.login_outlined,
-                  color: AppColors.primary,
-                  size: 17,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+            Text(
+              "omar.abdu20187@gmail.com",
+              style: TextStyle(fontSize: isDesktop ? 15 : 12, color: AppColors.textSecondary),
+            )
+          ],
+        ),
+      ],
+    ) : Row(
+      mainAxisSize: MainAxisSize.min,
+      spacing: 7,
+      children: [
+        CircleImage(
+          imagePath:
+          "Image_ez61caez61caez61.png",
+          radius:  20,
+          icon: CupertinoIcons.person,
+        ),
+        AppTitle(firstPart: 'Log',secondPart: 'in',),
+      ],
+    ) ;
   }
 }
