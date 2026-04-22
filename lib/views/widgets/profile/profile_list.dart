@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 import '../../../core/widgets/app_button.dart';
+import '../../screens/address/user_addresses_screen.dart';
 import 'custom_tile.dart';
 
 class ProfileList extends StatelessWidget {
@@ -11,7 +12,7 @@ class ProfileList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView(
-      padding: const EdgeInsets.symmetric(vertical: 20),
+      padding: const EdgeInsets.symmetric(vertical: 5),
       children: [
         CustomTile(icon: CupertinoIcons.doc_text_search, title: "order management".tr(), onTap: () {}),
         CustomTile(icon: CupertinoIcons.cart, title: "shopping cart".tr(), onTap: () {}),
@@ -25,7 +26,7 @@ class ProfileList extends StatelessWidget {
           title: "language".tr(),
           onTap: () => _showProfessionalLanguagePicker(context),
         ),
-        CustomTile(icon: CupertinoIcons.location_solid, title: "country".tr(), onTap: () {}),
+        CustomTile(icon: CupertinoIcons.location_solid, title: "${tr('my')} ${tr('myAddresses')}", onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => UsrAddress()))),
         CustomTile(icon: CupertinoIcons.money_dollar_circle, title: "currency".tr(), onTap: () {}),
       ],
     );
