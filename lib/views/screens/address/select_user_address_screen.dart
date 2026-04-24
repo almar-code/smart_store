@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../widgets/address/address_header_section.dart';
@@ -50,6 +51,49 @@ class SelectUsrAddress extends StatelessWidget {
             child: AddressListView(),
           ),
         ],
+      ),
+      bottomNavigationBar: Padding(
+        // إضافة padding بسيط ليعطي مظهراً أفضل للأزرار في الأسفل
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+        child: Row(
+          children: [
+            // الزر الأول: السابق
+            Expanded(
+              child: SizedBox(
+                height: isDesktop ? 43 : 28,
+                child: AppButton(
+                  label: 'previous'.tr(), // استخدام الترجمة إذا كانت مفعلة أو نص مباشر 'السابق'
+                  icon: Icons.arrow_back_ios,
+                  color: AppColors.backgroundSecondary,
+                  textColor: AppColors.textColor,
+                  borderColor: AppColors.borderSecondary, // لمطابقة حدود الزر مع لونه الجديد
+                  onTap: () {
+                    // حدث العودة للخلف
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ),
+
+            const SizedBox(width: 12), // مسافة فاصلة بين الزرين
+
+            // الزر الثاني: التالي
+            Expanded(
+              child: SizedBox(
+                height: isDesktop ? 45 : 30,
+                child: AppButton(
+                  iconAfter: true,
+                  label: 'next'.tr(), // أو نص مباشر 'التالي'
+                  icon: Icons.arrow_forward_ios,
+                  // الإعدادات الافتراضية للون ستؤخذ من الكلاس كما هي
+                  onTap: () {
+                    // حدث الانتقال للتالي
+                  },
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

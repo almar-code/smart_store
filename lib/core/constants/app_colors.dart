@@ -16,6 +16,8 @@ class AppColors {
 
   static Color get borderColor =>
       isDark.value ? Colors.white10 : const Color.fromARGB(66, 158, 158, 158);
+  static Color get borderSecondary =>
+      isDark.value ? Colors.white60 : Colors.black26;
 
   static Color get textColor =>
       isDark.value ? Colors.white : const Color.fromARGB(255, 0, 0, 0);
