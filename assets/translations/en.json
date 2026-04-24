@@ -62,5 +62,16 @@
   "city_required": "City name is required",
   "country_required": "Country name is required",
   "street_required": "Street name is required",
-  "invalid_number": "Please enter numbers only"
+  "save": "save",
+  "required": "This field is required",
+  "invalid_number": "Invalid number",
+  "use_map_to_fill": "Use map to fill details",
+  "fetching_address": "Fetching address details...",
+  "select_location": "Select location on map",
+  "confirm_selection": "Confirm Selection",
+  "use_map": "Use Map",
+  "confirm": "Confirm",
+  "loading": "Loading...",
+  "previous": "Previous",
+  "next": "Next"
 }

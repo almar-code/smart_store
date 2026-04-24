@@ -10,8 +10,9 @@ class AppButton extends StatelessWidget {
   final double fontSize;
   final double iconSize;
   final String label;
+  final bool iconAfter ;
   final VoidCallback? onTap;
-  const AppButton({super.key,this.color  ,this.fontSize  =14,this.iconSize  =14,this.icon ,this.label='checkout',this.borderColor = Colors.white,this.textColor =Colors.white,this.onTap ,});
+  const AppButton({super.key,this.color  ,this.fontSize  =14,this.iconSize  =14,this.icon ,this.label='checkout',this.borderColor = Colors.white,this.textColor =Colors.white,this.onTap ,this.iconAfter =false});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +30,7 @@ class AppButton extends StatelessWidget {
         spacing: 5,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          (icon != null) ? Icon(icon,color:textColor,size: iconSize,):SizedBox(),
+          (!iconAfter) ? (icon != null) ? Icon(icon,color:textColor,size: iconSize,):SizedBox() : SizedBox(),
           Text(
             label,
             style: TextStyle(
@@ -38,6 +39,7 @@ class AppButton extends StatelessWidget {
               fontWeight: FontWeight.bold,
             ),
           ),
+          (iconAfter) ? (icon != null) ? Icon(icon,color:textColor,size: iconSize,):SizedBox() : SizedBox(),
         ],
       ),
     );

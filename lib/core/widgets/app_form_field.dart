@@ -11,8 +11,6 @@ class CustomFormField extends StatelessWidget {
   final int maxLines;
   final List<String? Function(String?)>? validators;
   final TextInputType keyboardType;
-  final String? initialValue;
-
   const CustomFormField({
     super.key,
     required this.name,
@@ -22,7 +20,6 @@ class CustomFormField extends StatelessWidget {
     this.maxLines = 1,
     this.validators,
     this.keyboardType = TextInputType.text,
-    this.initialValue,
   });
 
   @override
@@ -32,7 +29,6 @@ class CustomFormField extends StatelessWidget {
       child: FormBuilderTextField(
         name: name,
         maxLines: maxLines,
-        initialValue: initialValue,
         keyboardType: keyboardType,
         style: TextStyle(color: AppColors.textColor, fontSize: 14),
         decoration: InputDecoration(

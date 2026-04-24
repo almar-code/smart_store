@@ -50,7 +50,7 @@ class AddressHeaderSection extends StatelessWidget {
             spacing: isDesktop ? 12 : 5,
             children: [
               // 2. حقل البحث
-              ConstrainedBox(
+              isDesktop  ? ConstrainedBox(
                 constraints:  BoxConstraints(
                   maxWidth: isDesktop ? 350 : 140, // هنا نحدد أنه لن يكبر عن 150 بكسل مهما كانت الشاشة واسعة
                 ),
@@ -86,7 +86,7 @@ class AddressHeaderSection extends StatelessWidget {
                     ),
                   ),
                 ),
-              ),
+              ) : SizedBox(),
               SizedBox(
                 height: isDesktop ? 38 : 25,
                 child: AppButton(

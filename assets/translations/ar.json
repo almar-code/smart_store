@@ -62,5 +62,16 @@
   "city_required": "اسم المدينة مطلوب",
   "country_required": "اسم ألدولة مطلوب",
   "street_required": "اسم الشارع مطلوب",
-  "invalid_number": "يجب إدخال أرقام فقط"
+  "invalid_number": "يجب إدخال أرقام فقط",
+  "save": "حفط",
+  "required": "هذا الحقل مطلوب",
+  "use_map_to_fill": "استخدم الخريطة لتعبئة البيانات",
+  "fetching_address": "جاري جلب تفاصيل العنوان...",
+  "select_location": "تحديد الموقع على الخريطة",
+  "confirm_selection": "تأكيد الموقع المختار",
+  "use_map": "استخدم الخريطة",
+  "confirm": "تأكيد",
+  "loading": "جاري التحميل...",
+  "previous": "السابق",
+  "next": "التالي"
 }
