@@ -4,6 +4,7 @@ import 'package:smart_store/core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/itemCount.dart';
+import '../../screens/cart/cart_screen.dart';
 class CartFloatingButton extends StatelessWidget {
   const CartFloatingButton({super.key});
 
@@ -14,8 +15,7 @@ class CartFloatingButton extends StatelessWidget {
       height: 50,
       child: FloatingActionButton(
 
-        onPressed: () {
-        },
+        onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => CartScreen(screenOnly: true,))),
         splashColor: Colors.transparent,
         hoverElevation: 4,
         backgroundColor:AppColors.background.withOpacity(0.9),

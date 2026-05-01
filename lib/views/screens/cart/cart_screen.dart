@@ -21,12 +21,12 @@ class CartScreen extends StatelessWidget {
     Future<List<Map<String, dynamic>>> getProducts() async {
       await Future.delayed(const Duration(seconds: 3));
       return List.generate(
-        0,
+        10,
             (index) => {"p_name" : "Kajol abaya","size" : "52","image" : "assets/images/${index}.jpg","price": 100, "newPrice":70, "discount":30,"colors":{"colorName":"اسود","code":"#000000"}},
       );
     }
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: AppColors.background,
           elevation: 0,
@@ -85,7 +85,6 @@ class CartScreen extends StatelessWidget {
                         Row(
                           children: [
 
-                            /// 🖼️ صورة المنتج
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
                               child: ClipRRect(
@@ -202,17 +201,10 @@ class CartScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: Container(
-        height:  isDesktop ? 55 : 85,
+        height:  isDesktop ? 55 : 90,
         padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 3),
         decoration: BoxDecoration(
-          color: AppColors.background,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 8,
-              offset: const Offset(0, -2),
-            ),
-          ],
+          color: AppColors.background.withOpacity(0.1),
         ),
         child: Column(
           children: [
