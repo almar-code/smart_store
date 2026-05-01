@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 
@@ -40,8 +42,8 @@ class AddressHeaderSection extends StatelessWidget {
 
           // 3. العنوان مع الخط الأخضر
           UnderlinedTitle(
-            firstPart: tr('addresses'),
-            secondPart: tr('list'),
+            firstPart:(context.locale.languageCode == 'en') ? tr('addresses') : tr('list'),
+            secondPart: (context.locale.languageCode == 'en') ? tr('list') : tr('addresses'),
             fontSize: isDesktop ? 16 : 14,
           ),
           // 1. زر إضافة عنوان

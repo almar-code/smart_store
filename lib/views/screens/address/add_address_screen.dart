@@ -145,6 +145,7 @@ class _AddAddressViewState extends State<AddAddressView> {
                   child: FormBuilder(
                     key: _formKey,
                     child: Column(
+                      spacing: 15,
                       children: [
                         CustomFormField(
                           name: 'country',
@@ -175,7 +176,7 @@ class _AddAddressViewState extends State<AddAddressView> {
                           icon: Icons.mark_as_unread_sharp,
                           keyboardType: TextInputType.number,
                         ),
-                        const SizedBox(height: 30),
+                        const SizedBox(height: 1),
                         SizedBox(
                           width: double.infinity,
                           height: isDesktop ? 40: 30,

@@ -41,15 +41,21 @@ class UsrAddress extends StatelessWidget {
         ),
         actions: const [ArrowBack()],
       ),
-      body: Column(
-        children: [
-          AddressHeaderSection(onAddPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => AddAddress())),),
+      body: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: isDesktop ? MediaQuery.of(context).size.width * 0.2 : 7,
+          vertical: 20,
+        ),
+        child: Column(
+          children: [
+            AddressHeaderSection(onAddPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => AddAddress())),),
 
-          // استدعاء الكلاس الجديد هنا
-          Expanded(
-            child: AddressListView(isIconsShow: true,),
-          ),
-        ],
+            // استدعاء الكلاس الجديد هنا
+            Expanded(
+              child: AddressListView(isIconsShow: true,),
+            ),
+          ],
+        ),
       ),
     );
   }
