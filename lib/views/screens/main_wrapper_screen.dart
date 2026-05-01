@@ -59,29 +59,44 @@ class MainWrapperScreen extends StatelessWidget {
 
 
                 // backgroundColor: AppColors.background,
-                body: Row(
-                  children: [
-                    if (isDesktop)
-                      ModernSideRail(
-                        currentIndex: currentIndex,
-                        onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
-                      ),
-
-                    Expanded(
-                      child: Column(
-                        children: [
-
-                          // 5. محتوى الصفحات (Home, Reels, etc.)
-                          Expanded(
-                            child: IndexedStack(
-                              index: currentIndex,
-                              children: screens,
-                            ),
-                          ),
-                        ],
-                      ),
+                body: Container(
+                  width: double.infinity,
+                  height: double.infinity,
+                  decoration:  BoxDecoration(
+                    // التدرج اللوني من الأعلى للأسفل كما في الصورة
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [
+                        AppColors.gradientTop,    // سيأخذ 0xFF1C1C1E في الليل و 0xFFFFFFFF في النهار
+                        AppColors.gradientBottom, // سيأخذ 0xFF000000 في الليل و 0xFFE8EAF0 في النهار
+                      ],
                     ),
-                  ],
+                  ),
+                  child: Row(
+                    children: [
+                      if (isDesktop)
+                        ModernSideRail(
+                          currentIndex: currentIndex,
+                          onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
+                        ),
+
+                      Expanded(
+                        child: Column(
+                          children: [
+
+                            // 5. محتوى الصفحات (Home, Reels, etc.)
+                            Expanded(
+                              child: IndexedStack(
+                                index: currentIndex,
+                                children: screens,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
 
                 // --- استخدام كلاس الجوال المنفصل ---

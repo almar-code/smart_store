@@ -28,6 +28,7 @@ class ProductScreens extends StatelessWidget {
         leadingWidth: 0,
         titleSpacing:3,
         elevation: 0,
+        automaticallyImplyLeading: false,
         title: Row(
           children: [
             FavoriteIcon(),

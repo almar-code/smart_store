@@ -28,8 +28,13 @@ class AppColors {
       isDark.value ? const Color(0xFF00B387) : const Color(0xFF00B387);
 
   static Color get background =>
-      isDark.value ? const Color(0xFF121212) : const Color(0xFFFFFFFF);
-
+      isDark.value ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
+// اللون العلوي للتدرج
+  static Color get gradientTop =>
+      isDark.value ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
+// اللون السفلي للتدرج
+  static Color get gradientBottom =>
+      isDark.value ? const Color(0xFF1C1C1E) : const Color(0xFFE8EAF0);
   static Color get textSecondary =>
       isDark.value ? Colors.white70 : const Color(0xFF757575);
 

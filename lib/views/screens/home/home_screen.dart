@@ -31,9 +31,11 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // استخدام MediaQuery هنا يضمن تحديث الواجهة فوراً عند تصغير المتصفح
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-
+    Future<void> _handleRefresh() async {
+      await Future.delayed(const Duration(seconds: 2));
+    }
     return Scaffold(
-       backgroundColor: AppColors.background,
+       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
@@ -71,51 +73,56 @@ class HomeScreen extends StatelessWidget {
       ),
 
 
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          children: [
-            CategoryBar(),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 15.0),
-                  child: Column(
-                    spacing: 8,
-                    children:[
-                      isDesktop ? Row(
-                        spacing: 12,
-                        children: [
-                          Expanded(child:
-                          SliderEds(
-                            images: [
-                              'assets/images/E3.jpg',
-                              'assets/images/a4.jpg',
-                              'assets/images/E.jpg',
-                            ],scrollPhysics: true
-                          )),
-                          Expanded(
-                              flex: 2,
-                              child: Discounts()),
-                        ],
-                      ):
-                      SliderEds(
-                        images: [
-                          'assets/images/E3.jpg',
-                          'assets/images/a4.jpg',
-                          'assets/images/E.jpg',
-                        ],scrollPhysics: true
-                      ),
-                      if(!isDesktop) SubcategoryBar(),
-                      isDesktop?SubcategoryBar():Discounts(),
-                      TitleBar(title: tr('forYou'),),
-                      SizedBox(child: AllProducts()),
-                    ],
+      body: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        color: AppColors.primary, // لون مؤشر التحميل (يمكنك ربطه بهوية المشروع)
+        backgroundColor: AppColors.backgroundSecondary,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            children: [
+              CategoryBar(),
+              Expanded(
+                child: SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 15.0),
+                    child: Column(
+                      spacing: 8,
+                      children:[
+                        isDesktop ? Row(
+                          spacing: 12,
+                          children: [
+                            Expanded(child:
+                            SliderEds(
+                              images: [
+                                'assets/images/E3.jpg',
+                                'assets/images/a4.jpg',
+                                'assets/images/E.jpg',
+                              ],scrollPhysics: true
+                            )),
+                            Expanded(
+                                flex: 2,
+                                child: Discounts()),
+                          ],
+                        ):
+                        SliderEds(
+                          images: [
+                            'assets/images/E3.jpg',
+                            'assets/images/a4.jpg',
+                            'assets/images/E.jpg',
+                          ],scrollPhysics: true
+                        ),
+                        if(!isDesktop) SubcategoryBar(),
+                        isDesktop?SubcategoryBar():Discounts(),
+                        TitleBar(title: tr('forYou'),),
+                        SizedBox(child: AllProducts()),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       floatingActionButton: Padding(

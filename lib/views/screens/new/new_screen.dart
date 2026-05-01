@@ -52,64 +52,62 @@ class NewScreen extends StatelessWidget {
             SizedBox(width: 10),
           ],
         ),
-        body:BlocProvider(
-          create: (context) => NewInBloc(),
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: ListView(
-            children: [
-              isDesktop?SizedBox(
-                height: 200,
-                child: Row(
+        body:SafeArea(
+          child: BlocProvider(
+            create: (context) => NewInBloc(),
+            child: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(), // لضمان تمرير سلس
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                isDesktop?SizedBox(
+                  height: 200,
+                  child: Row(
+                    spacing: 10,
+                    children: [
+                      Expanded(
+                          flex: 1,
+                          child: SliderEds(images: [
+                        'assets/images/new_ar.png',
+                        'assets/images/new_phon_ar_10.png',
+                        'assets/images/new_phon_ar_9.png',
+                      ])),
+                      Expanded(
+                        flex: 2,
+                          child: SheinNewInDates())
+                    ],
+                  ),
+                ):SliderEds(images: [
+                  'assets/images/new_ar.png',
+                  'assets/images/new_phon_ar_10.png',
+                  'assets/images/new_phon_ar_9.png',
+                ],scrollPhysics: true,),
+                isDesktop?SizedBox(): Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  child: SheinNewInDates(),
+                ),
+                isDesktop ? SizedBox() :Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Text("top Collection".tr(),style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold),),
+                ),
+               isDesktop? SizedBox():Row(
                   spacing: 10,
                   children: [
-                    Expanded(
-                        flex: 1,
-                        child: SliderEds(images: [
-                      'assets/images/new_ar.png',
-                      'assets/images/new_phon_ar_10.png',
-                      'assets/images/new_phon_ar_9.png',
-                    ])),
-                    Expanded(
-                      flex: 2,
-                        child: SheinNewInDates())
+                    Expanded(child: cardImage(imagePath: "new_phon_ar_6.png")),
+                    Expanded(child: cardImage(imagePath: "new_phon_ar_4.png")),
                   ],
                 ),
-              ):SliderEds(images: [
-                'assets/images/new_ar.png',
-                'assets/images/new_phon_ar_10.png',
-                'assets/images/new_phon_ar_9.png',
-              ],scrollPhysics: true,),
-              isDesktop?SizedBox(): Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: SheinNewInDates(),
+                SizedBox(height: 25,),
+                TitleBar(title: 'New Products'.tr()),
+                SizedBox(height: 10,),
+                NewProducts(),
+          
+              ],
               ),
-              isDesktop ? SizedBox() :Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Text("top Collection".tr(),style: TextStyle(fontSize: 14,fontWeight: FontWeight.bold),),
-              ),
-             isDesktop? SizedBox():Row(
-                spacing: 10,
-                children: [
-                  Expanded(child: cardImage(imagePath: "new_phon_ar_6.png")),
-                  Expanded(child: cardImage(imagePath: "new_phon_ar_4.png")),
-                ],
-              ),
-              SizedBox(height: 25,),
-              Column(
-                spacing: 10,
-                children: [
-                  TitleBar(title: 'الراقيه',isViewMoreTextShow: true,),
-                  NewProducts(),
-                  TitleBar(title: 'الراقيه',isViewMoreTextShow: true,),
-                  NewProducts(),
-                ],
-              )
-
-            ],
-            ),
-          )
-       )
+            )
+                 ),
+        )
     );
   }
 }

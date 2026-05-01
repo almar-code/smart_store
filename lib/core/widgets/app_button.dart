@@ -9,21 +9,22 @@ class AppButton extends StatelessWidget {
   final Color textColor;
   final double fontSize;
   final double iconSize;
+  final double borderRadius;
   final String label;
   final bool iconAfter ;
   final VoidCallback? onTap;
-  const AppButton({super.key,this.color  ,this.fontSize  =14,this.iconSize  =14,this.icon ,this.label='checkout',this.borderColor = Colors.white,this.textColor =Colors.white,this.onTap ,this.iconAfter =false});
+  const AppButton({super.key,this.color  ,this.borderRadius =12 , this.fontSize  =14,this.iconSize  =14,this.icon ,this.label='checkout',this.borderColor = Colors.white12,this.textColor =Colors.white,this.onTap ,this.iconAfter =false});
 
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     return MaterialButton(
       onPressed: onTap ?? (){},
-      // padding: const EdgeInsets.symmetric(vertical: 15),
       color: color ?? AppColors.buttonColor,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
       shape: RoundedRectangleBorder(
         side: BorderSide(color: borderColor),
-        borderRadius: BorderRadius.circular(isDesktop ? 6 : 3,),
+        borderRadius: BorderRadius.circular(isDesktop ? borderRadius : borderRadius-2,),
       ),
       elevation: 0,
       child: Row(

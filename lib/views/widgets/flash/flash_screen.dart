@@ -140,12 +140,17 @@ class DiscountsShimmer extends StatelessWidget {
       child: Shimmer.fromColors(
         baseColor: AppColors.baseColor,
         highlightColor: AppColors.highlightColor,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: 10,
+        child: MasonryGridView.count(
+          scrollDirection: Axis.vertical,
+          crossAxisCount:isDesktop ? 6 : 3,
+          mainAxisSpacing: 10, //مسافة بين العنصر والذي تحتة
+          crossAxisSpacing: 10, //مسافة بين العنصر والذي جنبة
+          shrinkWrap: true, //حجم حسب الاب
+          itemCount:9,
+          physics: NeverScrollableScrollPhysics(), //توقيف الشريط
           itemBuilder: (context, index) {
             return Container(
-              width: isDesktop ? 125 : 100,
+              width: isDesktop ? 115 :100,
               margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
                 color: AppColors.backgroundSecondary,
