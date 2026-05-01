@@ -23,6 +23,8 @@ class ProfileScreen extends StatelessWidget {
       backgroundColor: AppColors.background,
       appBar: AppBar(
         backgroundColor: AppColors.background,
+        elevation: 0,
+        scrolledUnderElevation: 0,
         titleSpacing: 5,
         title: UserProfile(),
         actions: [

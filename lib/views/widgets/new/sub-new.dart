@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_shadow.dart';
 import 'dart:ui';
@@ -20,7 +21,6 @@ class NewProducts extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     return SizedBox(
-      height: isDesktop ? 180 : 165,
       child: FutureBuilder(
           future: getNewProducts(),
           builder: (context, asyncSnapshot) {
@@ -28,53 +28,18 @@ class NewProducts extends StatelessWidget {
             if (asyncSnapshot.connectionState == ConnectionState.waiting) {
               return DiscountsShimmer();
             }
-            return ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: products.length + 1,
-
+            return MasonryGridView.count(
+              scrollDirection: Axis.vertical,
+              crossAxisCount:isDesktop ? 6 : 3,
+              mainAxisSpacing: 10, //مسافة بين العنصر والذي تحتة
+              crossAxisSpacing: 10, //مسافة بين العنصر والذي جنبة
+              shrinkWrap: true, //حجم حسب الاب
+              itemCount: products.length,
+              physics: NeverScrollableScrollPhysics(), //توقيف الشريط
               itemBuilder: (context, index) {
-
-                // 🔥 كرت مشاهدة المزيد
-                if (index == products.length) {
-                  return (products.length > 9) ?  Container(
-                    width: isDesktop ? 130 :100,
-                    margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                    decoration: BoxDecoration(
-                      color: AppColors.background, // شفافية خفيفة
-                      borderRadius: BorderRadius.circular(7),
-                      border: Border.all(
-                        color: AppColors.borderColor,
-                      ),
-                      boxShadow: AppShadow.commonShadow,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        // 🔁 أيقونة مناسبة (عرض المزيد)
-                        Container(
-                          padding: EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: AppColors.primary.withOpacity(0.10),
-                            shape: BoxShape.circle,
-                          ),
-                          child: ArrowForwardIcon(size: 18,),
-                        ),
-
-                        SizedBox(height: 8),
-                        SizedBox(height: 8),
-
-                        ViewMoreText(fontSize: 13,),
-
-                      ],
-                    ),
-                  ) : SizedBox();
-                }
-
                 final item = products[index];
-
                 return Container(
                   width: isDesktop ? 115 :100,
-                  margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                   decoration: BoxDecoration(
                     color: AppColors.backgroundSecondary,
                     borderRadius: BorderRadius.circular(7),
