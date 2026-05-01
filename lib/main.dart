@@ -8,8 +8,7 @@ import 'core/theme/bloc/theme_bloc.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  await dotenv.load();
-
+  await dotenv.load(fileName: ".env");
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ar')],
