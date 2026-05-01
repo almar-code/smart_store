@@ -74,6 +74,7 @@ dependencies:
   google_maps_flutter_web: ^0.5.10 # للويب
   geocoding: any
   geolocator: any
+  flutter_dotenv: ^5.0.2 # اخفاء مفاتيح api
 
 
 

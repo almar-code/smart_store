@@ -28,6 +28,11 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
+        def mapsApiKey = project.properties["MAPS_API_KEY"] ?: ""
+
+        manifestPlaceholders = [
+            MAPS_API_KEY: mapsApiKey
+        ]
     }
 
     buildTypes {

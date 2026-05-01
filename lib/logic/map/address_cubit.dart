@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import '../../views/screens/address/add_address_screen.dart';
 abstract class AddressState {}
 class AddressInitial extends AddressState {}
 class AddressLoading extends AddressState {}
@@ -17,7 +17,7 @@ class AddressError extends AddressState {
 class AddressCubit extends Cubit<AddressState> {
   AddressCubit() : super(AddressInitial());
 
-  final String apiKey = "AIzaSyDOG6jlkeDYdq75yQrtEahdlNmOz1R8HHc";
+  final String apiKey = dotenv.env['MAPS_API_KEY'] ?? '';
 
   Future<void> fetchAddressFromLocation(LatLng location, String lang) async {
     emit(AddressLoading());
