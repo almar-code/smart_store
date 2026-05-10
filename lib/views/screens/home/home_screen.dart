@@ -10,7 +10,9 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/theme/bloc/theme_bloc.dart';
 import '../../../core/theme/bloc/theme_event.dart';
+import '../../../core/widgets/ScrollToTopButton.dart';
 import '../../../core/widgets/icons/favorite_icon.dart';
+import '../../../core/widgets/scroll_wrapper.dart';
 import '../../../core/widgets/titleBar.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
 import '../../widgets/category/category_bar.dart';
@@ -23,10 +25,11 @@ import '../../widgets/subcategory/subcategory_bar.dart';
 import '../address/select_user_address_screen.dart';
 import '../favorites/favorites_screen.dart';
 import '../search/search_screen.dart';
+import '../voice/voice_screen.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
   get currentIndex => null;
+  static final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     // استخدام MediaQuery هنا يضمن تحديث الواجهة فوراً عند تصغير المتصفح
@@ -71,8 +74,6 @@ class HomeScreen extends StatelessWidget {
           SizedBox(width: 10),
         ],
       ),
-
-
       body: RefreshIndicator(
         onRefresh: _handleRefresh,
         color: AppColors.primary, // لون مؤشر التحميل (يمكنك ربطه بهوية المشروع)
@@ -83,7 +84,8 @@ class HomeScreen extends StatelessWidget {
             children: [
               CategoryBar(),
               Expanded(
-                child: SingleChildScrollView(
+                child: ScrollWrapper(
+                  bottom: isDesktop ? 15 :85,
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 15.0),
                     child: Column(
@@ -124,10 +126,6 @@ class HomeScreen extends StatelessWidget {
             ],
           ),
         ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 80),
-        child: CartFloatingButton(),
       ),
     );
   }

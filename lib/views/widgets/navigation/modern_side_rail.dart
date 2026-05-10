@@ -44,7 +44,14 @@ class _ModernSideRailState extends State<ModernSideRail> {
         curve: Curves.easeInOutCubic,
         width: isExpanded ? 230 : 70,
         decoration: BoxDecoration(
-          color: AppColors.background,
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              AppColors.gradientTop,    // سيأخذ 0xFF1C1C1E في الليل و 0xFFFFFFFF في النهار
+              AppColors.gradientBottom, // سيأخذ 0xFF000000 في الليل و 0xFFE8EAF0 في النهار
+            ],
+          ),
           border: Border(right: BorderSide(color: AppColors.borderColor)),
           boxShadow: [
             if (isExpanded)

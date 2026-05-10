@@ -89,7 +89,7 @@ class CategoryBarShimmer extends StatelessWidget {
       baseColor: AppColors.baseColor,
       highlightColor: AppColors.highlightColor,
       child: Container(
-        height: 34,
+        height: 38,
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(
           children: [
@@ -208,10 +208,11 @@ class MasonryGridShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.of(context).size.width > 800;
-
+    bool isDesktop = MediaQuery.of(context).size.width > 1000;
+    bool isIpad = MediaQuery.of(context).size.width < 1000 &&  MediaQuery.of(context).size.width > 450;
+    int itemCount = isDesktop ? 3 : isIpad ? 2 : 1;
     return MasonryGridView.count(
-      crossAxisCount: isDesktop ? 4 : 1,
+      crossAxisCount: itemCount,
       mainAxisSpacing: 15,
       crossAxisSpacing: 12,
       shrinkWrap: true,

@@ -18,10 +18,18 @@ class ModernBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+
       margin:  EdgeInsets.only(bottom: 14,left: 14,right: 14),
       // padding:  EdgeInsets.only(top: 5),
       decoration: BoxDecoration(
-        color: AppColors.background,
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            AppColors.gradientTop,    // سيأخذ 0xFF1C1C1E في الليل و 0xFFFFFFFF في النهار
+            AppColors.gradientBottom, // سيأخذ 0xFF000000 في الليل و 0xFFE8EAF0 في النهار
+          ],
+        ),
         // إضافة انحناء كامل للحواف
         borderRadius: BorderRadius.circular(20),
         // حدود خفيفة جداً لتعريف الشكل

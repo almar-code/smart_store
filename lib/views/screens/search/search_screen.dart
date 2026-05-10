@@ -6,7 +6,9 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_shadow.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/search/app_search.dart';
+import '../../../core/widgets/smart_floating_button.dart';
 import '../../../core/widgets/titleBar.dart';
+import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../../widgets/product/all_products.dart';
 
 class SearchScreen extends StatelessWidget {
@@ -14,90 +16,101 @@ class SearchScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: AppColors.background,
-        elevation: 0,
-        scrolledUnderElevation: 0,
-        leadingWidth: 0,
-        titleSpacing:3,
-        title:App_Search(widthFactor:1),
-        actions: [
-          ArrowBack()
-        ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 15,
-            children: [
-              Container(
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  color: AppColors.background,
-                  // إضافة ظل خفيف جداً لتمييز البار العلوي
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.03),
-                      blurRadius: 5,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
+        appBar: AppBar(
+          backgroundColor: AppColors.background,
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          leadingWidth: 0,
+          titleSpacing:3,
+          title:App_Search(widthFactor:1),
+          actions: [
+            ArrowBack()
+          ],
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              spacing: 15,
+              children: [
+                Container(
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    // إضافة ظل خفيف جداً لتمييز البار العلوي
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.03),
+                        blurRadius: 5,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        tr('searchHistory'),
+                        style: TextStyle(
+                          fontSize: isDesktop?15:12,
+                          fontWeight: FontWeight.bold,
+                          color: AppColors.textColor,
+                        ),
+                      ),
+            
+                      // الجزء الأيسر: زر مشاهدة المزيد
+                      InkWell(
+                        onTap: () {
+                          // اضف التنقل لصفحة العروض هنا
+                        },
+                        child: Row(
+                          children: [
+                            Icon(CupertinoIcons.delete,color: AppColors.iconColor,size: 15,),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                Wrap(
+                  direction: Axis.horizontal,
+                  // الـ alignment الأساسي (للأفقي)
+                  alignment: WrapAlignment.start,
+                  // الـ crossAxisAlignment (للرأسي داخل السطر الواحد)
+                  crossAxisAlignment: WrapCrossAlignment.start,
+                  // مسافات بين العناصر لضمان عدم الالتصاق
+                  spacing: 8.0,
+                  runSpacing: 8.0,
                   children: [
-                    Text(
-                      tr('searchHistory'),
-                      style: TextStyle(
-                        fontSize: isDesktop?15:12,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textColor,
-                      ),
-                    ),
-          
-                    // الجزء الأيسر: زر مشاهدة المزيد
-                    InkWell(
-                      onTap: () {
-                        // اضف التنقل لصفحة العروض هنا
-                      },
-                      child: Row(
-                        children: [
-                          Icon(CupertinoIcons.delete,color: AppColors.iconColor,size: 15,),
-                        ],
-                      ),
-                    ),
+                    _buildInkWellItem(context,"abayas"),
+                    _buildInkWellItem(context,"abayas"),
+                    _buildInkWellItem(context,"abayas kajol"),
+                    _buildInkWellItem(context,"abayas"),
+                    _buildInkWellItem(context,"abayas"),
                   ],
                 ),
-              ),
-              Wrap(
-                direction: Axis.horizontal,
-                // الـ alignment الأساسي (للأفقي)
-                alignment: WrapAlignment.start,
-                // الـ crossAxisAlignment (للرأسي داخل السطر الواحد)
-                crossAxisAlignment: WrapCrossAlignment.start,
-                // مسافات بين العناصر لضمان عدم الالتصاق
-                spacing: 8.0,
-                runSpacing: 8.0,
-                children: [
-                  _buildInkWellItem(context,"abayas"),
-                  _buildInkWellItem(context,"abayas"),
-                  _buildInkWellItem(context,"abayas kajol"),
-                  _buildInkWellItem(context,"abayas"),
-                  _buildInkWellItem(context,"abayas"),
-                ],
-              ),
-              TitleBar(title: tr('SearchResults'),),
-              AllProducts(),
-          
-            ],
+                TitleBar(title: tr('SearchResults'),),
+                AllProducts(),
+            
+              ],
+            ),
           ),
         ),
-      ),);
+        floatingActionButton: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          spacing: 10,
+          children: [
+            SmartFloatingButton(),
+            CartFloatingButton()
+          ],
+        ) ,),
+    );
   }
   Widget _buildInkWellItem(BuildContext context, String title) {
     return InkWell(

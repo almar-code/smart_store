@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:smart_store/core/widgets/scroll_wrapper.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/icons/app_icon.dart';
@@ -7,7 +8,9 @@ import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/icons/cart_icon.dart';
 import '../../../core/widgets/icons/favorite_icon.dart';
 import '../../../core/widgets/search/app_search.dart';
+import '../../../core/widgets/smart_floating_button.dart';
 import '../../../core/widgets/titleBar.dart';
+import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../../widgets/product/all_products.dart';
 import '../../widgets/product/product_details.dart';
 import '../search/search_screen.dart';
@@ -37,39 +40,52 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: AppColors.background,
-        leadingWidth: 0,
-        titleSpacing:3,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            FavoriteIcon(),
-            CartIcon(),
-            SizedBox(width: 7,),
-
-          ],
-        ),
-        actions: [
-          InkWell(
-              onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),
-              child:  App_Search(widthFactor: isDesktop ?0.3 :0.64)),
-          ArrowBack()
-        ],),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Container(
-          child: isDesktop
-              ?_buildDesktopLayout(context)
-              : SingleChildScrollView(
-            child:_buildMobileLayout(context),
+        appBar: AppBar(
+          backgroundColor: AppColors.background,
+          leadingWidth: 0,
+          scrolledUnderElevation: 0,
+          titleSpacing:3,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          title: Row(
+            children: [
+              FavoriteIcon(),
+              CartIcon(),
+              SizedBox(width: 7,),
+      
+            ],
+          ),
+          actions: [
+            InkWell(
+                onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),
+                child:  App_Search(widthFactor: isDesktop ?0.3 :0.64)),
+            ArrowBack()
+          ],),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 10),
+          child: Container(
+            child: isDesktop
+                ?_buildDesktopLayout(context)
+                : ScrollWrapper(
+              bottom: 15,
+              child:_buildMobileLayout(context),
+            ),
           ),
         ),
+        floatingActionButton: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          spacing: 10,
+          children: [
+            SmartFloatingButton(),
+            CartFloatingButton()
+          ],
+        ) ,
+        bottomNavigationBar: isDesktop?null: ProductActionActions(),
       ),
-      bottomNavigationBar: isDesktop?null: ProductActionActions(),
     );
   }
 
@@ -124,7 +140,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                      SizedBox(
                          height: MediaQuery.of(context).size.height -330 ,
 
-                         child: SingleChildScrollView(child: _buildProductInfo())),
+                         child: ScrollWrapper(
+                             child: _buildProductInfo())),
                    ],
                  ),
 
@@ -137,18 +154,20 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
         Expanded(
           flex: 2,
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                TitleBar(title: "product like"),
-                AllProducts(
-                  productID: widget.productID,
-                  subCategoryID: 2,
-                  onProductTap: (id) => _navigateToProduct(context, id),
+          child: Column(
+            children: [
+              TitleBar(title: "product like"),
+              Expanded(
+                child: ScrollWrapper(
+                  bottom: 15,
+                  child: AllProducts(
+                    productID: widget.productID,
+                    subCategoryID: 2,
+                    onProductTap: (id) => _navigateToProduct(context, id),
+                  ),
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],

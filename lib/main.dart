@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'my_app.dart';
 import 'core/theme/bloc/theme_bloc.dart';
 
@@ -22,4 +23,5 @@ void main() async {
       ),
     ),
   );
+  // FlutterNativeSplash.remove();
 }
