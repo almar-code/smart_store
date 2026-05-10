@@ -20,41 +20,43 @@ class UsrAddress extends StatelessWidget {
       {'title': 'Office', 'details': 'Business Bay, Tower 2, Floor 15, Dubai, UAE', 'isDefault': false},
     ];
 
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        scrolledUnderElevation: 0,
-        automaticallyImplyLeading: false, // لمنع ظهور زر الرجوع التلقائي كما طلبت سابقاً
+    return SafeArea(
+      child: Scaffold(
         backgroundColor: AppColors.background,
-        elevation: 0,
-        leading: Icon(
-          Icons.location_on_outlined,
-          size: isDesktop ? 25 : 21,
-          color: AppColors.iconColor,
+        appBar: AppBar(
+          scrolledUnderElevation: 0,
+          automaticallyImplyLeading: false, // لمنع ظهور زر الرجوع التلقائي كما طلبت سابقاً
+          backgroundColor: AppColors.background,
+          elevation: 0,
+          leading: Icon(
+            Icons.location_on_outlined,
+            size: isDesktop ? 25 : 21,
+            color: AppColors.iconColor,
+          ),
+          titleSpacing: 0,
+          title: AppTitle(
+            firstPart: tr('my'),
+            secondPart: tr('myAddresses'),
+            fontSize: isDesktop ? 18 : 15,
+            spacing: ' ',
+          ),
+          actions: const [ArrowBack()],
         ),
-        titleSpacing: 0,
-        title: AppTitle(
-          firstPart: tr('my'),
-          secondPart: tr('myAddresses'),
-          fontSize: isDesktop ? 18 : 15,
-          spacing: ' ',
-        ),
-        actions: const [ArrowBack()],
-      ),
-      body: Padding(
-        padding: EdgeInsets.symmetric(
-          horizontal: isDesktop ? MediaQuery.of(context).size.width * 0.2 : 7,
-          vertical: 20,
-        ),
-        child: Column(
-          children: [
-            AddressHeaderSection(onAddPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => AddAddress())),),
-
-            // استدعاء الكلاس الجديد هنا
-            Expanded(
-              child: AddressListView(isIconsShow: true,),
-            ),
-          ],
+        body: Padding(
+          padding: EdgeInsets.symmetric(
+            horizontal: isDesktop ? MediaQuery.of(context).size.width * 0.2 : 7,
+            vertical: 20,
+          ),
+          child: Column(
+            children: [
+              AddressHeaderSection(onAddPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => AddAddress())),),
+      
+              // استدعاء الكلاس الجديد هنا
+              Expanded(
+                child: AddressListView(isIconsShow: true,),
+              ),
+            ],
+          ),
         ),
       ),
     );

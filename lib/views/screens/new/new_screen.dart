@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_store/core/widgets/scroll_wrapper.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/widgets/app_logo.dart';
@@ -52,11 +53,10 @@ class NewScreen extends StatelessWidget {
             SizedBox(width: 10),
           ],
         ),
-        body:SafeArea(
-          child: BlocProvider(
-            create: (context) => NewInBloc(),
-            child: SingleChildScrollView(
-              physics: const BouncingScrollPhysics(), // لضمان تمرير سلس
+        body:BlocProvider(
+          create: (context) => NewInBloc(),
+          child: ScrollWrapper(
+            child: Padding(
               padding: const EdgeInsets.all(8.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -102,12 +102,12 @@ class NewScreen extends StatelessWidget {
                 TitleBar(title: 'New Products'.tr()),
                 SizedBox(height: 10,),
                 NewProducts(),
-          
+                    
               ],
               ),
-            )
-                 ),
-        )
+            ),
+          )
+               )
     );
   }
 }

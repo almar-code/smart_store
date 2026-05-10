@@ -19,14 +19,16 @@ class AllProducts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.of(context).size.width > 800;
+    bool isDesktop = MediaQuery.of(context).size.width > 900;
+    bool isIpad = MediaQuery.of(context).size.width < 900 &&  MediaQuery.of(context).size.width > 450;
+    int itemCount = isDesktop ? 6 : isIpad ? 4 : 2;
     List<Map<String, dynamic>> products = List.generate(
       12,
           (index) => {"image" : "assets/images/${index}.jpg","price": 100, "newPrice":70, "discount":30,"colors":[{"colorName":"اسود","code":"#000000"},{"colorName":"بني","code":"#A0522D"},{"colorName":"رمادي","code":"#D3D3D3"},{"colorName":"green","code":"#470299"}]},
     );
     return  MasonryGridView.count(
       scrollDirection: Axis.vertical,
-      crossAxisCount:isDesktop ? 6 : 2,
+      crossAxisCount:itemCount,
       mainAxisSpacing: 15, //مسافة بين العنصر والذي تحتة
       crossAxisSpacing: 12, //مسافة بين العنصر والذي جنبة
       shrinkWrap: true, //حجم حسب الاب

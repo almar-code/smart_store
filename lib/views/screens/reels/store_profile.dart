@@ -7,121 +7,124 @@ import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/circleImage/circle_image.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 class StoreProfile extends StatelessWidget {
-  const StoreProfile({super.key});
+  final bool isAppBar ;
+  const StoreProfile({super.key ,this.isAppBar = false});
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: isDesktop ? null : AppBar(
-          automaticallyImplyLeading: false,
+      child: SafeArea(
+        child: Scaffold(
           backgroundColor: AppColors.background,
-          elevation: 0,
-          scrolledUnderElevation: 0,
-          titleSpacing:10,
-          leading: null,
-          title:  Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Logo(),
-              const SizedBox(width: 6),
-              AppTitle(),
-            ],
-          ),
-          actions: [
-            ArrowBack()
-
-          ],
-        ),
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+          appBar: isAppBar ? AppBar(
+            automaticallyImplyLeading: false,
+            backgroundColor: AppColors.background,
+            elevation: 0,
+            scrolledUnderElevation: 0,
+            titleSpacing:10,
+            leading: null,
+            title:  Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    children: [
-
-                      /// صورة
-                      CircleImage(
-                        imagePath: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
-                        radius: 30,
-                      ),
-
-                      const SizedBox(width: 20),
-
-                      /// Stats
-                      Expanded(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          spacing: 15,
-                          children: const [
-                            _StatItem("12", "Posts"),
-                            _StatItem("5.4K", "Followers"),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 15),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 10,
-                    children: [
-                       Text(
-                        "Nice Store",
-                        style: TextStyle(color: AppColors.textColor),
-                      ),
-                      Text(
-                        "Take care of the minute details",
-                        style: TextStyle(color: AppColors.textSecondary,fontSize: 12),
-                      ),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 15),
-
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Row(
-                    spacing: 10,
-                    children: [
-                      Expanded(child: _buildButton("Follow")),
-                      Expanded(child: _buildButton("Messaging")),
-                      Expanded(child: _buildButton("Share")),
-                    ],
-                  ),
-                ),
-
-                const SizedBox(height: 10),
-
-                 TabBar(
-                  labelColor:  AppColors.primary.withOpacity(0.4),
-                   indicatorColor: AppColors.primary,
-                  tabs: [
-                    Tab(icon: Icon(Icons.grid_on)),
-                    Tab(icon: Icon(Icons.video_library)),
-                  ],
-                ),
-
-                /// 📸 Content
-                Expanded(
-                  child: TabBarView(
-                    children: [
-                      _ReelsGrid(),
-                      _ReelsGrid(),
-                    ],
-                  ),
-                ),
+                Logo(height: isDesktop ? 30 : 27,width: isDesktop ? 30 : 27),
+                const SizedBox(width: 6),
+                AppTitle(fontSize:  isDesktop ? 20 : 17,),
               ],
+            ),
+            actions: [
+              ArrowBack()
+        
+            ],
+          ) : null,
+          body: SafeArea(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+        
+                        /// صورة
+                        CircleImage(
+                          imagePath: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
+                          radius: 30,
+                        ),
+        
+                        const SizedBox(width: 20),
+        
+                        /// Stats
+                        Expanded(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            spacing: 15,
+                            children: const [
+                              _StatItem("12", "Posts"),
+                              _StatItem("5.4K", "Followers"),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 10,
+                      children: [
+                         Text(
+                          "Nice Store",
+                          style: TextStyle(color: AppColors.textColor),
+                        ),
+                        Text(
+                          "Take care of the minute details",
+                          style: TextStyle(color: AppColors.textSecondary,fontSize: 12),
+                        ),
+                      ],
+                    ),
+                  ),
+        
+                  const SizedBox(height: 15),
+        
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      spacing: 10,
+                      children: [
+                        Expanded(child: _buildButton("Follow")),
+                        Expanded(child: _buildButton("Messaging")),
+                        Expanded(child: _buildButton("Share")),
+                      ],
+                    ),
+                  ),
+        
+                  const SizedBox(height: 10),
+        
+                   TabBar(
+                    labelColor:  AppColors.primary.withOpacity(0.4),
+                     indicatorColor: AppColors.primary,
+                    tabs: [
+                      Tab(icon: Icon(Icons.grid_on)),
+                      Tab(icon: Icon(Icons.video_library)),
+                    ],
+                  ),
+        
+                  /// 📸 Content
+                  Expanded(
+                    child: TabBarView(
+                      children: [
+                        _ReelsGrid(),
+                        _ReelsGrid(),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -177,11 +180,12 @@ class _ReelsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.of(context).size.width > 800;
-
+    bool isDesktop = MediaQuery.of(context).size.width > 1000;
+    bool isIpad = MediaQuery.of(context).size.width < 1000 &&  MediaQuery.of(context).size.width > 450;
+    int itemCount = isDesktop ? 7 : isIpad ? 4 : 3;
     return MasonryGridView.count(
       padding: const EdgeInsets.all(2),
-      crossAxisCount: isDesktop ? 7 : 3,
+      crossAxisCount: itemCount,
       mainAxisSpacing: 5,
       crossAxisSpacing: 5,
       itemCount: reels.length,

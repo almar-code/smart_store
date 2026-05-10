@@ -81,7 +81,7 @@ class CategoryBar extends StatelessWidget {
   // تصميم العنصر (البطاقة مع الظل الثابت)
   Widget _buildCategoryItem(String title) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+      padding: EdgeInsets.symmetric(horizontal: 8, vertical: 2),
       decoration: BoxDecoration(
         color: AppColors.backgroundSecondary,
         borderRadius: BorderRadius.circular(5), // حواف دائرية خفيفة
@@ -91,7 +91,7 @@ class CategoryBar extends StatelessWidget {
       child: Text(
         title,
         style: TextStyle(
-          fontSize: 8,
+          fontSize: 10,
           fontWeight: FontWeight.w500,
           color: AppColors.textColor,
         ),

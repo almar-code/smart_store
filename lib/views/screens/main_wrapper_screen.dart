@@ -5,6 +5,7 @@ import '../../../logic/navigation/navigation_cubit.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/bloc/theme_bloc.dart';
 import '../../core/theme/bloc/theme_state.dart';
+import '../../core/widgets/smart_floating_button.dart';
 import '../widgets/drawer/drawer.dart';
 import '../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../widgets/navigation/modern_bottom_nav_bar.dart';
@@ -50,63 +51,74 @@ class MainWrapperScreen extends StatelessWidget {
       key: ValueKey(state.isDark),
             builder: (context, constraints) {
               bool isDesktop = constraints.maxWidth > 800;
-              return Scaffold(
-                extendBody: extendBodyPages[currentIndex],
-                key: context.read<NavigationCubit>().scaffoldKey,
-
-                // الدراور يظهر فقط في الموبايل
-                drawer: isDesktop ? null : const AppDrawer(),
-
-
-                // backgroundColor: AppColors.background,
-                body: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  decoration:  BoxDecoration(
-                    // التدرج اللوني من الأعلى للأسفل كما في الصورة
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        AppColors.gradientTop,    // سيأخذ 0xFF1C1C1E في الليل و 0xFFFFFFFF في النهار
-                        AppColors.gradientBottom, // سيأخذ 0xFF000000 في الليل و 0xFFE8EAF0 في النهار
+              return SafeArea(
+                child: Scaffold(
+                  extendBody: extendBodyPages[currentIndex],
+                  key: context.read<NavigationCubit>().scaffoldKey,
+                
+                  // الدراور يظهر فقط في الموبايل
+                  drawer: isDesktop ? null : const AppDrawer(),
+                
+                
+                  // backgroundColor: AppColors.background,
+                  body: Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration:  BoxDecoration(
+                      // التدرج اللوني من الأعلى للأسفل كما في الصورة
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [
+                          AppColors.gradientTop,    // سيأخذ 0xFF1C1C1E في الليل و 0xFFFFFFFF في النهار
+                          AppColors.gradientBottom, // سيأخذ 0xFF000000 في الليل و 0xFFE8EAF0 في النهار
+                        ],
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        if (isDesktop)
+                          ModernSideRail(
+                            currentIndex: currentIndex,
+                            onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
+                          ),
+                
+                        Expanded(
+                          child: Column(
+                            children: [
+                
+                              // 5. محتوى الصفحات (Home, Reels, etc.)
+                              Expanded(
+                                child: IndexedStack(
+                                  index: currentIndex,
+                                  children: screens,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                   ),
-                  child: Row(
-                    children: [
-                      if (isDesktop)
-                        ModernSideRail(
-                          currentIndex: currentIndex,
-                          onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
-                        ),
+                floatingActionButton: (currentIndex == 3 || currentIndex == 0 ) ? null : Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  spacing: 10,
+                  children: [
+                    SmartFloatingButton(),
+                    CartFloatingButton()
+                  ],
+                ) ,
 
-                      Expanded(
-                        child: Column(
-                          children: [
-
-                            // 5. محتوى الصفحات (Home, Reels, etc.)
-                            Expanded(
-                              child: IndexedStack(
-                                index: currentIndex,
-                                children: screens,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                  // --- استخدام كلاس الجوال المنفصل ---
+                  bottomNavigationBar: isDesktop
+                      ?  SizedBox()
+                      : ModernBottomNavBar(
+                    currentIndex: currentIndex,
+                    onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
                   ),
+                
                 ),
-
-                // --- استخدام كلاس الجوال المنفصل ---
-                bottomNavigationBar: isDesktop
-                    ?  SizedBox()
-                    : ModernBottomNavBar(
-                  currentIndex: currentIndex,
-                  onTap: (index) => context.read<NavigationCubit>().updateIndex(index),
-                ),
-
               );
             },
           );

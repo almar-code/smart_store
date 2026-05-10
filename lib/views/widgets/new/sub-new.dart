@@ -19,7 +19,9 @@ class NewProducts extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.of(context).size.width > 800;
+    bool isDesktop = MediaQuery.of(context).size.width > 1000;
+    bool isIpad = MediaQuery.of(context).size.width < 1000 &&  MediaQuery.of(context).size.width > 450;
+    int itemCount = isDesktop ? 9 : isIpad ? 5 : 3;
     return SizedBox(
       child: FutureBuilder(
           future: getNewProducts(),
@@ -30,7 +32,7 @@ class NewProducts extends StatelessWidget {
             }
             return MasonryGridView.count(
               scrollDirection: Axis.vertical,
-              crossAxisCount:isDesktop ? 6 : 3,
+              crossAxisCount:itemCount,
               mainAxisSpacing: 10, //مسافة بين العنصر والذي تحتة
               crossAxisSpacing: 10, //مسافة بين العنصر والذي جنبة
               shrinkWrap: true, //حجم حسب الاب
@@ -57,7 +59,7 @@ class NewProducts extends StatelessWidget {
                             ),
                             child: Image.asset(
                               item['image'],
-                              height: isDesktop ? 130 :120,
+                              height: isDesktop ? 150 :120,
                               width: double.infinity,
                               fit: BoxFit.cover,
                             ),
