@@ -16,7 +16,7 @@ import '../../../core/theme/bloc/theme_event.dart';
 // Web TTS
 import 'dart:html' as html;
 
-const String geminiApiKey = "AIzaSyCXod3pZu8rZoNAarDmJocuGD-QV3toQ1A";
+const String geminiApiKey = "***************************-QV3toQ1A";
 
 enum AssistantState { idle, listening, thinking, speaking }
 
