@@ -1,8 +1,11 @@
 import 'dart:convert';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
+import 'package:internet_connection_checker/internet_connection_checker.dart';
 abstract class AddressState {}
 class AddressInitial extends AddressState {}
 class AddressLoading extends AddressState {}
@@ -23,6 +26,17 @@ class AddressCubit extends Cubit<AddressState> {
     emit(AddressLoading());
     try {
       // إضافة &language=$lang في نهاية الرابط
+      bool hasInternet = await InternetConnectionChecker().hasConnection;
+
+      if (hasInternet) {
+        // إظهار تنبيه للمستخدم (بما أنك تستخدم CherryToast أو Fluttertoast)
+        Fluttertoast.showToast(
+            msg: "لا يوجد اتصال بالإنترنت، جلب العنوان تلقائياً لن يعمل",
+            backgroundColor: Colors.red,
+            textColor: Colors.white
+        );
+        // يمكنك هنا منع فتح الخريطة أو السماح بفتحها مع تحذير
+      }
       final url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=$apiKey&language=$lang";
       final response = await http.get(Uri.parse(url));
 
