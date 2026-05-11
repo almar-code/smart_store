@@ -18,30 +18,40 @@ class AppButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-    return MaterialButton(
-      onPressed: onTap ?? (){},
-      color: color ?? AppColors.buttonColor,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      shape: RoundedRectangleBorder(
-        side: BorderSide(color: borderColor),
+    return Container(
+      decoration: BoxDecoration(
+        gradient: (color == null) ? LinearGradient(
+          colors: [Color(0xFF03C383), Color(0xFF25F5FC)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ) : null,
         borderRadius: BorderRadius.circular(isDesktop ? borderRadius : borderRadius-2,),
       ),
-      elevation: 0,
-      child: Row(
-        spacing: 5,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          (!iconAfter) ? (icon != null) ? Icon(icon,color:textColor,size: iconSize,):SizedBox() : SizedBox(),
-          Text(
-            label,
-            style: TextStyle(
-              color: textColor,
-              fontSize: fontSize,
-              fontWeight: FontWeight.bold,
+      child: MaterialButton(
+        onPressed: onTap ?? (){},
+        color: color ?? Colors.transparent,
+        padding: const EdgeInsets.symmetric(horizontal: 12) ,
+        shape: RoundedRectangleBorder(
+          side: BorderSide(color: borderColor),
+          borderRadius: BorderRadius.circular(isDesktop ? borderRadius : borderRadius-2,),
+        ),
+        elevation: 0,
+        child: Row(
+          spacing: 5,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            (!iconAfter) ? (icon != null) ? Icon(icon,color:textColor,size: iconSize,):SizedBox() : SizedBox(),
+            Text(
+              label,
+              style: TextStyle(
+                color: textColor,
+                fontSize: fontSize,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-          ),
-          (iconAfter) ? (icon != null) ? Icon(icon,color:textColor,size: iconSize,):SizedBox() : SizedBox(),
-        ],
+            (iconAfter) ? (icon != null) ? Icon(icon,color:textColor,size: iconSize,):SizedBox() : SizedBox(),
+          ],
+        ),
       ),
     );
   }

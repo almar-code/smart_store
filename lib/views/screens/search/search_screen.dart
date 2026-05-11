@@ -25,7 +25,7 @@ class SearchScreen extends StatelessWidget {
           scrolledUnderElevation: 0,
           leadingWidth: 0,
           titleSpacing:3,
-          title:App_Search(widthFactor:1),
+          title:App_Search(widthFactor:1 , isSearchScreen: true,),
           actions: [
             ArrowBack()
           ],

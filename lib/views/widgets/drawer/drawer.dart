@@ -66,6 +66,7 @@ class AppDrawer extends StatelessWidget {
               ),
               PositionedDirectional(
                 bottom: 2,
+                  start: 50,
                   child:  SocialIcons(padding: 10,))
             ],
           ),

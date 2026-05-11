@@ -31,7 +31,7 @@ class CartScreen extends StatelessWidget {
     }
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.transparent,
+        backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: AppColors.background,
             elevation: 0,
@@ -76,7 +76,7 @@ class CartScreen extends StatelessWidget {
                       var item=products[index];
                       return Container(
                         decoration: BoxDecoration(
-                          color: AppColors.background,
+                          color: AppColors.backgroundSecondary,
                           border: Border.all(color: AppColors.borderColor),
                           borderRadius: BorderRadius.circular(7),
                           boxShadow: [
@@ -217,6 +217,7 @@ class CartScreen extends StatelessWidget {
             color: AppColors.background.withOpacity(0.1),
           ),
           child: Column(
+            spacing: isDesktop ? 0 : 10,
             children: [
               !isDesktop ? Row(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -250,20 +251,27 @@ class CartScreen extends StatelessWidget {
                     width:600,
                     child: AppButton(label: tr('checkout'),icon: Icons.credit_card,onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectUsrAddress())),),
                   ) : Expanded(
-                    child: AppButton(label: tr('checkout'),icon: Icons.credit_card,onTap:  ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectUsrAddress())),),
+                    child: SizedBox(
+                      height: 27,
+                      child: AppButton(label: tr('checkout'),icon: Icons.credit_card,onTap:  ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectUsrAddress())),),
+                    ),
                   ),
                   SizedBox(width: 10,),
                   Container(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(9),
                     decoration: BoxDecoration(
-                      color: AppColors.buttonColor.withOpacity(0.9),
+                      gradient:  LinearGradient(
+                        colors: [ Color(0xFF25F5FC),Color(0xFF03C383)],
+                        begin: Alignment.topLeft,
+                        end: Alignment.bottomRight,
+                      ),
                       shape: BoxShape.circle,
                     ),
                     child: const Text(
                       "3",
                       style: TextStyle(
                         color: Colors.white,
-                        fontSize: 10,
+                        fontSize: 11,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

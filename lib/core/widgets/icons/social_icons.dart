@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:smart_store/core/constants/app_colors.dart';
 
 import '../../constants/app_icons.dart';
 
@@ -18,24 +19,33 @@ class SocialIcons extends StatelessWidget {
           alignment: Alignment.centerLeft,
           child: Wrap(
             direction: isExpanded ? Axis.horizontal : Axis.vertical,
-            // spacing: 12,
+             spacing: isExpanded ? 24 : 19,
             children: [
               SocialIcon(
                 icon: FontAwesomeIcons.whatsapp,
 
                 color: Color(0xFF25D366),
               ),
-              Icon(FontAwesomeIcons.instagram, color: Colors.transparent),
+              SocialIcon(
+                icon: FontAwesomeIcons.x,
+
+                color: AppColors.iconColor,
+              ),
               SocialIcon(
                 icon: FontAwesomeIcons.instagram,
 
                 color: Color(0xFFE1306C),
               ),
-              Icon(FontAwesomeIcons.instagram, color: Colors.transparent),
               SocialIcon(
                 icon: FontAwesomeIcons.facebook,
 
                 color: Color(0xFF1877F2),
+              ),
+
+              SocialIcon(
+                icon: FontAwesomeIcons.threads,
+
+                color: AppColors.iconColor,
               ),
             ],
           ),
