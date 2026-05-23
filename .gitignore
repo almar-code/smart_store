@@ -43,3 +43,9 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+ios/Flutter/secrets.xcconfig
+.env
+web/secrets.js
+ios/Flutter/secrets.xcconfig
+ios/Flutter/secrets.xcconfig
+web/secrets.js
