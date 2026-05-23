@@ -6,7 +6,8 @@ class AppColors {
 
   // اللون الأساسي
   static Color get primary =>
-      isDark.value ? const Color(0xFF03C383) : const Color.fromARGB(255, 3, 195, 131);
+      isDark.value ? const Color(0xFF03C383) : const Color.fromARGB(
+          255, 17, 216, 150);
 
   static Color get boxShadow =>
       isDark.value ? Colors.white10 : Colors.black12;
