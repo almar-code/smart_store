@@ -7,6 +7,7 @@ import '../../../core/theme/bloc/theme_event.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/circleImage/circle_image.dart';
 import '../../../core/widgets/icons/app_icon.dart';
+import '../../../core/widgets/icons/theme_icon.dart';
 import '../../../core/widgets/user_profile.dart';
 import '../../widgets/profile/profile_list.dart';
 import 'package:easy_localization/easy_localization.dart';
@@ -28,9 +29,7 @@ class ProfileScreen extends StatelessWidget {
         titleSpacing: 5,
         title: UserProfile(),
         actions: [
-            AppIcon(icon:  AppColors.isDark.value ? Icons.wb_sunny_outlined : Icons.dark_mode_outlined,onPressed: (){
-            context.read<ThemeBloc>().add(ToggleThemeEvent());
-          },),
+          ThemeIcon(),
           AppIcon(icon: CupertinoIcons.person_crop_circle_badge_xmark),
           SizedBox(width: 10),
         ],

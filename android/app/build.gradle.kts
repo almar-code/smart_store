@@ -4,7 +4,6 @@ plugins {
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id("dev.flutter.flutter-gradle-plugin")
 }
-
 android {
     namespace = "com.omarabdalfatah.smart_store"
     compileSdk = flutter.compileSdkVersion
@@ -28,11 +27,11 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        def mapsApiKey = project.properties["MAPS_API_KEY"] ?: ""
+        val mapsApiKey = (project.findProperty("MAPS_API_KEY") as? String) ?: ""
 
-        manifestPlaceholders = [
-            MAPS_API_KEY: mapsApiKey
-        ]
+        manifestPlaceholders.putAll(mapOf(
+            "MAPS_API_KEY" to mapsApiKey
+        ))
     }
 
     buildTypes {
