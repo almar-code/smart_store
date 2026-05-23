@@ -6,7 +6,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_shadow.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/search/app_search.dart';
-import '../../../core/widgets/smart_floating_button.dart';
+import '../../../core/widgets/buttons/smart_floating_button.dart';
 import '../../../core/widgets/titleBar.dart';
 import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../../widgets/product/all_products.dart';
@@ -25,7 +25,7 @@ class SearchScreen extends StatelessWidget {
           scrolledUnderElevation: 0,
           leadingWidth: 0,
           titleSpacing:3,
-          title:App_Search(widthFactor:1),
+          title:App_Search(widthFactor:1 , isSearchScreen: true,),
           actions: [
             ArrowBack()
           ],

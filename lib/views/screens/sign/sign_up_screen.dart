@@ -10,7 +10,7 @@ import 'package:pinput/pinput.dart';
 import 'package:smart_store/logic/signup/sign_up_logics.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/widgets/app_button.dart';
+import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/app_form_field.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';

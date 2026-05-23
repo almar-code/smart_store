@@ -6,7 +6,7 @@ import 'package:smart_store/views/widgets/floatingActionButton/cartFloatingButto
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
-import '../../../core/widgets/smart_floating_button.dart';
+import '../../../core/widgets/buttons/smart_floating_button.dart';
 import '../../../core/widgets/titleBar.dart';
 import '../../widgets/product/all_products.dart';
 import '../../../core/widgets/underlined_title.dart';

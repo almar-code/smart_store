@@ -25,18 +25,6 @@ class AddressCubit extends Cubit<AddressState> {
   Future<void> fetchAddressFromLocation(LatLng location, String lang) async {
     emit(AddressLoading());
     try {
-      // إضافة &language=$lang في نهاية الرابط
-      bool hasInternet = await InternetConnectionChecker().hasConnection;
-
-      if (hasInternet) {
-        // إظهار تنبيه للمستخدم (بما أنك تستخدم CherryToast أو Fluttertoast)
-        Fluttertoast.showToast(
-            msg: "لا يوجد اتصال بالإنترنت، جلب العنوان تلقائياً لن يعمل",
-            backgroundColor: Colors.red,
-            textColor: Colors.white
-        );
-        // يمكنك هنا منع فتح الخريطة أو السماح بفتحها مع تحذير
-      }
       final url = "https://maps.googleapis.com/maps/api/geocode/json?latlng=${location.latitude},${location.longitude}&key=$apiKey&language=$lang";
       final response = await http.get(Uri.parse(url));
 

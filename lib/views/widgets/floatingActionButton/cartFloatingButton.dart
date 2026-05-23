@@ -18,7 +18,7 @@ class CartFloatingButton extends StatelessWidget {
         onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => CartScreen(screenOnly: true,))),
         splashColor: Colors.transparent,
         hoverElevation: 4,
-        backgroundColor:AppColors.background.withOpacity(0.9),
+        backgroundColor:AppColors.backgroundSecondary.withOpacity(0.9),
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
         child: Stack(

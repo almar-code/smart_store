@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../../../core/constants/app_colors.dart';
-import '../../../core/widgets/app_button.dart';
+import '../../../core/widgets/buttons/app_button.dart';
 
 class EmptyCartScreen extends StatelessWidget {
   const EmptyCartScreen({super.key});

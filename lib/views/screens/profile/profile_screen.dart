@@ -8,6 +8,7 @@ import '../../../core/theme/bloc/theme_bloc.dart';
 import '../../../core/theme/bloc/theme_event.dart';
 import '../../../core/widgets/app_messages.dart';
 import '../../../core/widgets/icons/app_icon.dart';
+import '../../../core/widgets/icons/theme_icon.dart';
 import '../../../core/widgets/network_service.dart';
 import '../../../core/widgets/user_profile.dart';
 import '../../../data/local/user_local.dart';
@@ -46,9 +47,7 @@ class ProfileScreen extends StatelessWidget {
             titleSpacing: 5,
             title: UserProfile(),
             actions: [
-                AppIcon(icon:  AppColors.isDark.value ? Icons.wb_sunny_outlined : Icons.dark_mode_outlined,onPressed: (){
-                context.read<ThemeBloc>().add(ToggleThemeEvent());
-              },),
+              ThemeIcon(),
               InkWell(
                 onTap:() => _showLogoutDialog(context),
                   child: AppIcon(icon: CupertinoIcons.person_crop_circle_badge_xmark)),

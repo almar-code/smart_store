@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:smart_store/core/widgets/icons/smart_robot_icon.dart';
 
 class ContinuousRippleOverlay extends StatefulWidget {
   const ContinuousRippleOverlay({super.key});
@@ -41,28 +42,7 @@ class _ContinuousRippleOverlayState extends State<ContinuousRippleOverlay> with 
                 _buildRipple(_controller.value, 250),
                 // الدائرة الثانية (متأخرة قليلاً)
                 _buildRipple((_controller.value + 0.5) % 1.0, 200),
-                AnimatedContainer(
-                  duration: const Duration(milliseconds: 600),
-                  curve: Curves.fastOutSlowIn,
-                  height: 70,
-                  width:  70,
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFF03C383), Color(0xFF25F5FC)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(28),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.blue.withOpacity(0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
-                  child: const Icon(Icons.smart_toy_outlined, color: Colors.white, size: 35),
-                ),
+                AiRobotAvatar(iconSize: 35,padding: 15,),
               ],
             );
           },

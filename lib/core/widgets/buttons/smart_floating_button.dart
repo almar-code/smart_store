@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:smart_store/core/widgets/ripple_0verlay.dart';
+import '../../../views/screens/smart chat screen/smart_chat_screen.dart';
+import '../../utils/AiRippleManager.dart';
 
 class SmartFloatingButton extends StatefulWidget {
   const SmartFloatingButton({super.key});
@@ -11,32 +12,6 @@ class SmartFloatingButton extends StatefulWidget {
 
 class _SmartFloatingButtonState extends State<SmartFloatingButton> {
   bool _isExpanded = true;
-
-  // نحدد الـ Entry كـ Static أو كمتغير ثابت على مستوى الـ State لتجنب ضياع مرجعيته
-  OverlayEntry? _rippleEntry;
-
-  void _toggleAiRipple() {
-    // التحقق الفعلي: إذا كان الـ Entry موجوداً ونشطاً في الشاشة
-    if (_rippleEntry != null) {
-      _rippleEntry!.remove();
-      _rippleEntry = null;
-      // نطلب إعادة بناء الواجهة لتحديث أي عناصر بصرية مرتبطة بالزر إن وجدت
-      setState(() {});
-    } else {
-      // إنشاء التموج الجديد
-      _rippleEntry = OverlayEntry(
-        builder: (context) => GestureDetector(
-          // نغلق التموج أيضاً إذا ضغط المستخدم على أي مكان في الشاشة المعتمة
-          onTap: _toggleAiRipple,
-          child: const ContinuousRippleOverlay(),
-        ),
-      );
-
-      // إدخال التموج فوق الشاشة الحالية مباشرة
-      Overlay.of(context).insert(_rippleEntry!);
-      setState(() {});
-    }
-  }
 
   @override
   void initState() {
@@ -53,19 +28,22 @@ class _SmartFloatingButtonState extends State<SmartFloatingButton> {
 
   @override
   void dispose() {
-    // إجراء أمان هام جداً لمنع تسريب الذاكرة (Memory Leak)
-    if (_rippleEntry != null) {
-      _rippleEntry!.remove();
-      _rippleEntry = null;
-    }
+    // إغلاق التموج تلقائياً إذا تم تدمير الزر لمنع تعليق الـ Overlay
+    AiRippleManager.closeRipple();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // استدعاء الدالة مباشرة دون تمرير context خارجي قد يسبب مشاكل تتبع
-      onTap: _toggleAiRipple,
+      onLongPress: () => Navigator.of(context).push(
+        MaterialPageRoute(builder: (context) => const SmartChatScreen()),
+      ),
+      // استدعاء الكلاس المنعزل وتمرير الـ context
+      onTap: () => AiRippleManager.toggleRipple(
+        context,
+        onStateChanged: () => setState(() {}), // لتحديث حالة الزر البصرية إن لزم الأمر
+      ),
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 600),
         curve: Curves.fastOutSlowIn,
@@ -87,7 +65,7 @@ class _SmartFloatingButtonState extends State<SmartFloatingButton> {
           ],
         ),
         child: Row(
-          mainAxisAlignment: _isExpanded ? MainAxisAlignment.spaceAround :MainAxisAlignment.center,
+          mainAxisAlignment: _isExpanded ? MainAxisAlignment.spaceAround : MainAxisAlignment.center,
           children: [
             if (_isExpanded)
               Flexible(

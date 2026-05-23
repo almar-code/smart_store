@@ -10,7 +10,7 @@ import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/circularProgress.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/underlined_title.dart';
-import '../../../core/widgets/app_button.dart';
+import '../../../core/widgets/buttons/app_button.dart';
 import '../../../logic/map/address_cubit.dart';
 import '../../widgets/map/map_picker_dialog.dart';
 

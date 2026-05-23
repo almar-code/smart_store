@@ -7,8 +7,9 @@ import '../../../logic/navigation/navigation_cubit.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/bloc/theme_bloc.dart';
 import '../../core/theme/bloc/theme_state.dart';
-import '../../core/widgets/smart_floating_button.dart';
+import '../../core/widgets/buttons/smart_floating_button.dart';
 import '../widgets/drawer/drawer.dart';
+import '../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../widgets/login/login.dart';
 import '../widgets/navigation/modern_bottom_nav_bar.dart';
 import '../widgets/navigation/modern_side_rail.dart'; // الكلاس الجديد
@@ -110,13 +111,13 @@ class MainWrapperScreen extends StatelessWidget {
                     currentIndex: currentIndex,
                     onTap: (index) => handleNavigation(index, context), // استخدام الدالة الجديدة
                   ),
-                  floatingActionButton: (currentIndex == 3 || currentIndex == 0 ) ? null : Column(
+                  floatingActionButton: (currentIndex == 3 || currentIndex == 0 ||currentIndex == 4  ) ? null : Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     spacing: 10,
                     children: [
                       SmartFloatingButton(),
-                      // CartFloatingButton()
+                       CartFloatingButton()
                     ],
                   ) ,
 

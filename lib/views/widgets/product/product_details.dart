@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_shadow.dart';
-import '../../../core/widgets/add_to_cart_button.dart';
+import '../../../core/widgets/buttons/add_to_cart_button.dart';
 
 
 class ProductImageSlider extends StatelessWidget {

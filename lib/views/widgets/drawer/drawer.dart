@@ -30,22 +30,7 @@ class AppDrawer extends StatelessWidget {
                   Expanded(flex: 0, child: CategoryBar()),
                   Expanded(
                     flex: 4,
-                    child: ListView(
-                      padding: EdgeInsets.zero,
-                      children: [
-
-                        CategoryItem(
-                          title: "عبايه رغد ",
-                          imagePath: "assets/images/imageedit_1_7845290883.jpg",
-                          onTap: () {},
-                        ),
-                        CategoryItem(
-                          title: "الفخامه ",
-                          imagePath: "assets/images/pexels-rdne-7249734.jpg",
-                          onTap: () {},
-                        ),
-                      ],
-                    ),
+                    child: SingleChildScrollView(child: SubCategoryItems()),
                   ),
                 ],
               ),
@@ -66,6 +51,7 @@ class AppDrawer extends StatelessWidget {
               ),
               PositionedDirectional(
                 bottom: 2,
+                  start: 50,
                   child:  SocialIcons(padding: 10,))
             ],
           ),

@@ -16,7 +16,7 @@
 // // Web TTS
 // import 'dart:html' as html;
 //
-// const String geminiApiKey = "***************************-QV3toQ1A";
+// const String geminiApiKey = "AIzaSyCXod3pZu8rZoNAarDmJocuGD-QV3toQ1A";
 //
 // enum AssistantState { idle, listening, thinking, speaking }
 //
@@ -100,7 +100,7 @@
 //   // ================= GEMINI =================
 //   Future<String> _askGemini(String text) async {
 //     final url =
-//         "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=*********************-QV3toQ1A";
+//         "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AIzaSyCXod3pZu8rZoNAarDmJocuGD-QV3toQ1A";
 //
 //     final context = _memory
 //         .takeLast(6)

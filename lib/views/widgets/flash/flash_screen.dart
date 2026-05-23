@@ -25,7 +25,46 @@ class Flasheds extends StatelessWidget {
     );
   }
 }
+class FlashProducts extends StatelessWidget {
+  const FlashProducts({super.key});
 
+  @override
+  Widget build(BuildContext context) {
+    // حساب حجم الشاشة لتحديد عدد الأعمدة كما هو في كود المنتجات الخاص بك تماماً
+    bool isDesktop = MediaQuery.of(context).size.width > 900;
+    bool isIpad = MediaQuery.of(context).size.width < 900 && MediaQuery.of(context).size.width > 450;
+    int itemCount = isDesktop ? 6 : isIpad ? 4 : 2;
+
+    // مصفوفة تحتوي على أطوال مختلفة لمحاكاة الأطوال المتفاوتة للكروت في الـ Masonry
+    final List<double> randomHeights = [240, 210, 220, 260, 230, 240];
+
+    return Shimmer.fromColors(
+      baseColor: AppColors.baseColor,
+      highlightColor: AppColors.highlightColor,
+      child: MasonryGridView.count(
+        scrollDirection: Axis.vertical,
+        crossAxisCount: itemCount,
+        mainAxisSpacing: 15,  // نفس المسافات الأصلية لكودك
+        crossAxisSpacing: 12, // نفس المسافات الأصلية لكودك
+        shrinkWrap: true,
+        itemCount: 20, // تحديد عدد العناصر المطلوبة (20 منتج وهمي)
+        physics: const NeverScrollableScrollPhysics(), // متوافق مع كود الواجهة الأب
+        itemBuilder: (context, index) {
+          // جلب طول مختلف لكل عنصر بناءً على الاندكس بشكل دوري
+          double currentHeight = randomHeights[index % randomHeights.length];
+
+          return Container(
+            height: currentHeight,
+            decoration: BoxDecoration(
+              color: AppColors.backgroundSecondary,
+              borderRadius: BorderRadius.circular(7), // نفس حواف الكارد الحقيقي حقك تماماً
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
 
 
 class Flashsubcategory extends StatelessWidget {
@@ -38,20 +77,22 @@ class Flashsubcategory extends StatelessWidget {
     return Shimmer.fromColors(
       baseColor: AppColors.baseColor,
       highlightColor: AppColors.highlightColor,
-      child:SizedBox(
-        height: 80, // مهم جدًا
-        child:GridView.builder(
+      child: SizedBox(
+        height: isDesktop ? 83 : 70, // 🌟 جعلناه مطابقاً تماماً لارتفاع الـ SubcategoryBar الأصلي لعدم حدوث قفزة في الواجهة
+        child: GridView.builder(
           physics: const BouncingScrollPhysics(),
           scrollDirection: Axis.horizontal,
-          itemCount: 20,
+          padding: const EdgeInsets.only(top: 2), // مطابق للأصلي
+          itemCount: 30, // 10 عناصر كافية جداً لشغل الشاشة أثناء التحميل
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 1, // صفين في اللابتوب - صف في الجوال
+            crossAxisCount: 1,
             mainAxisSpacing: 8,
             crossAxisSpacing: 8,
-            mainAxisExtent: isDesktop ? 80 : 55, // عرض العنصر
+            mainAxisExtent: isDesktop ? 80 : 55,
           ),
           itemBuilder: (context, index) {
             return Column(
+              mainAxisSize: MainAxisSize.min, // 🌟 إجبار العمود على أخذ مساحة عناصره فقط دون تمدد
               children: [
                 Container(
                   width: isDesktop ? 55 : 45,
@@ -63,7 +104,7 @@ class Flashsubcategory extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Container(
-                  width: 40,
+                  width: isDesktop ? 50 : 35, // عرض متناسق مع حجم الصورة الوهمية
                   height: 10,
                   decoration: BoxDecoration(
                     color: AppColors.backgroundSecondary,
@@ -77,8 +118,7 @@ class Flashsubcategory extends StatelessWidget {
       ),
     );
   }
-}
-class CategoryBarShimmer extends StatelessWidget {
+}class CategoryBarShimmer extends StatelessWidget {
   const CategoryBarShimmer({super.key});
 
   @override
@@ -91,26 +131,16 @@ class CategoryBarShimmer extends StatelessWidget {
       child: Container(
         height: 38,
         padding: const EdgeInsets.symmetric(vertical: 6),
-        child: Row(
-          children: [
-            // زر "الكل"
-            _item(isDesktop),
-
-            const SizedBox(width: 6),
-
-            // باقي العناصر (Scrollable)
-            Expanded(
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                physics: const BouncingScrollPhysics(),
-                itemCount: 40,
-                separatorBuilder: (_, __) => const SizedBox(width: 6),
-                itemBuilder: (context, index) {
-                  return _item(isDesktop);
-                },
-              ),
-            ),
-          ],
+        child: Expanded(
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            physics: const BouncingScrollPhysics(),
+            itemCount: 40,
+            separatorBuilder: (_, __) => const SizedBox(width: 6),
+            itemBuilder: (context, index) {
+              return _item(isDesktop);
+            },
+          ),
         ),
       ),
     );
@@ -365,6 +395,77 @@ class VideoLoadingShimmer extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         color:  Color(0xFF2A2A2A),
+      ),
+    );
+  }
+}
+
+class FlashSubcategoryDrawer extends StatelessWidget {
+  const FlashSubcategoryDrawer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: AppColors.baseColor,
+      highlightColor: AppColors.highlightColor,
+      child: ListView.builder(
+        // إيقاف التمرير الداخلي لكي لا يتعارض مع تمرير الـ Drawer الأساسي
+        physics: const NeverScrollableScrollPhysics(),
+        shrinkWrap: true,
+        itemCount: 10, // عرض 10 عناصر وميض كما طلبت
+        itemBuilder: (context, index) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 16),
+                child: Row(
+                  children: [
+                    // 1. وميض الـ CircleAvatar (الدارة الرمزية)
+                    Container(
+                      width: 40, // يعادل radius: 20
+                      height: 40,
+                      decoration: const BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 16), // المسافة الافتراضية للـ ListTile
+
+                    // 2. وميض النص (Title)
+                    Expanded(
+                      child: Container(
+                        height: 12, // متناسق مع حجم الخط 10 الحقيقي
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 16),
+
+                    // 3. وميض السهم (Trailing Icon)
+                    Container(
+                      width: 14, // نفس حجم الـ size: 14 الحقيقي للسهم
+                      height: 14,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(3),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // 4. خط الـ Divider المتطابق تماماً مع تصميمك
+              const Divider(
+                indent: 10,
+                endIndent: 10,
+                thickness: 0.5,
+              ),
+            ],
+          );
+        },
       ),
     );
   }
