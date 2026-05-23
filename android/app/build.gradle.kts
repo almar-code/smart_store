@@ -29,6 +29,8 @@ android {
         manifestPlaceholders.putAll(mapOf(
             "MAPS_API_KEY" to mapsApiKey
         ))
+
+        
     }
 
     buildTypes {

@@ -46,6 +46,4 @@ app.*.map.json
 ios/Flutter/secrets.xcconfig
 .env
 web/secrets.js
-ios/Flutter/secrets.xcconfig
-ios/Flutter/secrets.xcconfig
-web/secrets.js
+
