@@ -16,8 +16,10 @@ class ApiEndpoints {
   static String getComments(int videoId) => '$_baseUrl/api/videos/$videoId/comments';
   static String addComment(int videoId) => '$_baseUrl/api/videos/comments/$videoId';
   // ====================🛍 روابط المنتجات والأقسام الثابتة ====================
-
   static String get getSubCategories => '$_baseUrl/api/categories';
   static String get getProducts => '$_baseUrl/api/products';
   static String get getCategories => '$_baseUrl/api/sections';
+// ====================🛍 روابط ملفات صور  المنتجات والأقسام الثابتة ====================
+  static String productImageUrl(String? image) => "$_baseUrl/storage/uploads/products/$image";
+  static String subCategoryImageUrl(String? image) => "$_baseUrl/storage/uploads/subcategory/$image";
 }

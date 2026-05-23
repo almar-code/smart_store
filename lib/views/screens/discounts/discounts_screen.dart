@@ -10,7 +10,7 @@ import '../../../core/widgets/icons/cart_icon.dart';
 import '../../../core/widgets/icons/favorite_icon.dart';
 import '../../../core/widgets/scroll_wrapper.dart';
 import '../../../core/widgets/search/app_search.dart';
-import '../../../core/widgets/smart_floating_button.dart';
+import '../../../core/widgets/buttons/smart_floating_button.dart';
 import '../../../data/repos/product_repo.dart';
 import '../../../logic/products/product_cubit.dart';
 import '../../widgets/floatingActionButton/cartFloatingButton.dart';

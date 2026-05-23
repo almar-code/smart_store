@@ -1,9 +1,12 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import '../../../core/constants/app_colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../../core/widgets/itemCount.dart';
+import '../../../logic/login/login_cubit.dart';
 
 class ModernBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -17,8 +20,16 @@ class ModernBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return BlocBuilder<LoginCubit, bool>(
+        builder: (context, state)  {
 
+
+          var box = Hive.box('user_info_box');
+          String userName = (box.isEmpty) ? '' :  box.get('name');
+
+
+          String labelName = state ? userName : 'userName';
+          return Container(
       margin:  EdgeInsets.only(bottom: 14,left: 14,right: 14),
       // padding:  EdgeInsets.only(top: 5),
       decoration: BoxDecoration(
@@ -85,10 +96,12 @@ class ModernBottomNavBar extends StatelessWidget {
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.person, size: 22),
             activeIcon: Icon(CupertinoIcons.person_fill, size: 26),
-            label: 'OMAR',
+            label: labelName,
           ),
         ],
       ),
     );
+       }
+       );
   }
 }

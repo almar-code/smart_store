@@ -3,12 +3,14 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // 🌟 تم تفعيلها للمنطق
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:smart_store/core/widgets/refresh_button.dart';
+import 'package:smart_store/core/widgets/buttons/refresh_button.dart';
 import 'package:smart_store/views/widgets/product/productdetailsheet.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_endpoints.dart';
 import '../../../core/constants/app_shadow.dart';
 import '../../../core/widgets/circularProgress.dart';
 import '../../../core/widgets/colors/circleOfColor.dart';
+import '../../../core/widgets/icons/share_icon.dart';
 import '../../../core/widgets/customCategoryList.dart';
 import '../../../core/widgets/three_dots_loader.dart';
 import '../../../data/models/product_model.dart'; // 🌟 استيراد الموديل
@@ -228,6 +230,11 @@ class AllProducts extends StatelessWidget {
                                   ),
                                 ),
                               ),
+                              PositionedDirectional(
+                                bottom: 6,
+                                end: 6,
+                                child:shareButton(),
+                              ),
                               Positioned(
                                 bottom: 36,
                                 left: 8,
@@ -342,9 +349,11 @@ class AllProducts extends StatelessWidget {
                 },
               ),
               (context.select((ProductCubit cubit) => cubit.isFetchingMore)) ? Padding(
-                padding: EdgeInsets.symmetric(vertical: 20.0),
-                child: Center(child: CircularProgress()),
-              ) : SizedBox(height: 20,)
+                padding: EdgeInsets.symmetric(vertical: 10.0),
+                child: SizedBox(
+                  height: 30,
+                    child: CircularProgress()),
+              ) : SizedBox(height: 0,),
             ],
           );
         }
@@ -359,12 +368,8 @@ Widget _buildProductImage(ProductModel item) {
   if (item.pImage == null || item.pImage!.toString().isEmpty) {
     return _buildFakeImage();
   }
-
-  // بناء الرابط المباشر تزامناً مع استخدام فلاتر ويب والمحاكي
-  String imageUrl = "http://localhost:8000/storage/uploads/products/${item.pImage}";
-
   return Image.network(
-    imageUrl,
+    ApiEndpoints.productImageUrl(item.pImage),
     fit: BoxFit.cover,
     loadingBuilder: (context, child, loadingProgress) {
       if (loadingProgress == null) {

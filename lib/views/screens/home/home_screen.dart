@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 import 'package:smart_store/core/widgets/search/app_search.dart';
 import 'package:smart_store/core/widgets/app_title.dart';
@@ -7,6 +8,8 @@ import 'package:smart_store/core/widgets/app_logo.dart';
 import 'package:smart_store/core/widgets/icons/app_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:smart_store/views/screens/profile/profile_screen.dart';
+import 'package:smart_store/views/widgets/login/login.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/theme/bloc/theme_bloc.dart';
 import '../../../core/theme/bloc/theme_event.dart';
@@ -21,12 +24,15 @@ import '../../../logic/categories/category_cubit.dart';
 import '../../../logic/categories/category_state.dart';
 import '../../../logic/products/product_cubit.dart';
 import '../../../logic/subcategories/subcategory_cubit.dart';
+import '../../../logic/login/login_cubit.dart';
+import '../../../logic/navigation/navigation_cubit.dart';
 import '../../widgets/category/category_bar.dart';
 import '../../widgets/discounts/discounts.dart';
 import '../../widgets/product/all_products.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 import '../../widgets/subcategory/subcategory_bar.dart';
 import '../address/select_user_address_screen.dart';
+import '../search/search_screen.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
   get currentIndex => null;
@@ -35,11 +41,6 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     // استخدام MediaQuery هنا يضمن تحديث الواجهة فوراً عند تصغير المتصفح
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-    final service = CategoryService();
-    final repo = CategoryRepo(service);
-    Future<void> _handleRefresh() async {
-
-    }
     return Scaffold(
        backgroundColor: Colors.transparent,
       appBar: AppBar(
@@ -67,13 +68,15 @@ class HomeScreen extends StatelessWidget {
               child: const App_Search(widthFactor:0.3),
             ),
           FavoriteIcon(),
-          // AppIcon(icon: CupertinoIcons.heart,onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true,))),),
-          // AppIcon(icon:  AppColors.isDark.value ? Icons.wb_sunny_outlined : Icons.dark_mode_outlined,onPressed: (){
-          //   context.read<ThemeBloc>().add(ToggleThemeEvent());
-          // },),
           ThemeIcon(),
-          AppIcon(
-            icon: CupertinoIcons.person,onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectUsrAddress())),),
+          BlocBuilder<LoginCubit,bool>(
+              builder: (context, state) {
+              return state ? AppIcon(icon: CupertinoIcons.search,onPressed:()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),) :AppIcon(icon: CupertinoIcons.person,onPressed:() async{
+                Login login =Login();
+                login.loginDialog(context);
+              },);
+            }
+          ),
           SizedBox(width: 10),
         ],
       ),

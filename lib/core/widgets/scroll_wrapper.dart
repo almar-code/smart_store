@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
-import 'ScrollToTopButton.dart';
+import 'buttons/ScrollToTopButton.dart';
 
 class ScrollWrapper extends StatefulWidget {
   final Widget child;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // 🔵 استيراد البلوك
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_endpoints.dart';
 import '../../../core/widgets/custom_network_image.dart';
 import '../../../core/widgets/three_dots_loader.dart';
 import '../../screens/product/products_screen.dart';
@@ -52,6 +53,7 @@ class SubcategoryBar extends StatelessWidget {
           return SizedBox(
             height: isDesktop ? height : 70, // تصميمك الأصلي
             child: GridView.builder(
+              shrinkWrap: true,
               physics: const BouncingScrollPhysics(),
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.only(top: 2),
@@ -85,7 +87,7 @@ class SubcategoryBar extends StatelessWidget {
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
                         child: CustomNetworkImage(
-                          imageUrl: item.subcatImage, // ممرر رابط الصورة مباشرة من الموديل
+                          imageUrl: ApiEndpoints.subCategoryImageUrl(item.subcatImage), // ممرر رابط الصورة مباشرة من الموديل
                           width: isDesktop ? 55 : 45,
                           height: isDesktop ? 55 : 45,
                         ),

@@ -7,7 +7,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/circularProgress.dart';
 import '../../../core/widgets/custom_network_image.dart';
 import '../../../core/widgets/icons/app_icon.dart';
-import '../../../core/widgets/refresh_button.dart';
+import '../../../core/widgets/buttons/refresh_button.dart';
 import '../../../core/widgets/text/viewMoreText.dart';
 import '../../../core/widgets/three_dots_loader.dart';
 import '../../../data/models/product_model.dart';

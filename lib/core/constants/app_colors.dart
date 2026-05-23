@@ -52,6 +52,10 @@ class AppColors {
       isDark.value ? const Color(0xFF121212) : Colors.white;
   static Color get error => const Color(0xFFE53935);
 
+
+  static Color get card=>
+      isDark.value ? const Color(0x4D013220) : const Color(0xFFF8FCFB);
+
   /// 🔧 تحويل HEX إلى Color
   static Color hexToColor(String hex) {
     hex = hex.replaceAll('#', '');

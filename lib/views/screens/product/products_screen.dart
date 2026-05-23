@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/di/injection_container.dart' as di;
 import '../../../core/widgets/scroll_wrapper.dart';
-import '../../../core/widgets/smart_floating_button.dart';
+import '../../../core/widgets/buttons/smart_floating_button.dart';
 import '../../../data/repos/product_repo.dart';
 import '../../../data/repos/subcategory_repo.dart';
 import '../../../logic/products/product_cubit.dart';

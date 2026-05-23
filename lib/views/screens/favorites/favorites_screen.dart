@@ -6,7 +6,7 @@ import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/scroll_wrapper.dart';
-import '../../../core/widgets/smart_floating_button.dart';
+import '../../../core/widgets/buttons/smart_floating_button.dart';
 import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../../widgets/product/all_products.dart';
 

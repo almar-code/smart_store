@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_endpoints.dart';
 import '../../../core/widgets/custom_network_image.dart';
 import '../../../core/widgets/three_dots_loader.dart';
 import '../../screens/product/products_screen.dart';
@@ -61,7 +62,7 @@ class SubCategoryItems extends StatelessWidget {
                         // 🖼️ استدعاء دالة بناء الصورة الذكية المجهزة بالفحص ومؤشر التحميل
                         child: ClipOval(
                           child: CustomNetworkImage(
-                            imageUrl: item.subcatImage, // ممرر رابط الصورة مباشرة من الموديل
+                            imageUrl: ApiEndpoints.subCategoryImageUrl(item.subcatImage), // ممرر رابط الصورة مباشرة من الموديل
                             width: 40,
                             height: 40,
                           ),

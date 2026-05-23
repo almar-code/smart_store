@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:smart_store/core/widgets/app_button.dart';
+import 'package:smart_store/core/widgets/buttons/app_button.dart';
 import 'package:video_player/video_player.dart';
 
 // استيراد الملفات الخاصة بك (تأكد من صحة المسارات)
@@ -11,7 +11,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/circleImage/circle_image.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/circularProgress.dart';
-import '../../../core/widgets/refresh_button.dart';
+import '../../../core/widgets/buttons/refresh_button.dart';
 import '../../../data/local/shared preferences/local_storage_service.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
 import '../../../logic/videos/comments_cubit.dart';

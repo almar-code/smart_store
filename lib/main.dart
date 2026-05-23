@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'logic/login/login_cubit.dart';
+import 'logic/login/login_cubit_web.dart';
+import 'logic/signup/sign_up_cubit.dart';
+import 'logic/navigation/navigation_cubit.dart';
 import 'data/repos/product_repo.dart';
 import 'data/repos/subcategory_repo.dart';
 import 'data/repos/video_repo.dart';
@@ -19,12 +26,17 @@ import 'logic/products/product_cubit.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await EasyLocalization.ensureInitialized();
   await dotenv.load(fileName: ".env");
-
-  // تهيئة حاوي الحقن (Dependency Injection) قبل تشغيل التطبيق
+  await EasyLocalization.ensureInitialized();
+  await Hive.initFlutter();
+  await Hive.openBox('user_info_box');
+  final String supaBaseKey = dotenv.env['supaBase_AnonKey'] ?? '';
+  await Supabase.initialize(
+    url: 'https://vwhumdnzaljjpuwvtdbo.supabase.co',
+    anonKey: supaBaseKey, // المفتاح من صورتك الأخيرة
+  );
   await di.init();
-
+  // await dotenv.load(fileName: ".env");
   runApp(
     EasyLocalization(
       supportedLocales: const [Locale('en'), Locale('ar')],
@@ -32,9 +44,13 @@ void main() async {
       fallbackLocale: const Locale('ar'),
       startLocale: const Locale('en'),
       saveLocale: true,
-      child: MultiBlocProvider(
+      child:  MultiBlocProvider(
         providers: [
           BlocProvider(create: (_) => ThemeBloc()),
+          BlocProvider(create: (_) => SignUpCubit()),
+          BlocProvider(create: (_) => NavigationCubit()),
+          BlocProvider(create: (_) => LoginCubit()),
+          BlocProvider(create: (_) => LoginCubitWeb()),
           BlocProvider(
             // استدعاء الـ CategoryRepo من حاوي الحقن مباشرة بدون تعقيد
             create: (_) => CategoryCubit(di.sl<CategoryRepo>())..getCategories(),
@@ -42,7 +58,6 @@ void main() async {
           BlocProvider(
             create: (_) => SubcategoryCubit(di.sl<SubcategoryRepo>())..getSubcategories(),
           ),
-
           // 🌟 إضافة الـ ProductCubit وحقن الـ ProductRepository من الـ Service Locator تلقائياً
           BlocProvider(
             create: (_) => ProductCubit(repository: di.sl<ProductRepo>())
@@ -57,8 +72,14 @@ void main() async {
             create: (_) => CommentsCubit(di.sl<VideoRepo>()),
           ),
         ],
-        child: const MyApp(),
+
+
+          child: BlocBuilder<LoginCubitWeb, bool>(
+              builder: (context, state) {
+              return MyApp();
+            }
+          ),
+        ),
       ),
-    ),
   );
 }

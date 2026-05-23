@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import '../../views/screens/smart chat screen/smart_chat_screen.dart';
-import '../utils/AiRippleManager.dart';
+import '../../../views/screens/smart chat screen/smart_chat_screen.dart';
+import '../../utils/AiRippleManager.dart';
 
 class SmartFloatingButton extends StatefulWidget {
   const SmartFloatingButton({super.key});
