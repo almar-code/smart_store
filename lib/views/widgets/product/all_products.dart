@@ -5,6 +5,7 @@ import 'package:smart_store/views/widgets/product/productdetailsheet.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_shadow.dart';
 import '../../../core/widgets/colors/circleOfColor.dart';
+import '../../../core/widgets/icons/share_icon.dart';
 import '../../../core/widgets/customCategoryList.dart';
 import '../../../core/widgets/three_dots_loader.dart';
 import '../../screens/product/products_screen.dart';
@@ -76,9 +77,9 @@ class AllProducts extends StatelessWidget {
                     ),
 
                     //  اللوان المنتج
-                    Positioned(
+                    PositionedDirectional(
                       top: 3,
-                      right: 7,
+                      end: 7,
                       child: Container(
                         padding: EdgeInsets.symmetric(vertical: 2,horizontal: 2,),
                         decoration: BoxDecoration(
@@ -104,9 +105,9 @@ class AllProducts extends StatelessWidget {
                         ),
                       ),
                     ),
-                    isDiscount ? Positioned(
+                    isDiscount ? PositionedDirectional(
                       top: 8,
-                      left: 8,
+                      start: 8,
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 6,
@@ -126,9 +127,9 @@ class AllProducts extends StatelessWidget {
                         ),
                       ),
                     ) : SizedBox(),
-                    Positioned(
+                    PositionedDirectional(
                       bottom: 6,
-                      left: 6,
+                      start: 6,
                       child:GestureDetector(
                         onTap: () {
                         },
@@ -147,9 +148,14 @@ class AllProducts extends StatelessWidget {
                         ),
                       ),
                     ),
-                    Positioned(
+                    PositionedDirectional(
+                      bottom: 6,
+                      end: 6,
+                      child:shareButton(),
+                    ),
+                    PositionedDirectional(
                       bottom: 36,
-                      left: 8,
+                      start: 8,
                       child:GestureDetector(
                         onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SimilarProducts())),
                         child: AnimatedContainer(

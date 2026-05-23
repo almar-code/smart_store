@@ -369,3 +369,56 @@ class VideoLoadingShimmer extends StatelessWidget {
     );
   }
 }
+
+
+class UserProfileShimmer extends StatelessWidget {
+  const UserProfileShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: AppColors.baseColor,
+      highlightColor: AppColors.highlightColor,
+      period: const Duration(milliseconds: 1200),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+
+          // 🔵 دائرة (مكان الصورة)
+          Container(
+            width: 40,
+            height: 40,
+            decoration:  BoxDecoration(
+              color: AppColors.backgroundSecondary ,
+              shape: BoxShape.circle,
+            ),
+          ),
+
+          const SizedBox(width: 8),
+
+          // 🔵 النص (Log in)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+
+              Container(
+                width: 120,
+                height: 12,
+                color: AppColors.backgroundSecondary,
+              ),
+
+              const SizedBox(height: 6),
+
+              Container(
+                width: 40,
+                height: 10,
+                color: AppColors.backgroundSecondary,
+              ),
+
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
