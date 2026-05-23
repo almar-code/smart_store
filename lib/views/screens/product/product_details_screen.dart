@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:smart_store/core/widgets/scroll_wrapper.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/customer_review.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/icons/cart_icon.dart';
@@ -114,6 +115,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           padding: const EdgeInsets.only(bottom: 10),
           child: _buildProductInfo(),
         ),
+        ProductReviewsSection(),
         TitleBar(title: "product like"),
         AllProducts(
           productID: widget.productID,
@@ -156,6 +158,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           flex: 2,
           child: Column(
             children: [
+              ProductReviewsSection(),
               TitleBar(title: "product like"),
               Expanded(
                 child: ScrollWrapper(

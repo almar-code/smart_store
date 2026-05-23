@@ -19,31 +19,33 @@ class ProductDetailsDialog {
       pageBuilder: (context, animation, secondaryAnimation) {
         bool isDesktop = MediaQuery.of(context).size.width > 800;
 
-        return Align(
-          alignment: isDesktop
-              ? (context.locale.languageCode == 'ar'
-              ? Alignment.centerRight
-              : Alignment.centerLeft)
-              : Alignment.bottomCenter,
-          child: Material(
-            color: Colors.transparent,
-            child: Container(
-              width: isDesktop
-                  ? MediaQuery.of(context).size.width * 0.35
-                  : double.infinity,
-              height: isDesktop
-                  ? double.infinity
-                  : MediaQuery.of(context).size.height * 0.84,
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.only(
-                  topLeft:
-                  isDesktop ? Radius.zero : const Radius.circular(10),
-                  topRight:
-                  isDesktop ? Radius.zero : const Radius.circular(10),
+        return SafeArea(
+          child: Align(
+            alignment: isDesktop
+                ? (context.locale.languageCode == 'ar'
+                ? Alignment.centerRight
+                : Alignment.centerLeft)
+                : Alignment.bottomCenter,
+            child: Material(
+              color: Colors.transparent,
+              child: Container(
+                width: isDesktop
+                    ? MediaQuery.of(context).size.width * 0.35
+                    : double.infinity,
+                height: isDesktop
+                    ? double.infinity
+                    : MediaQuery.of(context).size.height * 0.84,
+                decoration: BoxDecoration(
+                  color: AppColors.background,
+                  borderRadius: BorderRadius.only(
+                    topLeft:
+                    isDesktop ? Radius.zero : const Radius.circular(10),
+                    topRight:
+                    isDesktop ? Radius.zero : const Radius.circular(10),
+                  ),
                 ),
+                child: buildProductDetailSheet(context), // 👈 هنا استخدمنا الدالة
               ),
-              child: buildProductDetailSheet(context), // 👈 هنا استخدمنا الدالة
             ),
           ),
         );
