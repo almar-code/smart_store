@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:flutter/cupertino.dart';
 
@@ -38,11 +39,17 @@ class AuthRepo {
     await local.clearUser();
   }
 
-  Future<void> updateUserAvatar(File imageFile) async {
+  Future<void> updateUserAvatar(
+      Uint8List imageBytes,
+      ) async {
 
     final user = service.currentUser;
+
     if(user == null) return;
 
-    await service.uploadAvatar(imageFile, user.id,);
+    await service.uploadAvatar(
+      imageBytes,
+      user.id,
+    );
   }
 }

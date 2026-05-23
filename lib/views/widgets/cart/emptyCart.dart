@@ -19,7 +19,6 @@ class EmptyCartScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              // 🛒 أيقونة السلة
               SvgPicture.asset(
                 "assets/images/shopping.svg",
                 width: isDesktop? 90 :60,

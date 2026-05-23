@@ -89,7 +89,7 @@ class CategoryBarShimmer extends StatelessWidget {
       baseColor: AppColors.baseColor,
       highlightColor: AppColors.highlightColor,
       child: Container(
-        height: 34,
+        height: 38,
         padding: const EdgeInsets.symmetric(vertical: 6),
         child: Row(
           children: [
@@ -140,12 +140,17 @@ class DiscountsShimmer extends StatelessWidget {
       child: Shimmer.fromColors(
         baseColor: AppColors.baseColor,
         highlightColor: AppColors.highlightColor,
-        child: ListView.builder(
-          scrollDirection: Axis.horizontal,
-          itemCount: 10,
+        child: MasonryGridView.count(
+          scrollDirection: Axis.vertical,
+          crossAxisCount:isDesktop ? 6 : 3,
+          mainAxisSpacing: 10, //مسافة بين العنصر والذي تحتة
+          crossAxisSpacing: 10, //مسافة بين العنصر والذي جنبة
+          shrinkWrap: true, //حجم حسب الاب
+          itemCount:9,
+          physics: NeverScrollableScrollPhysics(), //توقيف الشريط
           itemBuilder: (context, index) {
             return Container(
-              width: isDesktop ? 125 : 100,
+              width: isDesktop ? 115 :100,
               margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
                 color: AppColors.backgroundSecondary,
@@ -203,10 +208,11 @@ class MasonryGridShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.of(context).size.width > 800;
-
+    bool isDesktop = MediaQuery.of(context).size.width > 1000;
+    bool isIpad = MediaQuery.of(context).size.width < 1000 &&  MediaQuery.of(context).size.width > 450;
+    int itemCount = isDesktop ? 3 : isIpad ? 2 : 1;
     return MasonryGridView.count(
-      crossAxisCount: isDesktop ? 4 : 1,
+      crossAxisCount: itemCount,
       mainAxisSpacing: 15,
       crossAxisSpacing: 12,
       shrinkWrap: true,
@@ -359,6 +365,59 @@ class VideoLoadingShimmer extends StatelessWidget {
         width: double.infinity,
         height: double.infinity,
         color:  Color(0xFF2A2A2A),
+      ),
+    );
+  }
+}
+
+
+class UserProfileShimmer extends StatelessWidget {
+  const UserProfileShimmer({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: AppColors.baseColor,
+      highlightColor: AppColors.highlightColor,
+      period: const Duration(milliseconds: 1200),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+
+          // 🔵 دائرة (مكان الصورة)
+          Container(
+            width: 40,
+            height: 40,
+            decoration:  BoxDecoration(
+              color: AppColors.backgroundSecondary ,
+              shape: BoxShape.circle,
+            ),
+          ),
+
+          const SizedBox(width: 8),
+
+          // 🔵 النص (Log in)
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+
+              Container(
+                width: 120,
+                height: 12,
+                color: AppColors.backgroundSecondary,
+              ),
+
+              const SizedBox(height: 6),
+
+              Container(
+                width: 40,
+                height: 10,
+                color: AppColors.backgroundSecondary,
+              ),
+
+            ],
+          ),
+        ],
       ),
     );
   }

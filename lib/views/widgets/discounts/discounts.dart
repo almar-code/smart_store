@@ -6,6 +6,7 @@ import 'package:smart_store/core/constants/app_shadow.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/text/viewMoreText.dart';
+import '../../screens/discounts/discounts_screen.dart';
 import '../flash/flash_screen.dart';
 class Discounts extends StatelessWidget {
   const Discounts({super.key});
@@ -32,25 +33,33 @@ class Discounts extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  // الصورة المصغرة
-                  Image.asset(
-                    'assets/images/discount.png',
-                    height: isDesktop?28:20,
-                    width: isDesktop?28:20,
-                    fit: BoxFit.contain,
-                  ),
-                  const SizedBox(width: 5),
-                  Text(
-                    tr('discounts'),
-                    style: TextStyle(
-                      fontSize: isDesktop?15:12,
-                      fontWeight: FontWeight.bold,
-                      color: AppColors.textColor,
+              InkWell(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DiscountsScreen(productID: 1,subCategoryID: 2,category: 2,)),
+                  );
+                },
+                child: Row(
+                  children: [
+                    // الصورة المصغرة
+                    Image.asset(
+                      'assets/images/discount.png',
+                      height: isDesktop?28:20,
+                      width: isDesktop?28:20,
+                      fit: BoxFit.contain,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 5),
+                    Text(
+                      tr('discounts'),
+                      style: TextStyle(
+                        fontSize: isDesktop?15:12,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textColor,
+                      ),
+                    ),
+                  ],
+                ),
               ),
 
               // الجزء الأيسر: زر مشاهدة المزيد
@@ -105,137 +114,153 @@ class DiscountsUI extends StatelessWidget {
 
               // 🔥 كرت مشاهدة المزيد
               if (index == products.length) {
-                return Container(
-                  width: isDesktop ? 130 :100,
-                  margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: AppColors.background, // شفافية خفيفة
-                    borderRadius: BorderRadius.circular(7),
-                    border: Border.all(
-                      color: AppColors.borderColor,
-                    ),
-                    boxShadow: AppShadow.commonShadow,
-                  ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      // 🔁 أيقونة مناسبة (عرض المزيد)
-                      Container(
-                        padding: EdgeInsets.all(8),
-                        decoration: BoxDecoration(
-                          color: AppColors.primary.withOpacity(0.10),
-                          shape: BoxShape.circle,
-                        ),
-                        child: ArrowForwardIcon(size: 18,),
+                return InkWell(
+                  onTap: (){
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => DiscountsScreen(productID: 1,subCategoryID: 2,category: 2,)),
+                    );
+                  },
+                  child: Container(
+                    width: isDesktop ? 130 :100,
+                    margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: AppColors.background, // شفافية خفيفة
+                      borderRadius: BorderRadius.circular(7),
+                      border: Border.all(
+                        color: AppColors.borderColor,
                       ),
+                      boxShadow: AppShadow.commonShadow,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        // 🔁 أيقونة مناسبة (عرض المزيد)
+                        Container(
+                          padding: EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: AppColors.primary.withOpacity(0.10),
+                            shape: BoxShape.circle,
+                          ),
+                          child: ArrowForwardIcon(size: 18,),
+                        ),
 
-                      SizedBox(height: 8),
-                      SizedBox(height: 8),
+                        SizedBox(height: 8),
+                        SizedBox(height: 8),
 
-                      ViewMoreText(fontSize: 13,),
+                        ViewMoreText(fontSize: 13,),
 
-                    ],
+                      ],
+                    ),
                   ),
                 );
               }
 
               final item = products[index];
 
-              return Container(
-                width: isDesktop ? 125 :100,
-                height: 130,
-                margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundSecondary,
-                  borderRadius: BorderRadius.circular(7),
-                  boxShadow: AppShadow.commonShadow,
-                ),
-                child: Column(
-                  children: [
+              return InkWell(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DiscountsScreen(productID: 1,subCategoryID: 2,category: 2,)),
+                  );
+                },
+                child: Container(
+                  width: isDesktop ? 125 :100,
+                  height: 130,
+                  margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: AppColors.backgroundSecondary,
+                    borderRadius: BorderRadius.circular(7),
+                    boxShadow: AppShadow.commonShadow,
+                  ),
+                  child: Column(
+                    children: [
 
-                    //  الصورة + badge الخصم
-                    Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.vertical(
-                            top: Radius.circular(7),
-                          ),
-                          child: Image.asset(
-                            item['image'],
-                            height: isDesktop ? 130 :120,
-                            width: double.infinity,
-                            fit: BoxFit.cover,
-                          ),
-                        ),
-
-                        //  badge الخصم
-                        Positioned(
-                          top: 8,
-                          right: 8,
-                          child: Container(
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 6,
-                              vertical: 3,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AppColors.redColor.withOpacity(0.9),
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                            child: Text(
-                              "${item['discount']}%",
-                              style: TextStyle(
-                                color:  Colors.white,
-                                fontSize: isDesktop ? 11 :9,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    SizedBox(height: 5),
-
-                    // 💰 السعر
-                     SizedBox(
-                       height: 20,
-                       child: Row(
-                         mainAxisAlignment: MainAxisAlignment.center,
-                        spacing: 8,
+                      //  الصورة + badge الخصم
+                      Stack(
                         children: [
-                          Row(
-                            spacing: 1,
-                            children: [
-                              Text(
-                                "${item['newPrice']}",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 13,
-                                  color:  AppColors.primary,
-                                ),
-                              ),
-                              Text(
-                                "\$",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w300,
-                                  fontSize: 12,
-                                  color:  AppColors.primary,
-                                ),
-                              ),
-                            ],
+                          ClipRRect(
+                            borderRadius: BorderRadius.vertical(
+                              top: Radius.circular(7),
+                            ),
+                            child: Image.asset(
+                              item['image'],
+                              height: isDesktop ? 130 :120,
+                              width: double.infinity,
+                              fit: BoxFit.cover,
+                            ),
                           ),
-                          Text(
-                            "${item['price']} \$",
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.textSecondary,
-                              decoration: TextDecoration.lineThrough,
+
+                          //  badge الخصم
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 6,
+                                vertical: 3,
+                              ),
+                              decoration: BoxDecoration(
+                                color: AppColors.redColor.withOpacity(0.9),
+                                borderRadius: BorderRadius.circular(8),
+                              ),
+                              child: Text(
+                                "${item['discount']}%",
+                                style: TextStyle(
+                                  color:  Colors.white,
+                                  fontSize: isDesktop ? 11 :9,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ),
                           ),
                         ],
-                                       ),
-                     ),
-                  ],
+                      ),
+
+                      SizedBox(height: 5),
+
+                      // 💰 السعر
+                       SizedBox(
+                         height: 20,
+                         child: Row(
+                           mainAxisAlignment: MainAxisAlignment.center,
+                          spacing: 8,
+                          children: [
+                            Row(
+                              spacing: 1,
+                              children: [
+                                Text(
+                                  "${item['newPrice']}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 13,
+                                    color:  AppColors.primary,
+                                  ),
+                                ),
+                                Text(
+                                  "\$",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w300,
+                                    fontSize: 12,
+                                    color:  AppColors.primary,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Text(
+                              "${item['price']} \$",
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: AppColors.textSecondary,
+                                decoration: TextDecoration.lineThrough,
+                              ),
+                            ),
+                          ],
+                                         ),
+                       ),
+                    ],
+                  ),
                 ),
               );
             },

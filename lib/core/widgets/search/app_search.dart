@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../views/screens/search/search_screen.dart';
+import '../../../views/screens/similar products/similar_products.dart';
 import '../../constants/app_colors.dart';
 
 class App_Search extends StatelessWidget {
@@ -27,7 +28,9 @@ class App_Search extends StatelessWidget {
               children:  [
                 Icon(CupertinoIcons.search, color: AppColors.iconColor.withOpacity(0.5), size: 18),
                 SizedBox(width: 8),
-                Icon(CupertinoIcons.camera, color: AppColors.iconColor.withOpacity(0.5), size: 18),
+                InkWell(
+                  onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SimilarProducts())),
+                    child: Icon(CupertinoIcons.camera, color: AppColors.iconColor.withOpacity(0.5), size: 18)),
               ],
             ),
           ),

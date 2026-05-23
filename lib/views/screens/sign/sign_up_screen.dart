@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,13 +10,17 @@ import 'package:pinput/pinput.dart';
 import 'package:smart_store/logic/signup/sign_up_logics.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/app_button.dart';
 import '../../../core/widgets/app_form_field.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
+import '../../../logic/login/password_logic.dart';
 import '../../../logic/signup/sign_up_cubit.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
+
+import '../../widgets/login/otp_step.dart';
 
 
 
@@ -46,12 +51,17 @@ class SignUpScreen extends StatelessWidget {
     const UserDataStep(),
     OtpStep(
       email: savedEmail ?? "",
+      onVerifyOtp: (context, pin) async {
+      await SignUpLogics.handleVerifyAndSave(pin,context);
+      },
     ),
     AvatarStep(onSuccess: onSuccess ,),
   ];
 
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
+
     return  BlocBuilder<SignUpCubit,int>(
         builder: (context, state) {
         return Scaffold(
@@ -117,20 +127,16 @@ class SignUpScreen extends StatelessWidget {
                                           child:  Text(tr("back")))),
                                 if (state > 0) const SizedBox(width: 10),
                                 Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(colors: [AppColors.primary, Colors.tealAccent]),
-                                      borderRadius: BorderRadius.circular(15),
-                                    ),
-                                    child: ElevatedButton(
-                                      onPressed: (){
-
+                                  child: SizedBox(
+                                    width: double.infinity,
+                                    height: isDesktop ? 40: 30,
+                                    child: AppButton(
+                                      label: state == 0 ? tr("next") : tr("sign_up"),
+                                      icon: Icons.save,
+                                      onTap: () {
                                         _nextStep(context ,state);
 
-                                        },
-                                      style: ElevatedButton.styleFrom(backgroundColor:
-                                       Colors.transparent, shadowColor: Colors.transparent),
-                                      child: Text(state == 0 ? tr("next") : tr("sign_up"), style: const TextStyle(color: Colors.white)),
+                                      },
                                     ),
                                   ),
                                 ),
@@ -153,19 +159,27 @@ class SignUpScreen extends StatelessWidget {
 class AccountStep extends StatelessWidget {
   const AccountStep({super.key});
   @override
-  Widget build(BuildContext context) => Column(children: [
+  Widget build(BuildContext context) => Column(
+    spacing: 15,
+      children: [
     CustomFormField(
       name: 'email',
       label: tr('email_address'),
       icon: Icons.email_outlined,
       keyboardType: TextInputType.emailAddress,
-      validators: [FormBuilderValidators.required(), FormBuilderValidators.email()],
+      validators: [FormBuilderValidators.required(),
+        FormBuilderValidators.email()
+      ],
     ),
     CustomFormField(
       name: 'password',
       label: tr('password'),
       icon: Icons.lock_outline,
-      validators: [FormBuilderValidators.required(), FormBuilderValidators.minLength(6)],
+      isPasswordField: true,
+      validators: [FormBuilderValidators.required(),
+        FormBuilderValidators.minLength(6, errorText: tr('min_length_6')),
+
+      ],
     ),
   ]);
 }
@@ -173,7 +187,9 @@ class AccountStep extends StatelessWidget {
 class UserDataStep extends StatelessWidget {
   const UserDataStep({super.key});
   @override
-  Widget build(BuildContext context) => Column(children: [
+  Widget build(BuildContext context) => Column(
+      spacing:15,
+      children: [
     CustomFormField(
         name: 'user_name',
         label: tr('full_name'),
@@ -187,240 +203,92 @@ class UserDataStep extends StatelessWidget {
 }
 
 
-class OtpStep extends StatefulWidget {
-  final String email;
-  const OtpStep({super.key, required this.email});
-  @override
-  State<OtpStep> createState() => _OtpStepState();
-}
-
-class _OtpStepState extends State<OtpStep> {
-  Timer? _timer;
-  int _start = 60;
-  bool _isResendDisabled = true;
-  final TextEditingController _pinController = TextEditingController();
-
-  String formatTime(int seconds) {
-    int minutes = seconds ~/ 60;
-    int remainingSeconds = seconds % 60;
-    return "$minutes:${remainingSeconds.toString().padLeft(2, '0')}";
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    startTimer();
-  }
-
-  @override
-  void dispose() {
-    _timer?.cancel();
-    super.dispose();
-  }
-
-  void startTimer() {
-    _timer?.cancel(); // إلغاء أي مؤقت سابق لتجنب تداخل المهام
-    setState(() {
-      _start = 60; // إعادة ضبط الوقت (مثلاً دقيقتان)
-      _isResendDisabled = true; // تعطيل الزر عند بدء العد
-    });
-
-    _timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      if (_start == 0) {
-        if (mounted) {
-          setState(() {
-            _isResendDisabled = false; // 👈 التعديل المهم: تفعيل الزر هنا عند انتهاء الوقت
-            timer.cancel(); // إيقاف المؤقت
-          });
-        }
-      } else {
-        if (mounted) {
-          setState(() {
-            _start--; // إنقاص الوقت ثانية بثانية
-          });
-        }
-      }
-    });
-  }
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-
-        const SizedBox(height: 20),
-         Text(
-             tr("verification"),
-            style: TextStyle(fontSize: 23, fontWeight: FontWeight.bold)),
-        const SizedBox(height: 10),
-        Text(
-            "${"enter_code_sent_to".tr()}\n${widget.email}",
-            textAlign: TextAlign.center),
-        const SizedBox(height: 30),
-        Pinput(
-          length: 6,
-          controller: _pinController,
-          onCompleted: (pin) async {
-            try {
-              await SignUpLogics.handleVerifyAndSave(pin,context);
-            } catch (e) {
-              _pinController.clear();
-              FocusScope.of(context).unfocus();
-              setState (() {});
-
-            }
-          },
-          defaultPinTheme: PinTheme(
-            width: 45,
-            height: 55,
-            textStyle: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: AppColors.borderColor,
-              ),
-            ),
-          ),
-
-          focusedPinTheme: PinTheme(
-            width: 45,
-            height: 55,
-            textStyle: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: AppColors.borderColor,
-                width: 2,
-              ),
-            ),
-          ),
-
-          submittedPinTheme: PinTheme(
-            width: 45,
-            height: 55,
-            textStyle: const TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(
-                color: AppColors.primary,
-              ),
-            ),
-          ),
-        ),
-
-        SizedBox(height: 20),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextButton(
-              onPressed: _isResendDisabled
-                  ? null
-                  : () async{
-                await SignUpLogics.handleResendCode(context);
-                startTimer();
-              },
-              child: Text(
-                tr("resend_code"),
-                style: TextStyle(
-                  color: _isResendDisabled ? Colors.grey : AppColors.primary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Text(
-              formatTime(_start),
-              style: TextStyle(
-                color: _start <= 10 ? Colors.red : Colors.teal,
-                fontWeight: FontWeight.bold,
-                fontSize: 18,
-              ),
-            ),
-
-          ],
-        )
-
-      ],
-    );
-  }
-
-}
-
 
 class AvatarStep extends StatefulWidget {
   final VoidCallback? onSuccess;
 
-  const AvatarStep({super.key,this.onSuccess});
+  const AvatarStep({super.key, this.onSuccess});
 
   @override
   State<AvatarStep> createState() => _AvatarStepState();
 }
 
 class _AvatarStepState extends State<AvatarStep> {
-  File? _imageFile;
+
+  Uint8List? _imageBytes;
 
   Future<void> _pickImage() async {
+
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery, imageQuality: 50);
 
     if (pickedFile != null) {
-      setState(() => _imageFile = File(pickedFile.path));
+
+      final bytes = await pickedFile.readAsBytes();
+
+      setState(() {_imageBytes = bytes;});
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
+
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 30,vertical: 70),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 30,
+        vertical: 70,
+      ),
+
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
 
-          Text(  tr("add_user_image"), style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-          SizedBox(height: 100,),
-          GestureDetector(
-            onTap: _pickImage,
-            child: CircleAvatar(
-              backgroundColor: AppColors.borderColor,
-              radius: 70,
-              backgroundImage: _imageFile != null ? FileImage(_imageFile!) : null,
-              child: _imageFile == null ? const Icon(Icons.add_a_photo, size: 40) : null,
+          Text(tr("add_user_image"), style: const TextStyle(
+            fontSize: 20,
+              fontWeight: FontWeight.bold,
             ),
           ),
+
+          const SizedBox(height: 100),
+
+          GestureDetector(
+            onTap: _pickImage,
+
+            child: CircleAvatar(
+              backgroundColor: Colors.grey,
+              radius: 70,
+
+              backgroundImage: _imageBytes != null ? MemoryImage(_imageBytes!) : null,
+
+              child: _imageBytes == null ? const Icon(Icons.add_a_photo, size: 40,) : null,
+            ),
+          ),
+
           const SizedBox(height: 40),
 
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            spacing: 40,
             children: [
+
               ElevatedButton(
                 onPressed: () async {
-                  await SignUpLogics.completeRegistration(context, widget.onSuccess);
+                  await SignUpLogics.completeRegistration(context, widget.onSuccess,);
                 },
-                child:  Text(tr("later")),
+                child: Text(tr("later")),
               ),
+
+              const SizedBox(width: 40),
 
               ElevatedButton(
-                onPressed: _imageFile == null ? null : () async {
-                  await SignUpLogics.handleAvatarUpload(context,_imageFile, widget.onSuccess);
+                onPressed: _imageBytes == null ? null : () async {
+                  await SignUpLogics.handleAvatarUpload(context, _imageBytes, widget.onSuccess,);
                 },
-                child:  Text(tr("save")),
+
+                child: Text(tr("save")),
               ),
             ],
-          )
-
+          ),
         ],
       ),
     );

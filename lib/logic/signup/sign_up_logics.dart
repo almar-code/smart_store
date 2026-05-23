@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
@@ -135,36 +137,62 @@ class SignUpLogics {
     }
   }
 
-  static Future<void> handleAvatarUpload(BuildContext context, File? imageFile, VoidCallback? onSuccess) async {
+  static Future<void> handleAvatarUpload(
+      BuildContext context,
+      Uint8List? imageBytes,
+      VoidCallback? onSuccess,
+      ) async {
 
     networkService(context);
 
-    if (imageFile == null) {
-      await completeRegistration(context, onSuccess);
+    if (imageBytes == null) {
+
+      await completeRegistration(
+        context,
+        onSuccess,
+      );
+
       return;
     }
 
     try {
+
       ShowLoading.progressLoading(context);
 
       final user = service.currentUser;
+
       if (user == null) return;
 
-      await service.uploadAvatar(imageFile, user.id);
+      await service.uploadAvatar(
+        imageBytes,
+        user.id,
+      );
 
       if (context.mounted) {
-        await completeRegistration(context, onSuccess);
+
+
+        await completeRegistration(
+          context,
+          onSuccess,
+        );
       }
 
     } catch (e) {
-      if (context.mounted) {
-        Navigator.of(context, rootNavigator: true).pop();
 
-        AppToasts.showErrorToast(context, tr("upload_image_error"),);
+      if (context.mounted) {
+
+        Navigator.of(
+          context,
+          rootNavigator: true,
+        ).pop();
+
+        AppToasts.showErrorToast(
+          context,
+          tr("upload_image_error"),
+        );
       }
     }
   }
-
   static Future<void> completeRegistration(BuildContext context, VoidCallback? onSuccess,) async {
 
     try {

@@ -5,6 +5,9 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
+import '../../../core/widgets/scroll_wrapper.dart';
+import '../../../core/widgets/smart_floating_button.dart';
+import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../../widgets/product/all_products.dart';
 
 class FavoritesScreen extends StatelessWidget {
@@ -13,28 +16,43 @@ class FavoritesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-    return Scaffold(
-        backgroundColor: AppColors.background,
-        appBar: AppBar(
-            backgroundColor: AppColors.background,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            leading:Icon(
-              CupertinoIcons.heart,
-              color:  AppColors.iconColor,
-              size: isDesktop?22: 20,
-            ),
-            titleSpacing:isDesktop?0: 0,
-            title: AppTitle(firstPart: tr('firstFavorites'),secondPart: tr('secondFavorites'),fontSize: isDesktop?18: 15,spacing: ' ',),
-            actions: [
-              AppIcon(icon:CupertinoIcons.delete,color: AppColors.iconColor,size: 15,),
-              screenOnly ? ArrowBack() : SizedBox(),
-
+    return SafeArea(
+      child: Scaffold(
+          backgroundColor: AppColors.background,
+          appBar: AppBar(
+              backgroundColor: AppColors.background,
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              leading:Icon(
+                CupertinoIcons.heart,
+                color:  AppColors.iconColor,
+                size: isDesktop?22: 20,
+              ),
+              titleSpacing:isDesktop?0: 0,
+              title: AppTitle(firstPart: tr('firstFavorites'),secondPart: tr('secondFavorites'),fontSize: isDesktop?18: 15,spacing: ' ',),
+              actions: [
+                AppIcon(icon:CupertinoIcons.delete,color: AppColors.iconColor,size: 15,),
+                screenOnly ? ArrowBack() : SizedBox(),
+      
+            ],
+          ),
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: ScrollWrapper(
+              bottom: 15,
+              child: AllProducts(),
+              ),
+          ),
+        floatingActionButton: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          spacing: 10,
+          children: [
+            SmartFloatingButton(),
+            CartFloatingButton()
           ],
-        ),
-        body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: AllProducts(),
-        ),);
+        ) ,
+      ),
+    );
 }
 }

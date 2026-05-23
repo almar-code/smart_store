@@ -16,6 +16,8 @@ class AppColors {
 
   static Color get borderColor =>
       isDark.value ? Colors.white10 : const Color.fromARGB(66, 158, 158, 158);
+  static Color get borderSecondary =>
+      isDark.value ? Colors.white60 : Colors.black26;
 
   static Color get textColor =>
       isDark.value ? Colors.white : const Color.fromARGB(255, 0, 0, 0);
@@ -26,8 +28,13 @@ class AppColors {
       isDark.value ? const Color(0xFF00B387) : const Color(0xFF00B387);
 
   static Color get background =>
-      isDark.value ? const Color(0xFF121212) : const Color(0xFFFFFFFF);
-
+      isDark.value ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
+// اللون العلوي للتدرج
+  static Color get gradientTop =>
+      isDark.value ? const Color(0xFF000000) : const Color(0xFFFFFFFF);
+// اللون السفلي للتدرج
+  static Color get gradientBottom =>
+      isDark.value ? const Color(0xFF1C1C1E) : const Color(0xFFE8EAF0);
   static Color get textSecondary =>
       isDark.value ? Colors.white70 : const Color(0xFF757575);
 
@@ -43,6 +50,10 @@ class AppColors {
   static Color get ContainerColor =>
       isDark.value ? const Color(0xFF121212) : Colors.white;
   static Color get error => const Color(0xFFE53935);
+
+
+  static Color get card=>
+      isDark.value ? const Color(0x4D013220) : const Color(0xFFF8FCFB);
 
   /// 🔧 تحويل HEX إلى Color
   static Color hexToColor(String hex) {

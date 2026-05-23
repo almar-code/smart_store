@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../../core/widgets/scroll_wrapper.dart';
+import '../../../core/widgets/smart_floating_button.dart';
+import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import 'product_details_screen.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/icons/app_icon.dart';
@@ -21,49 +24,61 @@ class ProductScreens extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
 
-    return  Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
+    return  SafeArea(
+      child: Scaffold(
         backgroundColor: AppColors.background,
-        leadingWidth: 0,
-        titleSpacing:3,
-        elevation: 0,
-        title: Row(
-          children: [
-            FavoriteIcon(),
-            CartIcon(),
-            SizedBox(width: 7,),
-
-          ],
+        appBar: AppBar(
+          backgroundColor: AppColors.background,
+          scrolledUnderElevation: 0,
+          leadingWidth: 0,
+          titleSpacing:3,
+          elevation: 0,
+          automaticallyImplyLeading: false,
+          title: Row(
+            children: [
+              FavoriteIcon(),
+              CartIcon(),
+              SizedBox(width: 7,),
+      
+            ],
+          ),
+          actions: [
+            InkWell(
+                onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),
+                child:  App_Search(widthFactor: isDesktop ?0.3 :0.64)),
+            ArrowBack()
+          ],),
+        body:Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Column(
+      
+            children: [
+              if( subCategoryID!= null && category !=null)
+                SubcategoryBar(),
+              Expanded(
+      
+                child: ScrollWrapper(
+                  bottom: 5,
+                    child: AllProducts(productID: productID,
+                      subCategoryID: subCategoryID,
+                      showAddToCart: true,
+                        onProductTap: (id) {
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(productID: id)));
+                        })),
+              )
+            ],
+          ),
         ),
-        actions: [
-          InkWell(
-              onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),
-              child:  App_Search(widthFactor: isDesktop ?0.3 :0.64)),
-          ArrowBack()
-        ],),
-      body:Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-
+        floatingActionButton: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          spacing: 10,
           children: [
-            if( subCategoryID!= null && category !=null)
-              SubcategoryBar(),
-            Expanded(
-
-              child: SingleChildScrollView(
-                  scrollDirection: Axis.vertical,
-                  child: AllProducts(productID: productID,
-                    subCategoryID: subCategoryID,
-                    showAddToCart: true,
-                      onProductTap: (id) {
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => ProductDetailsScreen(productID: id)));
-                      })),
-            )
+            SmartFloatingButton(),
+            CartFloatingButton()
           ],
-        ),
+        ) ,
       ),
-
     );
   }
 }

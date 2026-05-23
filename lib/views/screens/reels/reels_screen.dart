@@ -344,7 +344,7 @@ class _ReelItemState extends State<ReelItem> {
                 InkWell(
                   onTap:(){
                     stopPlay();
-                    Navigator.of(context,).push(MaterialPageRoute(builder: (context) => StoreProfile()));
+                    Navigator.of(context,).push(MaterialPageRoute(builder: (context) => StoreProfile(isAppBar: true,)));
                   },
                   child: Row(
                     children:  [

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 import 'package:smart_store/core/widgets/search/app_search.dart';
 import 'package:smart_store/core/widgets/app_title.dart';
@@ -7,11 +8,16 @@ import 'package:smart_store/core/widgets/app_logo.dart';
 import 'package:smart_store/core/widgets/icons/app_icon.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:smart_store/views/screens/profile/profile_screen.dart';
+import 'package:smart_store/views/widgets/login/login.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/theme/bloc/theme_bloc.dart';
 import '../../../core/theme/bloc/theme_event.dart';
+import '../../../core/widgets/ScrollToTopButton.dart';
 import '../../../core/widgets/icons/favorite_icon.dart';
+import '../../../core/widgets/scroll_wrapper.dart';
 import '../../../core/widgets/titleBar.dart';
+import '../../../logic/login/login_cubit.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
 import '../../widgets/category/category_bar.dart';
 import '../../widgets/discounts/discounts.dart';
@@ -23,17 +29,20 @@ import '../../widgets/subcategory/subcategory_bar.dart';
 import '../address/select_user_address_screen.dart';
 import '../favorites/favorites_screen.dart';
 import '../search/search_screen.dart';
+import '../voice/voice_screen.dart';
 class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
-
   get currentIndex => null;
+  static final ScrollController _scrollController = ScrollController();
   @override
   Widget build(BuildContext context) {
     // استخدام MediaQuery هنا يضمن تحديث الواجهة فوراً عند تصغير المتصفح
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-
+    Future<void> _handleRefresh() async {
+      await Future.delayed(const Duration(seconds: 2));
+    }
     return Scaffold(
-       backgroundColor: AppColors.background,
+       backgroundColor: Colors.transparent,
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
@@ -61,66 +70,72 @@ class HomeScreen extends StatelessWidget {
                   child: const App_Search(widthFactor:0.3)),
             ),
           FavoriteIcon(),
-          // AppIcon(icon: CupertinoIcons.heart,onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true,))),),
           AppIcon(icon:  AppColors.isDark.value ? Icons.wb_sunny_outlined : Icons.dark_mode_outlined,onPressed: (){
             context.read<ThemeBloc>().add(ToggleThemeEvent());
           },),
-          AppIcon(icon: CupertinoIcons.person,onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectUsrAddress())),),
+          BlocBuilder<LoginCubit,bool>(
+              builder: (context, state) {
+              return state ? AppIcon(icon: CupertinoIcons.search,onPressed:()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),) :AppIcon(icon: CupertinoIcons.person,onPressed:() async{
+                Login login =Login();
+                login.loginDialog(context);
+              },);
+            }
+          ),
           SizedBox(width: 10),
         ],
       ),
-
-
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: Column(
-          children: [
-            CategoryBar(),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 15.0),
-                  child: Column(
-                    spacing: 8,
-                    children:[
-                      isDesktop ? Row(
-                        spacing: 12,
-                        children: [
-                          Expanded(child:
-                          SliderEds(
-                            images: [
-                              'assets/images/E3.jpg',
-                              'assets/images/a4.jpg',
-                              'assets/images/E.jpg',
-                            ],scrollPhysics: true
-                          )),
-                          Expanded(
-                              flex: 2,
-                              child: Discounts()),
-                        ],
-                      ):
-                      SliderEds(
-                        images: [
-                          'assets/images/E3.jpg',
-                          'assets/images/a4.jpg',
-                          'assets/images/E.jpg',
-                        ],scrollPhysics: true
-                      ),
-                      if(!isDesktop) SubcategoryBar(),
-                      isDesktop?SubcategoryBar():Discounts(),
-                      TitleBar(title: tr('forYou'),),
-                      SizedBox(child: AllProducts()),
-                    ],
+      body: RefreshIndicator(
+        onRefresh: _handleRefresh,
+        color: AppColors.primary, // لون مؤشر التحميل (يمكنك ربطه بهوية المشروع)
+        backgroundColor: AppColors.backgroundSecondary,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+          child: Column(
+            children: [
+              CategoryBar(),
+              Expanded(
+                child: ScrollWrapper(
+                  bottom: isDesktop ? 15 :85,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 15.0),
+                    child: Column(
+                      spacing: 8,
+                      children:[
+                        isDesktop ? Row(
+                          spacing: 12,
+                          children: [
+                            Expanded(child:
+                            SliderEds(
+                              images: [
+                                'assets/images/E3.jpg',
+                                'assets/images/a4.jpg',
+                                'assets/images/E.jpg',
+                              ],scrollPhysics: true
+                            )),
+                            Expanded(
+                                flex: 2,
+                                child: Discounts()),
+                          ],
+                        ):
+                        SliderEds(
+                          images: [
+                            'assets/images/E3.jpg',
+                            'assets/images/a4.jpg',
+                            'assets/images/E.jpg',
+                          ],scrollPhysics: true
+                        ),
+                        if(!isDesktop) SubcategoryBar(),
+                        isDesktop?SubcategoryBar():Discounts(),
+                        TitleBar(title: tr('forYou'),),
+                        SizedBox(child: AllProducts()),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(bottom: 80),
-        child: CartFloatingButton(),
       ),
     );
   }

@@ -25,7 +25,7 @@ class cardImage extends StatelessWidget {
             highlightColor: AppColors.highlightColor,
             child: Container(
               width: width,
-              height: 150, // يمكنك تحديد ارتفاع ثابت أو تركه يتمدد
+              height: 100, // يمكنك تحديد ارتفاع ثابت أو تركه يتمدد
               decoration: BoxDecoration(
                 color: AppColors.backgroundSecondary,
                 borderRadius: BorderRadius.circular(20), // نفس حواف الصورة
@@ -39,6 +39,7 @@ class cardImage extends StatelessWidget {
           child: ClipRRect(
             borderRadius: BorderRadius.circular(20),
             child: Image.asset(
+              height: 100,
               'assets/images/$imagePath',
               fit: BoxFit.fill,
             ),

@@ -24,7 +24,7 @@ class AppDrawer extends StatelessWidget {
                 children: [
                   Expanded(
                     flex: 0,
-                    child: UserProfile(isLoggedIn: true,isDrawer: true,),
+                    child: UserProfile(isDrawer: true,),
                   ),
                   SizedBox(height: 10,),
                   Expanded(flex: 0, child: CategoryBar()),

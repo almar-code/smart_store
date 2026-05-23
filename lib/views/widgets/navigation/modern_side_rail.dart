@@ -1,13 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hive/hive.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/app_shadow.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../core/widgets/icons/social_icons.dart';
 import '../../../core/widgets/itemCount.dart';
+import '../../../logic/login/login_cubit.dart';
 
 class ModernSideRail extends StatefulWidget {
   final int currentIndex;
@@ -28,106 +31,122 @@ class _ModernSideRailState extends State<ModernSideRail> {
 
   @override
   Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) {
-        Future.delayed(const Duration(milliseconds: 50), () {
-          if (mounted) setState(() => isExpanded = true);
-        });
-      },
-      onExit: (_) {
-        Future.delayed(const Duration(milliseconds: 100), () {
-          if (mounted) setState(() => isExpanded = false);
-        });
-      },
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeInOutCubic,
-        width: isExpanded ? 230 : 70,
-        decoration: BoxDecoration(
-          color: AppColors.background,
-          border: Border(right: BorderSide(color: AppColors.borderColor)),
-          boxShadow: [
-            if (isExpanded)
-              BoxShadow(
-                color: Colors.black.withOpacity(0.05),
-                blurRadius: 20,
-                offset: const Offset(5, 0),
+    return BlocBuilder<LoginCubit, bool>(
+        builder: (context, state)  {
+
+          var box = Hive.box('user_info_box');
+          String userName = (box.isEmpty) ? '' :  box.get('name');
+          String labelName = state ? userName : 'userName';
+
+        return MouseRegion(
+          onEnter: (_) {
+            Future.delayed(const Duration(milliseconds: 50), () {
+              if (mounted) setState(() => isExpanded = true);
+            });
+          },
+          onExit: (_) {
+            Future.delayed(const Duration(milliseconds: 100), () {
+              if (mounted) setState(() => isExpanded = false);
+            });
+          },
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOutCubic,
+            width: isExpanded ? 230 : 70,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  AppColors.gradientTop,    // سيأخذ 0xFF1C1C1E في الليل و 0xFFFFFFFF في النهار
+                  AppColors.gradientBottom, // سيأخذ 0xFF000000 في الليل و 0xFFE8EAF0 في النهار
+                ],
               ),
-          ],
-        ),
-        child: ClipRect(
-          // 🔥 يمنع أي Overflow
-          child: Column(
-            children: [
-              const SizedBox(height: 10),
+              border: Border(right: BorderSide(color: AppColors.borderColor)),
+              boxShadow: [
+                if (isExpanded)
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 20,
+                    offset: const Offset(5, 0),
+                  ),
+              ],
+            ),
+            child: ClipRect(
+              // 🔥 يمنع أي Overflow
+              child: Column(
+                children: [
+                  const SizedBox(height: 10),
 
-              _buildLogo(),
+                  _buildLogo(),
 
-              const SizedBox(height: 30),
+                  const SizedBox(height: 30),
 
-              Expanded(
-                child: ListView(
-                  padding: EdgeInsets.zero,
-                  children: [
-                    _buildMenuItem(
-                      0,
-                      Icons.play_circle_outline,
-                      Icons.play_circle,
-                      tr('reel'),
-                      size: 20,
-                    ),
-                    _buildMenuItem(
-                      1,
-                      Icons.auto_awesome_outlined,
-                      Icons.auto_awesome,
-                      tr('new'),
-                      size: 21,
-                    ),
-                    _buildMenuItem(2, Icons.home_outlined, Icons.home, tr('home')),
-                    Badge(
-                      alignment: Alignment.topCenter,
-                      backgroundColor: Colors.transparent,
-                      isLabelVisible:isExpanded ?true:false ,
-                      label: Container(
-                        margin:  EdgeInsets.only(top: 30),
-                        decoration: BoxDecoration(
-                          color: Colors.red,
-                          borderRadius: BorderRadius.circular(7),
-                          boxShadow: AppShadow.commonShadow,
+                  Expanded(
+                    child: ListView(
+                      padding: EdgeInsets.zero,
+                      children: [
+                        _buildMenuItem(
+                          0,
+                          Icons.play_circle_outline,
+                          Icons.play_circle,
+                          tr('reel'),
+                          size: 20,
                         ),
-                        padding: EdgeInsets.symmetric(horizontal:7),
-                        child: ItemCount(color:Colors.white,fontSize: 8,),
-                      ),
-                      child: _buildMenuItem(
-                        3,
-                        CupertinoIcons.cart,
-                        CupertinoIcons.cart_fill,
-                        tr('cart'),
-                        size: 19,
-                      ),
+                        _buildMenuItem(
+                          1,
+                          Icons.auto_awesome_outlined,
+                          Icons.auto_awesome,
+                          tr('new'),
+                          size: 21,
+                        ),
+                        _buildMenuItem(2, Icons.home_outlined, Icons.home, tr('home')),
+                        Badge(
+                          alignment: Alignment.topCenter,
+                          backgroundColor: Colors.transparent,
+                          isLabelVisible:isExpanded ?true:false ,
+                          label: Container(
+                            margin:  EdgeInsets.only(top: 30),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(7),
+                              boxShadow: AppShadow.commonShadow,
+                            ),
+                            padding: EdgeInsets.symmetric(horizontal:7),
+                            child: ItemCount(color:Colors.white,fontSize: 8,),
+                          ),
+                          child: _buildMenuItem(
+                            3,
+                            CupertinoIcons.cart,
+                            CupertinoIcons.cart_fill,
+                            tr('cart'),
+                            size: 19,
+                          ),
+                        ),
+                        _buildMenuItem(
+                          4,
+                          Icons.person_outline,
+                          Icons.person,
+                          labelName,
+                        ),
+                        _buildMenuItem(
+                          5,
+                          CupertinoIcons.heart,
+                          CupertinoIcons.heart_fill,
+                          tr('favorite'),
+                          size: 20,
+                        ),
+                      ],
                     ),
-                    _buildMenuItem(
-                      4,
-                      Icons.person_outline,
-                      Icons.person,
-                      "Omar",
-                    ),
-                    _buildMenuItem(
-                      5,
-                      CupertinoIcons.heart,
-                      CupertinoIcons.heart_fill,
-                      tr('favorite'),
-                      size: 20,
-                    ),
-                  ],
-                ),
+                  ),
+                  SocialIcons(isExpanded: isExpanded,),
+                  const SizedBox(height: 20),
+                ],
               ),
-              SocialIcons(isExpanded: isExpanded,),
-              const SizedBox(height: 20),
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      }
     );
   }
 

@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -10,6 +11,7 @@ import '../../data/local/user_local.dart';
 import '../../data/repos/auth_repo.dart';
 import '../../data/services/auth_service.dart';
 import 'login_cubit.dart';
+import 'login_cubit_web.dart';
 
 class LoginLogic {
 
@@ -68,10 +70,14 @@ class LoginLogic {
     try {
       ShowLoading.progressLoading(context);
 
-      final AuthResponse res =
-      await service.signInWithGoogle();
+      final res = await service.signInWithGoogle();
 
-      if (res.session != null) {
+      if (kIsWeb) {
+        // context.read<LoginCubitWeb>().loginWeb();
+        return;
+      }
+
+      if (res != null && res.session != null) {
         await repo.fetchAndSaveUser();
 
         if (context.mounted) {

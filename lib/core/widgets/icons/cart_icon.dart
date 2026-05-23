@@ -13,33 +13,33 @@ class CartIcon extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     double finalSize = isDesktop ? size : size - 5;
-    return  Padding(
-      padding: EdgeInsets.symmetric(horizontal: isDesktop ? 5 : 4),
-      child: Stack(
-        children: [
-          Container(
-            width: isDesktop ? 35 : 30,
-            height: isDesktop ? 35 : 30,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              color: showBg ? AppColors.backgroundSecondary : Colors.transparent,
-              shape: BoxShape.circle,
-            ),
-            child: InkWell(
-              child:  Icon(
+    return  InkWell(
+      onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => CartScreen(screenOnly: true,))),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: isDesktop ? 5 : 4),
+        child: Stack(
+          children: [
+            Container(
+              width: isDesktop ? 35 : 30,
+              height: isDesktop ? 35 : 30,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: showBg ? AppColors.backgroundSecondary : Colors.transparent,
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
                 CupertinoIcons.cart,
                 color:color ?? AppColors.iconColor,
                 size: finalSize,
               ),
-              onTap: ()=>()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => CartScreen(screenOnly: true,))),
             ),
-          ),
-          Positioned(
-              top: isDesktop ? 1 : 0,
-              right: isDesktop ? 1 : 0,
-              child:  ItemCount(fontSize: 9,)
-          )
-        ],
+            Positioned(
+                top: isDesktop ? 1 : 0,
+                right: isDesktop ? 1 : 0,
+                child:  ItemCount(fontSize: 9,)
+            )
+          ],
+        ),
       ),
     );
   }
