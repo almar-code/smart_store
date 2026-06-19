@@ -20,6 +20,7 @@ import 'core/theme/bloc/theme_bloc.dart';
 import 'logic/categories/category_cubit.dart';
 import 'core/di/injection_container.dart' as di;
 import 'data/repos/category_repo.dart';
+import 'package:flutter/foundation.dart';
 
 // 🌟 استيراد ملفات الـ Product الـجديدة لربطها بالماين
 import 'logic/products/product_cubit.dart';
@@ -74,11 +75,11 @@ void main() async {
         ],
 
 
-          child: BlocBuilder<LoginCubitWeb, bool>(
+          child: (kIsWeb)? BlocBuilder<LoginCubitWeb, bool>(
               builder: (context, state) {
               return MyApp();
             }
-          ),
+          ): MyApp(),
         ),
       ),
   );
