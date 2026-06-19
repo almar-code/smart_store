@@ -184,7 +184,21 @@
   "google_login_failed": "Google login failed, please try another account",
 
   "success": "Success",
-  "error": "Error"
+  "error": "Error",
+  "logout_confirmation": "Are you sure you want to log out?",
+  "logout_info": "You will be logged out of your current account and will need to sign in again.",
+  "logout_action": "Log Out",
+  "logout_success": "Logged out successfully",
+  "internet_connection_error": "An error occurred. Please check your internet connection.",
+  "edit": "Edit",
+  "send_code_failed": "Error sending the code",
+  "invalid_otp": "Invalid or expired code",
+  "old_password": "Sorry! You cannot use an old password, choose a new one",
+  "weak_password": "Password is too weak, must be at least 6 characters",
+  "update_failed": "Update failed: ",
+  "unexpected": "An unexpected error occurred, please try again later",
+  "code_sent": "Verification code sent to your email",
+  "password_updated": "Password updated successfully"
 
 
 
