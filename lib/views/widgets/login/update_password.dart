@@ -31,7 +31,7 @@ class UpdatePassword extends StatelessWidget {
        await PasswordLogic.sendResetPasswordCode(context,_formKey.currentState!.value);
 
       } else if (currentIndex == 2){
-       await PasswordLogic.updateNewPassword(context,_formKey.currentState!.value);
+       await PasswordLogic.updateNewPassword(context,_formKey.currentState!.value,onSuccess!);
       }
     else if (currentIndex < 1 ){
         context.read<SignUpCubit>().next();
@@ -62,7 +62,7 @@ class UpdatePassword extends StatelessWidget {
               automaticallyImplyLeading: false,
               backgroundColor: AppColors.background,
               elevation: 0,
-              title: AppTitle(firstPart: tr('create'), secondPart: tr('account')),
+              title: AppTitle(spacing:' ' ,firstPart: tr('edit'), secondPart: tr('password')),
               actions: const [ArrowBack()],
             ),
             body: Container(
