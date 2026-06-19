@@ -7,6 +7,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/bloc/theme_bloc.dart';
 import '../../../core/theme/bloc/theme_event.dart';
 import '../../../core/widgets/app_messages.dart';
+import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/theme_icon.dart';
 import '../../../core/widgets/network_service.dart';
@@ -15,6 +16,7 @@ import '../../../data/local/user_local.dart';
 import '../../../data/repos/auth_repo.dart';
 import '../../../data/services/auth_service.dart';
 import '../../../logic/login/login_cubit.dart';
+import '../../../logic/login/profile_logic.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
 import '../../widgets/login/add_phone_number.dart';
 import '../../widgets/profile/profile_list.dart';
@@ -70,48 +72,141 @@ class ProfileScreen extends StatelessWidget {
 }
 
 void _showLogoutDialog(BuildContext context) {
-  final navCubit = context.read<NavigationCubit>();
-  final repo = AuthRepo(
-    service: AuthService(),
-    local: UserLocal(),
-  );
+
   showDialog(
     context: context,
-    builder: (dialogContext) => AlertDialog(
-      title: const Text("تسجيل الخروج"),
-      content: const Text("هل أنت متأكد؟"),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(dialogContext),
-          child: const Text("إلغاء"),
+    barrierDismissible: true,
+    builder: (dialogContext) {
+      return Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: const EdgeInsets.all(14),
+          decoration: BoxDecoration(
+            color: AppColors.ContainerColor,
+            borderRadius: BorderRadius.circular(32),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(.15),
+                blurRadius: 40,
+                offset: const Offset(0, 15),
+              ),
+            ],
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              /// ICON
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xffEAF7F1),
+                  border: Border.all(
+                    color: const Color(0xffD9F0E5),
+                    width: 12,
+                  ),
+                ),
+                child: Icon(
+                  Icons.logout_rounded,
+                  color: AppColors.primary,
+                  size: 35,
+                ),
+              ),
+
+              const SizedBox(height: 13),
+
+              /// TITLE
+              Text(
+                tr("logout"),
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textColor,
+                ),
+              ),
+
+              const SizedBox(height: 6),
+
+              Text(
+                tr("logout_confirmation"),
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AppColors.textColor,
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              /// INFO BOX
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  color: AppColors.darkGreen,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Row(
+                  children: [
+                    Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        color: const Color(0xffE5F8EE),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(
+                        Icons.shield_outlined,
+                        color: AppColors.primary,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        tr("logout_info"),
+                        style: TextStyle(
+                          height: 1.4,
+                          fontSize: 10,
+                          color: AppColors.textColor,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 15),
+
+              Row(
+                children: [
+                  Expanded(
+                    child: AppButton(
+                      borderRadius: 15,
+                      label: tr("cancel"),
+                      onTap: () {
+                        Navigator.pop(dialogContext);
+                      },
+                    ),
+                  ),
+
+                  const SizedBox(width: 11),
+
+                  Expanded(
+                    child: AppButton(
+                      borderRadius: 15,
+                      label: tr("logout_action"),
+                      icon: Icons.logout_rounded,
+                      onTap: () async {
+                       await ProfileLogic.logoutUser(context,dialogContext);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-        TextButton(
-          onPressed: () async {
-            // bool isConnected = await NetworkService.hasInternet();
-            // if (!isConnected) {
-            //   AppToasts.showErrorToast(context,"عذراً، لا يوجد اتصال بالإنترنت");
-            //   return;
-            // }
-            try {
-              ShowLoading.progressLoading(context);
-              await repo.logout();
-              context.read<LoginCubit>().setLoggedOut();
-              if (context.mounted) {
-                navCubit.updateIndex(2);
-                Navigator.pop(context);
-                Navigator.pop(dialogContext);
-                AppToasts.showSuccessToast(context,"تم تسجيل الخروج بنجاح ");
-
-              }
-
-            } catch (e) {
-              AppToasts.showErrorToast(context,"هناك خطى تاكد من اتصالك بالانترنت ");
-
-            }
-          },
-          child: const Text("خروج", style: TextStyle(color: Colors.red)),
-        ),
-      ],
-    ),
+      );
+    },
   );
 }
