@@ -19,7 +19,9 @@ class ApiEndpoints {
   static String get getSubCategories => '$_baseUrl/api/categories';
   static String get getProducts => '$_baseUrl/api/products';
   static String get getCategories => '$_baseUrl/api/sections';
+  static String get getCountry => 'https://countriesnow.space/api/v0.1/countries/codes';
 // ====================🛍 روابط ملفات صور  المنتجات والأقسام الثابتة ====================
   static String productImageUrl(String? image) => "$_baseUrl/storage/uploads/products/$image";
+  static String countryFlag(String? code) => "https://flagcdn.io/flags/4x3/${code}.svg";
   static String subCategoryImageUrl(String? image) => "$_baseUrl/storage/uploads/subcategory/$image";
 }

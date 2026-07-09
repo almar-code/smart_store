@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:pinput/pinput.dart';
-import 'package:smart_store/logic/signup/sign_up_logics.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/app_form_field.dart';
@@ -31,7 +29,7 @@ class UpdatePassword extends StatelessWidget {
        await PasswordLogic.sendResetPasswordCode(context,_formKey.currentState!.value);
 
       } else if (currentIndex == 2){
-       await PasswordLogic.updateNewPassword(context,_formKey.currentState!.value,onSuccess!);
+       await PasswordLogic.updateNewPassword(context,_formKey.currentState!.value,onSuccess);
       }
     else if (currentIndex < 1 ){
         context.read<SignUpCubit>().next();
@@ -93,7 +91,7 @@ class UpdatePassword extends StatelessWidget {
                       ),
                       child: FormBuilder(
                         key: _formKey,
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        autovalidateMode: AutovalidateMode.disabled,
 
                         child: Column(
                           children: [
@@ -161,7 +159,9 @@ class AccountStep extends StatelessWidget {
       label: tr('email_address'),
       icon: Icons.email_outlined,
       keyboardType: TextInputType.emailAddress,
-      validators: [FormBuilderValidators.required(), FormBuilderValidators.email()],
+      validators: [FormBuilderValidators.required(errorText: tr("enter_email")),
+        FormBuilderValidators.email(checkNullOrEmpty: true,errorText:tr("email_invalid_error"))
+      ],
     ),
 
   ]);

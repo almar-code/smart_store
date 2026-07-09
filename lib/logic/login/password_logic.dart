@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart'; // إضافة مكتبة الترجمة
 import '../../core/widgets/app_messages.dart';
-import '../../core/widgets/network_service.dart';
+import '../../core/widgets/internet_check.dart';
 import '../../core/widgets/show_loading.dart';
 import '../../data/local/user_local.dart';
 import '../../data/repos/auth_repo.dart';
@@ -24,16 +24,11 @@ class PasswordLogic {
 
 
 
-  static void maserror(BuildContext context ) async{
-    bool connected = await NetworkService.hasInternet();
-    if (!connected) {
-      AppToasts.showErrorToast(context, tr("errors.no_internet"));
-      return;
-    }
-  }
+
 
   static Future<void> sendResetPasswordCode(BuildContext context, Map<String, dynamic> data) async {
-    maserror(context);
+    InternetCheck.internetCheck(context);
+
     formData = data;
     savedEmail = formData['email']!.toString().trim();
     try {
@@ -44,12 +39,12 @@ class PasswordLogic {
       Navigator.pop(context);
 
       context.read<SignUpCubit>().next();
-      AppToasts.showSuccessToast(context, tr("success.code_sent"));
+      AppToasts.showSuccessToast(context, tr("otp_sent_success"));
 
 
     } catch (e) {
       Navigator.pop(context);
-      AppToasts.showErrorToast(context, tr("errors.send_code_failed"));
+      AppToasts.showErrorToast(context, tr("send_code_failed"));
     }
   }
 
@@ -76,7 +71,7 @@ class PasswordLogic {
   }
 
   static Future<void> updateNewPassword(BuildContext context, Map<String, dynamic> data, VoidCallback? onSuccess) async {
-    maserror(context);
+    InternetCheck.internetCheck(context);
     try {
       ShowLoading.progressLoading(context);
       await service.updatePassword(data['password']!.toString().trim());

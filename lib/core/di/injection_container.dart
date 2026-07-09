@@ -1,4 +1,7 @@
 import 'package:get_it/get_it.dart';
+import 'package:smart_store/data/services/country_api_service.dart';
+import 'package:smart_store/logic/countries_cubit/countries_cubit.dart';
+import '../../data/repos/country_repo.dart';
 import '../../data/repos/product_repo.dart';
 import '../../data/repos/subcategory_repo.dart';
 import '../../data/repos/video_repo.dart';
@@ -25,4 +28,7 @@ Future<void> init() async {
 
 // تسجيل كلاس اريبو (Repository) وتمرير كلاس السيرفر له
   sl.registerLazySingleton<ProductRepo>( () => ProductRepo(apiService: sl<ProductService>()),);
+  sl.registerLazySingleton(()=>CountryRepo());
+  sl.registerLazySingleton<CountriesCubit>(()=>CountriesCubit(sl<CountryRepo>()));
+
 }

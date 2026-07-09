@@ -1,4 +1,5 @@
 // lib/views/screens/main_wrapper_screen.dart
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,7 +8,11 @@ import '../../../logic/navigation/navigation_cubit.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/theme/bloc/theme_bloc.dart';
 import '../../core/theme/bloc/theme_state.dart';
+import '../../core/widgets/app_messages.dart';
 import '../../core/widgets/buttons/smart_floating_button.dart';
+import '../../core/widgets/internet_check.dart';
+import '../../core/widgets/network_service.dart';
+import '../../logic/login/login_cubit.dart';
 import '../widgets/drawer/drawer.dart';
 import '../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../widgets/login/login.dart';
@@ -133,22 +138,63 @@ class MainWrapperScreen extends StatelessWidget {
   }
 }
 
-void handleNavigation(int index, BuildContext context,) {
+// void handleNavigation(int index, BuildContext context,) async{
+//   bool connected = await NetworkService.hasInternet();
+//   if (!connected) {
+//     AppToasts.showErrorToast(
+//       context,
+//       tr("no_internet"),
+//     );
+//     return;
+//
+//   }else{
+//   if (index == 4) {
+//     final session = Supabase.instance.client.auth.currentSession;
+//     final isLoggedIn = session != null;
+//
+//     Login login = Login();
+//
+//     if (isLoggedIn) {
+//       context.read<NavigationCubit>().updateIndex(index);
+//     }
+//
+//     else {
+//       login.loginDialog(context);
+//     }
+//
+//   } else {
+//     context.read<NavigationCubit>().updateIndex(index);
+//   }
+//   }
+void handleNavigation(int index, BuildContext context) async {
+
+  // فحص الإنترنت باستخدام الكلاس حقك
+  bool hasNet = await InternetCheck.internetCheck(context);
+  if (!hasNet) return;
+
   if (index == 4) {
     final session = Supabase.instance.client.auth.currentSession;
-    final isLoggedIn = session != null;
 
-    Login login = Login();
+    // الـ state هنا هو نفسه الـ bool (إما true أو false)
+    final isStateLoggedIn = context.read<LoginCubit>().state;
+    final isFullyLoggedIn = session != null && isStateLoggedIn;
 
-    if (isLoggedIn) {
+    if (isFullyLoggedIn) {
       context.read<NavigationCubit>().updateIndex(index);
-    }
+    } else {
+      // لو كان مسجل دخول بس البيانات ناقصة بسبب تعليق قديم، يفضل تسجله خروج
+      if (session != null) {
+        await Supabase.instance.client.auth.signOut();
+      }
 
-    else {
-      login.loginDialog(context);
+      Login login = Login();
+      if (context.mounted) {
+        login.loginDialog(context);
+      }
     }
-
   } else {
     context.read<NavigationCubit>().updateIndex(index);
   }
+
+
 }

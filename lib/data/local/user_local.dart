@@ -7,7 +7,6 @@ class UserLocal {
   static const String boxName = 'user_info_box';
 
   Future<void> saveUser(UserModel user) async {
-
     final box = await Hive.openBox(boxName);
 
     await box.putAll(user.toMap());
