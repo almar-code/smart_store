@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:easy_localization/easy_localization.dart';
 
 import '../../core/widgets/app_messages.dart';
+import '../../core/widgets/internet_check.dart';
 import '../../core/widgets/network_service.dart';
 import '../../core/widgets/show_loading.dart';
 import '../../data/local/user_local.dart';
@@ -24,17 +25,11 @@ class SignUpLogics {
   static String savedEmail = '';
   static Map<String, dynamic> formData = {};
 
-  static void networkService(BuildContext context) async {
-    bool connected = await NetworkService.hasInternet();
-    if (!connected) {
-      AppToasts.showErrorToast(context, tr("no_internet"));
-      return;
-    }
-  }
+
 
   static Future<void> handleSignUp(Map<String, dynamic> data, BuildContext context,) async {
 
-    networkService(context);
+    InternetCheck.internetCheck(context);
     formData = data;
     savedEmail = formData['email']!.toString().trim();
 
@@ -68,7 +63,7 @@ class SignUpLogics {
 
 
   static Future<void> handleVerifyAndSave(String pin, BuildContext context,) async {
-    networkService(context);
+    InternetCheck.internetCheck(context);
     try {
       ShowLoading.progressLoading(context);
 
@@ -115,8 +110,8 @@ class SignUpLogics {
 
   static Future<void> handleResendCode(BuildContext context) async {
 
-    networkService(context);
-
+    bool hasNet = await InternetCheck.internetCheck(context);
+    if (!hasNet) return;
     if (savedEmail.isEmpty) return;
 
     try {
@@ -143,7 +138,7 @@ class SignUpLogics {
       VoidCallback? onSuccess,
       ) async {
 
-    networkService(context);
+    InternetCheck.internetCheck(context);
 
     if (imageBytes == null) {
 
@@ -217,8 +212,8 @@ class SignUpLogics {
 
   static Future<void> updateUserPhone(BuildContext context, String phoneNumber,) async {
 
-    networkService(context);
-
+    bool hasNet = await InternetCheck.internetCheck(context);
+    if (!hasNet) return;
     try {
       ShowLoading.progressLoading(context);
 
@@ -237,7 +232,7 @@ class SignUpLogics {
       }
 
       AppToasts.showSuccessToast(context,tr("phone_saved_success"),);
-      await Hive.box('user_info_box').put('phone', phoneNumber);
+      // await Hive.box('user_info_box').put('phone', phoneNumber);
 
     } catch (e) {
       Navigator.pop(context);

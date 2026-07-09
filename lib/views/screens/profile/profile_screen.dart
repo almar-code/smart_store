@@ -10,6 +10,7 @@ import '../../../core/widgets/app_messages.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/theme_icon.dart';
+import '../../../core/widgets/internet_check.dart';
 import '../../../core/widgets/network_service.dart';
 import '../../../core/widgets/user_profile.dart';
 import '../../../data/local/user_local.dart';
@@ -71,7 +72,12 @@ class ProfileScreen extends StatelessWidget {
 
 }
 
-void _showLogoutDialog(BuildContext context) {
+void _showLogoutDialog(BuildContext context) async{
+  bool connected = await NetworkService.hasInternet();
+  if (!connected) {
+    InternetCheck.internetCheck(context);
+
+  }else{
 
   showDialog(
     context: context,
@@ -209,4 +215,5 @@ void _showLogoutDialog(BuildContext context) {
       );
     },
   );
+  }
 }
