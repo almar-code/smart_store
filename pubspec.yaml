@@ -99,6 +99,8 @@ dependencies:
   flutter_chat_ui: ^1.6.9
   flutter_chat_types: ^3.6.2
   uuid: ^4.3.3
+  country_pickers: ^3.0.1
+  country_picker: ^2.0.24  # حزمة ممتازة ومحدثة تحتوي على كل اللغات
 
 dev_dependencies:
   flutter_test:
