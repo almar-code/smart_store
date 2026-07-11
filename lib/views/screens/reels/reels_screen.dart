@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:smart_store/core/widgets/buttons/app_button.dart';
+import 'package:smart_store/core/widgets/icons/arrow_back_icon.dart';
 import 'package:video_player/video_player.dart';
 
 // استيراد الملفات الخاصة بك (تأكد من صحة المسارات)
@@ -13,9 +14,11 @@ import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/circularProgress.dart';
 import '../../../core/widgets/buttons/refresh_button.dart';
 import '../../../data/local/shared preferences/local_storage_service.dart';
+import '../../../data/models/product_model.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
+import '../../../logic/products/product_cubit.dart';
 import '../../../logic/videos/comments_cubit.dart';
-import '../../../logic/videos/video_cubit.dart Dart.dart';
+import '../../../logic/videos/video_cubit.dart';
 import '../../../logic/videos/video_state.dart'; // الحالات الجديدة
 import '../../../data/models/video_model.dart'; // الموديل الجديد
 import '../../widgets/flash/flash_screen.dart';
@@ -24,8 +27,8 @@ import 'store_profile.dart';
 
 class ReelScreen extends StatelessWidget {
   final int pageIndex;
-
-  const ReelScreen({super.key, required this.pageIndex});
+  final bool isProductDetails;
+  const ReelScreen({super.key, required this.pageIndex,this.isProductDetails = false});
 
   @override
   Widget build(BuildContext context) {
@@ -65,13 +68,31 @@ class ReelScreen extends StatelessWidget {
                   width: 400,
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Reels(isPageActive: isActivePage),
+                    child: Stack(
+                      children: [
+                        Reels(isPageActive: isActivePage,isProductDetails: isProductDetails,),
+                        isProductDetails ? PositionedDirectional(
+                            top: 10,
+                            end: 10,
+                            child: ArrowBack()
+                        ):SizedBox()
+                      ],
+                    ),
                   ),
                 ),
                 const Expanded(child: StoreProfile()),
               ],
             )
-                : Reels(isPageActive: isActivePage),
+                : Stack(
+                  children: [
+                    Reels(isPageActive: isActivePage,isProductDetails: isProductDetails,),
+                    isProductDetails ? PositionedDirectional(
+                      top: 10,
+                        end: 10,
+                        child: ArrowBack()
+                    ):SizedBox()
+                  ],
+                ),
           ),
         );
       },
@@ -81,8 +102,8 @@ class ReelScreen extends StatelessWidget {
 
 class Reels extends StatefulWidget {
   final bool isPageActive;
-
-  const Reels({super.key, required this.isPageActive});
+  final bool isProductDetails;
+  const Reels({super.key, required this.isPageActive,this.isProductDetails = false});
 
   @override
   State<Reels> createState() => _ReelsState();
@@ -114,6 +135,7 @@ class _ReelsState extends State<Reels> {
                 videoModel: state.videos[index], // تمرير الموديل بدلاً من Map
                 isActive: index == currentIndex,
                 isScreenActive: widget.isPageActive,
+                isProductDetails: widget.isProductDetails,
               );
             },
           );
@@ -148,12 +170,13 @@ class ReelItem extends StatefulWidget {
   final VideoModel videoModel; // تحديث النوع
   final bool isActive;
   final bool isScreenActive;
-
+  final bool isProductDetails;
   const ReelItem({
     super.key,
     required this.videoModel,
     required this.isActive,
     required this.isScreenActive,
+   this.isProductDetails = false
   });
 
   @override
@@ -460,13 +483,36 @@ class _ReelItemState extends State<ReelItem> {
           /// معلومات المتجر والمنتج
           PositionedDirectional(
             start: 15,
-            bottom: isDesktop ? 10 : 87,
+            bottom: isDesktop ? 10 : widget.isProductDetails ? 20 : 87,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (widget.videoModel.productId != null)
                   GestureDetector(
-                    onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => ProductDetailsScreen(productID: widget.videoModel.productId,))),
+                    onTap: () {
+                      final int targetProductId = widget.videoModel.productId ?? 1;
+
+                      try {
+                        // 🌟 جلب كائن المنتج كاملاً من مصفوفة المنتجات المحفوظة داخل الـ Cubit بواسطة الـ ID
+                        final ProductModel matchingProduct = context.read<ProductCubit>().allProducts.firstWhere(
+                              (product) => product.pId == targetProductId,
+                        );
+
+                        // 🚀 التنقل الآن أصبح ممكناً لأننا حصلنا على الكائن كاملاً
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => ProductDetailsScreen(product: matchingProduct),
+                          ),
+                        );
+                        stopPlay();
+                      } catch (e) {
+                        // 🛡️ خطة احتياطية آمنة (Fallback): في حال لم يكن المنتج متوفراً في الذاكرة الحالية
+                        // نقوم بعمل Refresh أو إظهار تنبيه، أو يمكنك طلب تفاصيل المنتج بشكل مستقل
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('تعذر تحميل بيانات المنتج حالياً')),
+                        );
+                      }
+                    },
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
                       decoration: BoxDecoration(

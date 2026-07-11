@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
               elevation: 0,
             ),
 
-            // 🔥 مهم جدًا (لكن وحده لا يكفي)
+            //    🔥 مهم جدًا (لكن وحده لا يكفي)
             canvasColor: Colors.transparent,
 
             bottomNavigationBarTheme: BottomNavigationBarThemeData(

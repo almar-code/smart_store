@@ -29,6 +29,7 @@ import '../../../logic/navigation/navigation_cubit.dart';
 import '../../widgets/category/category_bar.dart';
 import '../../widgets/discounts/discounts.dart';
 import '../../widgets/product/all_products.dart';
+import '../../widgets/product/empty_product_list.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
 import '../../widgets/subcategory/subcategory_bar.dart';
 import '../address/select_user_address_screen.dart';
@@ -118,7 +119,7 @@ class HomeScreen extends StatelessWidget {
                             )),
                             Expanded(
                                 flex: 2,
-                                child: Discounts()),
+                                child: ( context.watch<ProductCubit>().discountProducts).isEmpty ?  EmptyProductList() :Discounts()),
                           ],
                         ):
                         SliderEds(
@@ -129,7 +130,7 @@ class HomeScreen extends StatelessWidget {
                           ],scrollPhysics: true
                         ),
                         if(!isDesktop) SubcategoryBar(),
-                        isDesktop?SubcategoryBar():Discounts(),
+                        isDesktop?SubcategoryBar():( context.watch<ProductCubit>().discountProducts).isEmpty ? SizedBox() :Discounts(),
                         TitleBar(title: tr('forYou'),),
                         SizedBox(child: AllProducts()),
                       ],

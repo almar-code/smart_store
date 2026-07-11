@@ -44,7 +44,7 @@ class CustomNetworkImage extends StatelessWidget {
           color: AppColors.backgroundSecondary,
           width: width,
           height: height,
-          child: const Center(child: ThreeDotsLoader()),
+          child: const Center(child: ThreeDotsLoader(isSmall: true,)),
         );
       },
 

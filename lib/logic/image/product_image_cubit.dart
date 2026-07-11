@@ -1,0 +1,7 @@
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class GalleryIndexCubit extends Cubit<int> {
+  GalleryIndexCubit() : super(0);
+
+  void changeIndex(int newIndex) => emit(newIndex);
+}

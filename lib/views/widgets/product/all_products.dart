@@ -10,37 +10,35 @@ import '../../../core/constants/app_endpoints.dart';
 import '../../../core/constants/app_shadow.dart';
 import '../../../core/widgets/circularProgress.dart';
 import '../../../core/widgets/colors/circleOfColor.dart';
+import '../../../core/widgets/heart_overlay_notifier.dart';
 import '../../../core/widgets/icons/share_icon.dart';
 import '../../../core/widgets/customCategoryList.dart';
 import '../../../core/widgets/three_dots_loader.dart';
 import '../../../data/models/product_model.dart'; // 🌟 استيراد الموديل
 import '../../../logic/products/product_cubit.dart'; // 🌟 استيراد الكوبيت
 import '../../../logic/products/product_state.dart'; // 🌟 استيراد الحالة
+import '../../screens/favorites/favorites_screen.dart';
 import '../../screens/product/products_screen.dart';
 import '../../screens/similar products/similar_products.dart';
+import '../favorites/empty_favorites.dart';
 import '../flash/flash_screen.dart';
+import 'empty_product_list.dart';
 
 class AllProducts extends StatelessWidget {
-  final int? subCategoryID;
-  final int? productID;
   final bool showAddToCart;
-  final bool isDiscount;
-  final Function(int id)? onProductTap;
-
+  final bool isInsideFavoritesScreen;
+  final Function(ProductModel product)? onProductTap;
   const AllProducts({
     super.key,
-    this.subCategoryID,
-    this.productID,
     this.showAddToCart = false,
     this.onProductTap,
-    this.isDiscount = false,
+    this.isInsideFavoritesScreen = false,
   });
-
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 900;
     bool isIpad = MediaQuery.of(context).size.width < 900 && MediaQuery.of(context).size.width > 450;
-    int itemCount = isDesktop ? 6 : isIpad ? 4 : 2;
+    int itemCount = isDesktop ? 5 : isIpad ? 4 : 2;
 
     // 🌟 تطبيق منطق الـ BlocBuilder على الكود الخاص بك دون المساس بالتصميم
     return BlocBuilder<ProductCubit, ProductState>(
@@ -50,17 +48,20 @@ class AllProducts extends StatelessWidget {
         }
 
         if (state is ProductError) {
-          return  Center(
-              child: Padding(
-                padding:  EdgeInsets.only(top:isDesktop ? 120 : 50.0),
-                child: SizedBox(
-                  height: 30,
-                  width: 120,
-                  child: RefreshButton(onPressed: () async {
-                    await context.read<ProductCubit>().fetchProducts();
-                  }),
-                ),
-              )
+          return  Column(
+            children: [
+          Center(
+          child:  SizedBox(
+          height: 30,
+            width: 120,
+            child: RefreshButton(onPressed: () async {
+              await context.read<ProductCubit>().fetchProducts(isRefresh: true);
+            }),
+          ),
+        ),
+        SizedBox(
+        height: 150,)
+            ],
           );
         }
 
@@ -71,13 +72,7 @@ class AllProducts extends StatelessWidget {
             return  Center(
               child: Padding(
                 padding: const EdgeInsets.only(top: 80.0),
-                child: SizedBox(
-                  height: 40,
-                  width: 160,
-                  child: RefreshButton(onPressed: () async {
-                    await context.read<ProductCubit>().fetchProducts();
-                  }),
-                ),
+                child:  isInsideFavoritesScreen ?  EmptyFavorites() : EmptyProductList(),
               )
             );
           }
@@ -99,19 +94,19 @@ class AllProducts extends StatelessWidget {
                   // 🌟 منطق حساب الخصومات الديناميكية القادمة من لارافيل
                   bool hasDiscount = item.discount != null;
 
-                  int discountAmount = hasDiscount ? (item.discount!.discountPerce ?? 0) : 0;
+                  double discountAmount = hasDiscount ? (item.discount!.discountPerce ?? 0) : 0;
 
                   double newPrice = hasDiscount ? (item.pPrice - discountAmount) : item.pPrice;
 
-                  int discountPercent = 0;
+                  double discountPercent = 0;
                   if (hasDiscount && item.pPrice > 0) {
-                    discountPercent = ((discountAmount / item.pPrice) * 100).round();
+                    discountPercent = ((discountAmount / item.pPrice) * 100).round().toDouble();
                   }
 
                   return InkWell(
                     onTap: () {
                       if (onProductTap != null) {
-                        onProductTap!(currentId);
+                        onProductTap!(item);
                       } else {
                         Navigator.push(
                           context,
@@ -157,7 +152,7 @@ class AllProducts extends StatelessWidget {
                                 top: 3,
                                 right: 7,
                                 child: Container(
-                                  padding:  EdgeInsets.symmetric(vertical: (item.colors.length > 3) ? 2 : 0, horizontal: 2),
+                                  padding:  EdgeInsets.symmetric(vertical: (item.colors.length > 1) ? 2 : 0, horizontal: 2),
                                   decoration: BoxDecoration(
                                     color: Colors.black.withOpacity(0.3),
                                     borderRadius: BorderRadius.circular(10),
@@ -210,11 +205,22 @@ class AllProducts extends StatelessWidget {
                                 ),
                               )
                                   : const SizedBox(),
-                              Positioned(
+                              PositionedDirectional(
                                 bottom: 6,
-                                left: 6,
+                                start: 6,
                                 child: GestureDetector(
-                                  onTap: () {},
+                                  onLongPress: () =>Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true))),
+                                  onTap: () {
+                                    // 🚀 استدعاء الدالة من الـ Cubit مباشرة ليقوم هو بكل السحر في الخلفية
+                                    context.read<ProductCubit>().toggleProductFavorite(
+                                      customerId: 1,
+                                      product: item,
+                                      isInsideFavoritesScreen: isInsideFavoritesScreen
+                                    );
+                                    if(!isInsideFavoritesScreen){
+                                      item.isFavorite ? HeartOverlayNotifier.show(context) : HeartOverlayNotifier.show(context,isLike: false);
+                                    }
+                                  },
                                   child: AnimatedContainer(
                                     duration: const Duration(milliseconds: 200),
                                     padding: const EdgeInsets.all(4),
@@ -223,8 +229,8 @@ class AllProducts extends StatelessWidget {
                                       shape: BoxShape.circle,
                                     ),
                                     child: Icon(
-                                      CupertinoIcons.heart,
-                                      color: AppColors.iconColor,
+                                      item.isFavorite ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                                      color: item.isFavorite ? Colors.red : AppColors.iconColor,
                                       size: 18,
                                     ),
                                   ),
@@ -233,11 +239,11 @@ class AllProducts extends StatelessWidget {
                               PositionedDirectional(
                                 bottom: 6,
                                 end: 6,
-                                child:shareButton(),
+                                child:ShareButton(product: item,),
                               ),
-                              Positioned(
+                              PositionedDirectional(
                                 bottom: 36,
-                                left: 8,
+                                start: 8,
                                 child: GestureDetector(
                                   onTap: () => Navigator.of(context).push(
                                     MaterialPageRoute(builder: (context) => const SimilarProducts()),
@@ -321,7 +327,7 @@ class AllProducts extends StatelessWidget {
                                 ),
                                 showAddToCart
                                     ? InkWell(
-                                  onTap: () => ProductDetailsDialog.show(context),
+                                  onTap: () => ProductDetailsDialog.show(context,item),
                                   child: Card(
                                     color: AppColors.backgroundSecondary,
                                     shape: RoundedRectangleBorder(
@@ -349,15 +355,22 @@ class AllProducts extends StatelessWidget {
                 },
               ),
               (context.select((ProductCubit cubit) => cubit.isFetchingMore)) ? Padding(
-                padding: EdgeInsets.symmetric(vertical: 10.0),
-                child: SizedBox(
-                  height: 30,
-                    child: CircularProgress()),
+                padding: EdgeInsets.only(bottom: 50.0,top: 10),
+                child: CircularProgress(),
               ) : SizedBox(height: 0,),
+              SizedBox(height: 30,)
             ],
           );
         }
-        return const SizedBox();
+        return Center(
+          child:  SizedBox(
+            height: 30,
+            width: 120,
+            child: RefreshButton(onPressed: () async {
+              await context.read<ProductCubit>().fetchProducts(isRefresh: true);
+            }),
+          ),
+        );
       },
     );
   }
@@ -376,7 +389,7 @@ Widget _buildProductImage(ProductModel item) {
         return child;
       }
       return Container(
-        color: AppColors.backgroundSecondary,
+        color: AppColors.background,
         width: double.infinity,
         height: 250, // طول الصورة الأصلي الثابت في كودك
         child: Center(child: ThreeDotsLoader()),

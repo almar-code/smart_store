@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_store/core/constants/app_shadow.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/constants/app_endpoints.dart';
 import '../../../core/widgets/circularProgress.dart';
 import '../../../core/widgets/custom_network_image.dart';
 import '../../../core/widgets/icons/app_icon.dart';
@@ -114,7 +115,7 @@ class DiscountsUI extends StatelessWidget {
             final List<ProductModel> discounts = context.read<ProductCubit>().discountProducts;
 
             if (discounts.isEmpty) {
-              return const SizedBox(); // إخفاء القسم نهائياً إذا لم تكن هناك خصومات بالمتجر
+              return  SizedBox(); // إخفاء القسم نهائياً إذا لم تكن هناك خصومات بالمتجر
             }
 
             bool showViewMoreCard = discounts.length > 15;
@@ -176,7 +177,7 @@ class DiscountsUI extends StatelessWidget {
                         final ProductModel item = discounts[index];
 
                         // 🌟 حسابات الخصم الذكية القادمة من السيرفر (خصم مالي مباشر ثابت)
-                        int discountAmount = item.discount!.discountPerce ?? 0;
+                        double discountAmount = item.discount!.discountPerce ?? 0;
                         double newPrice = item.pPrice - discountAmount;
 
                         // حساب النسبة المئوية التقريبية لعرضها في الـ Badge (%8 مثلاً)
@@ -210,7 +211,7 @@ class DiscountsUI extends StatelessWidget {
                                         top: Radius.circular(7),
                                       ),
                                       child:  CustomNetworkImage(
-                                        imageUrl: item.pImage, // ممرر رابط الصورة مباشرة من الموديل
+                                        imageUrl: ApiEndpoints.productImageUrl(item.pImage), // ممرر رابط الصورة مباشرة من الموديل
                                         width: isDesktop ? 125 : 100,
                                         height: isDesktop ? 130 : 120,
                                       ),

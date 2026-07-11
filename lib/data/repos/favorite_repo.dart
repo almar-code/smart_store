@@ -1,41 +1,39 @@
 // data/repositories/product_repository.dart
 import 'package:dio/dio.dart';
+import 'package:smart_store/data/services/favorite_service.dart';
 import '../models/product_model.dart';
 import '../services/product_service.dart';
 
-class ProductRepo {
-  final ProductService apiService;
+class FavoriteRepo {
+  final FavoriteService apiService;
 
-  ProductRepo({required this.apiService});
+  FavoriteRepo({required this.apiService});
 
-  Future<Map<String, dynamic>> fetchProductsPaginated({int? subCatId, int? categoryId,int? productId, required int page,String? date ,int? seed,bool isDiscount = false,bool isFavorite = false,int? customerId}) async {
+  Future<int> getFavoriteCount({required int customerId}) async {
     try {
-      final Response response = await apiService.getProductsRaw(subCatId: subCatId,categoryId: categoryId,productId: productId, page: page ,seed: seed,date: date,isDiscount: isDiscount,isFavorite: isFavorite,customerId :customerId);
+      final Response response = await apiService.getFavoriteCountRaw(
+        customerId: customerId,
+      );
 
       if (response.statusCode == 200) {
-        // الـ Dio يقوم بتحليل الـ JSON تلقائياً إلى Map، لذا نصل لـ response.data مباشرة
         final Map<String, dynamic> responseData = response.data;
-
         if (responseData['status'] == true) {
-          final List<dynamic> productsData = responseData['data'];
-          final bool hasMore = responseData['meta']['has_more'];
-          List<ProductModel> productsList = productsData.map((p) => ProductModel.fromJson(p)).toList();
-          return {
-            'products': productsList,
-            'hasMore': hasMore,
-            'seed': responseData['meta']['seed'],
-          };
+          return responseData['favorite_count'] ?? 0;
         } else {
-          throw Exception(responseData['message'] ?? "Unknown error occurred");
+          print("sssssssssssssssssssssssssssssssssssss");
+          throw Exception(responseData['message'] ?? "Failed to get count");
         }
       } else {
+        print("sssssssssssssssssssssssssssssssssssss");
+
         throw Exception("Server Error: ${response.statusCode}");
       }
     } catch (e) {
+      print("sssssssssssssssssssssssssssssssssssss");
+
       throw Exception("Repository Error: $e");
     }
   }
-  // 🌟 دالة تفعيل أو إلغاء المفضلة وإرجاع الحالة الجديدة للمنتج
   Future<bool> toggleProductFavorite({
     required int customerId,
     required int productId,

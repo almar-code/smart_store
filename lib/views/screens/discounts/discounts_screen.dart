@@ -85,13 +85,12 @@ class DiscountsScreen extends StatelessWidget {
 
                   child: ScrollWrapper(
                       bottom: 5,
-                      child: AllProducts(productID: productID,
+                      child: AllProducts(
                           showAddToCart: true,
-                          isDiscount: true,
-                          onProductTap: (id) {
+                          onProductTap: (product) {
                             Navigator.push(context, MaterialPageRoute(
                                 builder: (context) =>
-                                    ProductDetailsScreen(productID: id)));
+                                    ProductDetailsScreen(product: product)));
                           })),
                 )
               ],

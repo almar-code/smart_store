@@ -17,7 +17,7 @@ class ThemeIcon extends StatelessWidget {
         final bool isDark = context.read<ThemeBloc>().state.isDark;
 
         return AnimatedSwitcher(
-          duration: const Duration(milliseconds: 2000),
+          duration: const Duration(milliseconds: 500),
           transitionBuilder: (Widget child, Animation<double> animation) {
             return ScaleTransition(
               scale: animation,
