@@ -19,12 +19,17 @@ class ApiEndpoints {
   static String get getSubCategories => '$_baseUrl/api/categories';
   static String get getProducts => '$_baseUrl/api/products';
   static String get getCategories => '$_baseUrl/api/sections';
+
   // ====================  روابط المفضلات الجديدة ====================
   // static String get getFavoriteProducts => '$_baseUrl/api/customer/favorites';
   static String get toggleFavorite => '$_baseUrl/api/customer/favorites/toggle';
   static String get favoriteCount => '$_baseUrl/api/customer/favorites/count';
+
+  static String get getCountry => 'https://countriesnow.space/api/v0.1/countries/codes';
+
 // ====================🛍 روابط ملفات صور  المنتجات والأقسام الثابتة ====================
   static String productImageUrl(String? image) => "$_baseUrl/storage/uploads/products/$image";
+  static String countryFlag(String? code) => "https://flagcdn.io/flags/4x3/${code}.svg";
   static String subCategoryImageUrl(String? image) => "$_baseUrl/storage/uploads/subcategory/$image";
   // لعرض محتويات السلة (GET) -> ستحتاج لتمرير customer_id كـ Query Parameter
   static String get getCart => '$_baseUrl/api/cart';

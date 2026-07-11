@@ -11,15 +11,14 @@ import '../../core/widgets/show_loading.dart';
 import '../../data/local/user_local.dart';
 import '../../data/repos/auth_repo.dart';
 import '../../data/services/auth_service.dart';
+import '../navigation/navigation_cubit.dart';
 import 'login_cubit.dart';
 
 class ProfileLogic {
 
   static final repo = AuthRepo(service: AuthService(), local: UserLocal());
 
-  static Future<void> updateAvatar(
-      BuildContext context,
-      ) async {
+  static Future<void> updateAvatar(BuildContext context,) async {
 
     final picker = ImagePicker();
 
@@ -37,9 +36,7 @@ class ProfileLogic {
       Uint8List imageBytes =
       await pickedFile.readAsBytes();
 
-      await repo.updateUserAvatar(
-        imageBytes,
-      );
+      await repo.updateUserAvatar(imageBytes);
 
       await repo.fetchAndSaveUser();
 
@@ -48,10 +45,7 @@ class ProfileLogic {
         context.read<LoginCubit>().setLoggedIn();
         Navigator.pop(context);
 
-        AppToasts.showSuccessToast(
-          context,
-          tr('avatar_updated_success'),
-        );
+        AppToasts.showSuccessToast(context, tr('avatar_updated_success'));
       }
 
     } catch(e) {
@@ -60,11 +54,36 @@ class ProfileLogic {
 
         Navigator.pop(context);
 
-        AppToasts.showErrorToast(
+        AppToasts.showErrorToast(context, tr('avatar_update_failed'));
+      }
+    }
+  }
+
+  static Future<void> logoutUser(BuildContext context,BuildContext dialogContext) async {
+    final navCubit = context.read<NavigationCubit>();
+    try {
+      ShowLoading.progressLoading(context);
+
+      await repo.logout();
+
+      context.read<LoginCubit>().setLoggedOut();
+
+      if (context.mounted) {
+        navCubit.updateIndex(2);
+
+        Navigator.pop(context);
+        Navigator.pop(dialogContext);
+
+        AppToasts.showSuccessToast(
           context,
-          tr('avatar_update_failed'),
+          tr("logout_success"),
         );
       }
+    } catch (e) {
+      AppToasts.showErrorToast(
+        context,
+        tr("internet_connection_error"),
+      );
     }
   }
 }
