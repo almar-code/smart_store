@@ -1,22 +1,34 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/di/injection_container.dart' as di;
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/scroll_wrapper.dart';
 import '../../../core/widgets/buttons/smart_floating_button.dart';
+import '../../../data/repos/product_repo.dart';
+import '../../../logic/products/product_cubit.dart';
 import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../../widgets/product/all_products.dart';
 
 class FavoritesScreen extends StatelessWidget {
   final bool screenOnly;
-  const FavoritesScreen({super.key,this.screenOnly =false});
+  const FavoritesScreen({super.key,this.screenOnly =false });
+
+  get currentCustomerId => null;
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-    return SafeArea(
+    return BlocProvider<ProductCubit>(
+      create: (context) => ProductCubit(repository: di.sl<ProductRepo>())
+        ..fetchProducts(
+          isFavorite: true,
+          isRefresh: true,
+        ),
+  child: SafeArea(
       child: Scaffold(
           backgroundColor: AppColors.background,
           appBar: AppBar(
@@ -40,7 +52,7 @@ class FavoritesScreen extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: ScrollWrapper(
               bottom: 15,
-              child: AllProducts(),
+              child: AllProducts(isInsideFavoritesScreen: true),
               ),
           ),
         floatingActionButton: Column(
@@ -53,6 +65,7 @@ class FavoritesScreen extends StatelessWidget {
           ],
         ) ,
       ),
-    );
+    ),
+);
 }
 }

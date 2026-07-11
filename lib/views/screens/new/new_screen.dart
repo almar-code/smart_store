@@ -11,6 +11,9 @@ import '../../../core/widgets/icons/cart_icon.dart';
 import '../../../core/widgets/icons/favorite_icon.dart';
 import '../../../core/widgets/search/app_search.dart';
 import '../../../core/widgets/titleBar.dart';
+import '../../../data/repos/product_repo.dart';
+import '../../../data/services/product_service.dart';
+import '../../../logic/products/product_cubit.dart';
 import '../../widgets/new/date_new.dart';
 import '../../widgets/new/img_new.dart';
 import '../../widgets/new/sub-new.dart';
@@ -22,6 +25,7 @@ class NewScreen extends StatelessWidget {
 
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
+    String formattedDate = DateFormat('yyyy-MM-dd', 'en').format(DateTime.now());
     return  Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
@@ -53,8 +57,19 @@ class NewScreen extends StatelessWidget {
             SizedBox(width: 10),
           ],
         ),
-        body:BlocProvider(
-          create: (context) => NewInBloc(),
+        body: MultiBlocProvider(
+            providers: [
+              BlocProvider<NewInBloc>(
+                create: (context) => NewInBloc(),
+              ),
+              BlocProvider<ProductCubit>(
+                create: (context) => ProductCubit(repository: ProductRepo(apiService:ProductService() ))
+                  ..fetchProducts(
+                    date:formattedDate ,
+                    isRefresh: true,
+                  ),
+              ),
+            ],
           child: ScrollWrapper(
             child: Padding(
               padding: const EdgeInsets.all(8.0),
@@ -107,7 +122,7 @@ class NewScreen extends StatelessWidget {
               ),
             ),
           )
-               )
+                 )
     );
   }
 }

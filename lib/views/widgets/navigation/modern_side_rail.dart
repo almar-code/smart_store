@@ -4,13 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hive/hive.dart';
+import 'package:smart_store/core/widgets/FavoriteCount.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/constants/app_shadow.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../core/widgets/icons/social_icons.dart';
 import '../../../core/widgets/itemCount.dart';
+import '../../../data/models/product_model.dart';
+import '../../../logic/cart/cart_cubit.dart';
 import '../../../logic/login/login_cubit.dart';
+import '../../../logic/products/product_event_bus.dart';
 
 class ModernSideRail extends StatefulWidget {
   final int currentIndex;
@@ -104,7 +108,7 @@ class _ModernSideRailState extends State<ModernSideRail> {
                         Badge(
                           alignment: Alignment.topCenter,
                           backgroundColor: Colors.transparent,
-                          isLabelVisible:isExpanded ?true:false ,
+                          isLabelVisible: (isExpanded && context.watch<CartCubit>().allProducts.length > 0 ) ? true : false ,
                           label: Container(
                             margin:  EdgeInsets.only(top: 30),
                             decoration: BoxDecoration(
@@ -112,7 +116,7 @@ class _ModernSideRailState extends State<ModernSideRail> {
                               borderRadius: BorderRadius.circular(7),
                               boxShadow: AppShadow.commonShadow,
                             ),
-                            padding: EdgeInsets.symmetric(horizontal:7),
+                            padding: EdgeInsets.symmetric(horizontal:8,vertical: 1),
                             child: ItemCount(color:Colors.white,fontSize: 8,),
                           ),
                           child: _buildMenuItem(
@@ -129,12 +133,33 @@ class _ModernSideRailState extends State<ModernSideRail> {
                           Icons.person,
                           labelName,
                         ),
-                        _buildMenuItem(
-                          5,
-                          CupertinoIcons.heart,
-                          CupertinoIcons.heart_fill,
-                          tr('favorite'),
-                          size: 20,
+                        StreamBuilder<ProductModel>(
+                            stream: ProductEventBus.stream,
+                            builder: (context, snapshot) {
+                              final int currentCount = ProductEventBus.favoriteCount;
+                            return Badge(
+                              alignment: Alignment.topCenter,
+                              backgroundColor: Colors.transparent,
+                              isLabelVisible:isExpanded && currentCount > 0 ? true : false ,
+                              label: Container(
+                                margin:  EdgeInsets.only(top: 30),
+                                decoration: BoxDecoration(
+                                  color: AppColors.primary,
+                                  borderRadius: BorderRadius.circular(7),
+                                  boxShadow: AppShadow.commonShadow,
+                                ),
+                                padding: EdgeInsets.symmetric(horizontal:8,vertical: 1),
+                                child: FavoriteCount(color:Colors.white,fontSize: 8,),
+                              ),
+                              child: _buildMenuItem(
+                                5,
+                                CupertinoIcons.heart,
+                                CupertinoIcons.heart_fill,
+                                tr('favorite'),
+                                size: 20,
+                              ),
+                            );
+                          }
                         ),
                       ],
                     ),
@@ -207,11 +232,11 @@ class _ModernSideRailState extends State<ModernSideRail> {
             mainAxisSize: MainAxisSize.max, // 🔥 مهم
             children: [
               Badge(
-                isLabelVisible:(index == 3 ) ?true:false ,
+                isLabelVisible:(index == 3 || index == 5) ? true : false ,
                 backgroundColor: Colors.transparent,
                 alignment: Alignment.topRight,
-                padding: EdgeInsets.only(bottom: 13,right: 15 ),
-                label:isExpanded ? SizedBox() : ItemCount(fontSize: 11,),
+                padding: EdgeInsets.only(bottom: 13,right: 10 ),
+                label:isExpanded ? SizedBox() : index == 3 ? ItemCount(fontSize: 11,) : FavoriteCount(fontSize: 11,),
                 child: SizedBox(
                   width: 48,
                   child: Icon(

@@ -195,7 +195,7 @@ class _ReelsGrid extends StatelessWidget {
           child: Stack(
             children: [
 
-              Image.network(
+              Image.asset(
                 reels[index],
                 fit: BoxFit.cover,
                 width: double.infinity,

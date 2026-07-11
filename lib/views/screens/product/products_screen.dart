@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:smart_store/data/services/product_service.dart';
+import 'package:smart_store/data/services/subcategory_service.dart';
 import '../../../core/di/injection_container.dart' as di;
 import '../../../core/widgets/scroll_wrapper.dart';
 import '../../../core/widgets/buttons/smart_floating_button.dart';
@@ -38,10 +40,10 @@ class ProductScreens extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider<SubcategoryCubit>(
-          create: (context) => SubcategoryCubit(di.sl<SubcategoryRepo>())..getSubcategories(categoryId:categoryID ),
+          create: (context) => SubcategoryCubit(SubcategoryRepo(SubcategoryService()))..getSubcategories(categoryId:categoryID ),
         ),
         BlocProvider<ProductCubit>(
-          create: (context) => ProductCubit(repository: di.sl<ProductRepo>())
+          create: (context) => ProductCubit(repository: ProductRepo(apiService:ProductService() ))
             ..fetchProducts(
               subCatId: subCategoryID,
               productId: productID,
@@ -72,33 +74,50 @@ class ProductScreens extends StatelessWidget {
               ArrowBack(),
             ],
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                if (subCategoryID != null && categoryID != null)
-                  SubcategoryBar(),
-                Expanded(
-                  child: ScrollWrapper(
-                    bottom: 5,
-                    child: AllProducts(
-                      productID: productID,
-                      subCategoryID: subCategoryID,
-                      showAddToCart: true,
-                      onProductTap: (id) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                ProductDetailsScreen(productID: id),
+          body: Builder(
+            builder: (blocContext) {
+              return RefreshIndicator(
+
+                onRefresh: () async {
+                  if(categoryID != null){
+                    blocContext.read<SubcategoryCubit>().getSubcategories(categoryId: categoryID);
+                  }
+                  await blocContext.read<ProductCubit>().fetchProducts(
+                      subCatId: subCategoryID,
+                      productId: productID,
+                      isRefresh: true
+                  );
+                },
+                color: AppColors.primary, // لون مؤشر التحميل (يمكنك ربطه بهوية المشروع)
+                backgroundColor: AppColors.backgroundSecondary,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      if (subCategoryID != null && categoryID != null)
+                        SubcategoryBar(),
+                      Expanded(
+                        child: ScrollWrapper(
+                          bottom: 5,
+                          child: AllProducts(
+                            showAddToCart: true,
+                            onProductTap: (product) {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      ProductDetailsScreen(product: product,),
+                                ),
+                              );
+                            },
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-              ],
-            ),
+              );
+            }
           ),
           floatingActionButton: Column(
             mainAxisSize: MainAxisSize.min,

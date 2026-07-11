@@ -99,6 +99,7 @@ dependencies:
   flutter_chat_ui: ^1.6.9
   flutter_chat_types: ^3.6.2
   uuid: ^4.3.3
+  app_links: ^3.5.0
   country_pickers: ^3.0.1
   country_picker: ^2.0.24  # حزمة ممتازة ومحدثة تحتوي على كل اللغات
 
@@ -173,9 +174,4 @@ flutter_native_splash:
   # إعدادات الويب (تفعيل وتحديد الصورة والخلفية)
   web: true
   color: "#FFFFFF"
-  image: assets/images/logo.png
-
-  # إيقاف التفعيل تماماً عن الأندرويد والـ iOS
-  android: false
-  ios: false
-  android_12: false
+  image: "assets/images/app icon/icon.png"

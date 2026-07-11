@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../constants/app_colors.dart';
 
 class ThreeDotsLoader extends StatefulWidget {
-  const ThreeDotsLoader({super.key});
+  final bool isSmall;
+  const ThreeDotsLoader({super.key,this.isSmall = false});
 
   @override
   State<ThreeDotsLoader> createState() => _ThreeDotsLoaderState();
@@ -39,7 +40,7 @@ class _ThreeDotsLoaderState extends State<ThreeDotsLoader>
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 3),
         child: CircleAvatar(
-          radius: 5,
+          radius: widget.isSmall ? 2 : 5,
           backgroundColor: AppColors.iconColor,
         ),
       ),

@@ -10,7 +10,7 @@ class FavoriteIcon extends StatelessWidget {
   final Color? color;
   final double size;
   final bool showBg;
-  FavoriteIcon({super.key,this.color,this.size=20,this.showBg =true});
+  const FavoriteIcon({super.key,this.color,this.size=20,this.showBg =true});
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
@@ -33,7 +33,7 @@ class FavoriteIcon extends StatelessWidget {
                 color:color ?? AppColors.iconColor,
                 size: finalSize,
               ),
-              onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true,))),
+              onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true))),
             ),
           ),
           Positioned(

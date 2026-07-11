@@ -1,14 +1,17 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../../data/models/product_model.dart';
+import '../../../logic/colors/colors_cubit.dart';
+import '../../../logic/size/size_cubit.dart';
 import '../../screens/product/product_details_screen.dart';
 import 'product_details.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/titleBar.dart';
 
 class ProductDetailsDialog {
-  static void show(BuildContext context) {
-
+  static void show(BuildContext context,ProductModel product) {
     showGeneralDialog(
       context: context,
       barrierDismissible: true,
@@ -44,7 +47,7 @@ class ProductDetailsDialog {
                     isDesktop ? Radius.zero : const Radius.circular(10),
                   ),
                 ),
-                child: buildProductDetailSheet(context), // 👈 هنا استخدمنا الدالة
+                child: buildProductDetailSheet(context,product), // 👈 هنا استخدمنا الدالة
               ),
             ),
           ),
@@ -76,120 +79,153 @@ class ProductDetailsDialog {
     );
   }
 }
+Widget buildProductDetailSheet(BuildContext context, ProductModel product) {
+  // إذا لم يكن هناك ألوان قادمة من لارافيل، نضع كائن وهمي لمنع الأخطاء
+  final ColorModel defaultColor = product.colors.isNotEmpty
+      ? product.colors.first
+      : ColorModel(colorId: 0, colorName: '', images: []);
 
-Widget buildProductDetailSheet(BuildContext context) {
-  return Container(
-    decoration: BoxDecoration(
-      color: AppColors.background,
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-    ),
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            IconButton(
-              icon: Icon(Icons.close, color: AppColors.iconColor, size: 20),
-              onPressed: () => Navigator.pop(context),
-            ),
-          ],
+  return MultiBlocProvider(
+      providers: [
+        BlocProvider<DialogProductCubit>(
+          create: (_) => DialogProductCubit(defaultColor),
         ),
+        BlocProvider<DialogSizeCubit>(
+          create: (_) => DialogSizeCubit(), // سيبدأ تلقائياً بالقيمة null
+        ),
+      ], // حقن الكوبيت المؤقت للون الافتراضي
+    child:  BlocBuilder<DialogProductCubit, ColorModel>(
+      builder: (context, selectedColor) {
+        final imgPaths = selectedColor.images.map((img) => img.imgUrl).toList();
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.hexToColor(selectedColor.colorCode ?? "#000000").withOpacity(0.1),
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              IconButton(
+                icon: Icon(Icons.close, color: AppColors.iconColor, size: 20),
+                onPressed: () => Navigator.pop(context),
+              ),
+            ],
+          ),
 
-        const ProductImageSlider(images: [
-          'assets/images/1.jpg',
-          'assets/images/2.jpg',
-          'assets/images/3.jpg'
-        ]),
+          // 🌟 معرض الصور يستمع الآن ديناميكياً للون المختار
+          ProductImageSlider(images: imgPaths.isNotEmpty ? imgPaths : [product.pImage ?? '']),
 
-        const SizedBox(height: 15),
+          const SizedBox(height: 15),
 
-        Expanded(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Column(
-              spacing: 5,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ProductDetailsScreen(
-                          productID: 1,
-                          isExpanded: true,
-                        ),
-                      ),
-                    );
-                  },
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(
-                        child: Text(
-                          "mainAxisAlignmentmainAxisAlignmentmainAxisAlignment",
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            color: AppColors.textColor,
-                            fontSize: 13,
-                            fontWeight: FontWeight.bold,
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              child: Column(
+                spacing: 5,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  InkWell(
+                    onTap: () {
+                      // انتقال لشاشة التفاصيل الكاملة مع تمرير الآيدي
+                      Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: product, isExpanded: true)));
+                    },
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Text(
+                            (context.locale.languageCode == 'ar'  ? product.pDescription : product.pDescriptionEn) ?? "", // 🌟 اسم المنتج الحقيقي
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(color: AppColors.textColor, fontSize: 14, fontWeight: FontWeight.bold),
                           ),
                         ),
+                        Icon(Icons.arrow_forward_ios_outlined, color: AppColors.iconColor, size: 12),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 6),
+
+                  // 🌟 عرض السعر والخصم ديناميكياً بناءً على بيانات السيرفر
+                  Row(
+                    children: [
+                      Text(
+                        "${product.pPrice} ر.س",
+                        style: TextStyle(
+                          color: product.discount != null ? AppColors.textSecondary : AppColors.textColor,
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                          decoration: product.discount != null ? TextDecoration.lineThrough : null,
+                        ),
                       ),
-                      Icon(Icons.arrow_forward_ios_outlined,
-                          color: AppColors.iconColor, size: 12),
+                      if (product.discount != null) ...[
+                        const SizedBox(width: 10),
+                        // حساب السعر الجديد بعد الخصم
+                        Text(
+                          "${(product.pPrice -product.discount!.discountPerce! ).toStringAsFixed(2)} ر.س",
+                          style: const TextStyle(color: Colors.red, fontSize: 13, fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(width: 8),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 2),
+                          decoration: BoxDecoration(color: Colors.red, borderRadius: BorderRadius.circular(4)),
+                          child: Text(
+                            "${((product.discount!.discountPerce! / product.pPrice) * 100).round()}%",
+                            style: const TextStyle(color: Colors.white, fontSize: 10),
+                          ),
+                        )
+                      ]
                     ],
                   ),
-                ),
 
-                const SizedBox(height: 6),
+                  if (product.discount != null && product.discount!.endDate != null)
+                    Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Text(
+                        "ينتهي الخصم بتاريخ: ${product.discount!.endDate}",
+                        style: const TextStyle(color: Colors.orange, fontSize: 11),
+                      ),
+                    ),
 
-                Text(
-                  "85.00 ر.س",
-                  style: TextStyle(
-                    color: AppColors.textColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                  Divider(color: AppColors.textSecondary, thickness: 0.2),
+
+                  // 🌟 عرض اسم اللون المختار حالياً ديناميكياً بفضل الـ BlocBuilder
+                  TitleBar(
+                    title: "${'color'.tr()} : ${(context.locale.languageCode == 'ar'  ? selectedColor.colorName : selectedColor.colorNameEn) ?? ""}" ,
+                    isDecoration: false,
+                    color: AppColors.hexToColor(selectedColor.colorCode ?? "#000000"),
                   ),
-                ),
 
-                Divider(color: AppColors.textSecondary, thickness: 0.2),
+                  const SizedBox(height: 5),
 
-                TitleBar(
-                  title: "${'color'.tr()} : red",
-                  isDecoration: false,
-                  color: AppColors.primary,
-                ),
+                  // تمرير مصفوفة الألوان الكاملة للوجت الاختيار
+                  ProductColorSelector(colors: product.colors),
 
-                const SizedBox(height: 5),
+                  const SizedBox(height: 7),
 
-                const ProductColorSelector(colors: [
-                  {"imagePath": 'assets/images/1.jpg', "code": "#026789"},
-                  {"imagePath": 'assets/images/2.jpg', "code": "#000000"},
-                ]),
+                  TitleBar(title: 'size'.tr(), isDecoration: false),
 
-                const SizedBox(height: 7),
+                  const SizedBox(height: 5),
 
-                TitleBar(title: 'size'.tr(), isDecoration: false),
-
-                const SizedBox(height: 5),
-
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 10),
-                  child: const ProductSizeSelector(
-                    sizes: ['66', '56', '53', '48'],
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10),
+                    child: ProductSizeSelector(sizes: product.sizes), // 🌟 تمرير مصفوفة المقاسات الحقيقية
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
-        ),
 
-        const ProductActionActions(),
-      ],
-    ),
+           ProductActionActions(product: product,),
+        ],
+      ),
+    );
+  },
+),
   );
 }

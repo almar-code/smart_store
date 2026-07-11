@@ -7,6 +7,8 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:smart_store/logic/countries_cubit/countries_cubit.dart';
 import 'package:smart_store/views/screens/sign/sign_up_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'logic/cart/cart_cubit.dart';
+import 'logic/favorites/favorites_cubit.dart';
 import 'logic/login/login_cubit.dart';
 import 'logic/login/login_cubit_web.dart';
 import 'logic/signup/sign_up_cubit.dart';
@@ -16,7 +18,7 @@ import 'data/repos/subcategory_repo.dart';
 import 'data/repos/video_repo.dart';
 import 'logic/subcategories/subcategory_cubit.dart';
 import 'logic/videos/comments_cubit.dart';
-import 'logic/videos/video_cubit.dart Dart.dart';
+import 'logic/videos/video_cubit.dart';
 import 'my_app.dart';
 import 'core/theme/bloc/theme_bloc.dart';
 import 'logic/categories/category_cubit.dart';
@@ -63,16 +65,21 @@ void main() async {
           ),
           // 🌟 إضافة الـ ProductCubit وحقن الـ ProductRepository من الـ Service Locator تلقائياً
           BlocProvider(
-            create: (_) => ProductCubit(repository: di.sl<ProductRepo>())
-              ..fetchProducts(isRefresh: true),
+            create: (_) => di.sl<ProductCubit>()..fetchProducts(isRefresh: true),
           ),
-
+          BlocProvider(
+            lazy: false, //  إجبار الكوبيت على الإقلاع فوراً وتشغيل دالة جلب العداد
+            create: (_) => di.sl<FavoritesCubit>()..loadInitialFavoriteCount(),
+          ),
           // أضف الـ BlocProvider الخاص بالفيديوهات
           BlocProvider(
             create: (_) => VideoCubit(di.sl<VideoRepo>())..getAllVideos(),
           ),
           BlocProvider(
             create: (_) => CommentsCubit(di.sl<VideoRepo>()),
+          ),
+          BlocProvider(
+            create: (_) => di.sl<CartCubit>()..fetchCart(customerId: 1),
           ),
         ],
 
