@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:easy_localization/easy_localization.dart'; // إضافة مكتبة الترجمة
 import '../../core/widgets/app_messages.dart';
-import '../../core/widgets/network_service.dart';
+import '../../core/widgets/internet_check.dart';
 import '../../core/widgets/show_loading.dart';
 import '../../data/local/user_local.dart';
 import '../../data/repos/auth_repo.dart';
 import '../../data/services/auth_service.dart';
 import '../signup/sign_up_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
+import 'login_cubit.dart';
 
 class PasswordLogic {
 
@@ -21,15 +24,11 @@ class PasswordLogic {
 
 
 
-  static void maserror(BuildContext context ) async{
-    bool connected = await NetworkService.hasInternet();
-    if (!connected) {
-      AppToasts.showErrorToast(context,"لا يوجد اتصال بالإنترنت، يرجى المحاولة لاحقاً");
-      return;}
-  }
+
 
   static Future<void> sendResetPasswordCode(BuildContext context, Map<String, dynamic> data) async {
-    maserror(context);
+    InternetCheck.internetCheck(context);
+
     formData = data;
     savedEmail = formData['email']!.toString().trim();
     try {
@@ -40,12 +39,12 @@ class PasswordLogic {
       Navigator.pop(context);
 
       context.read<SignUpCubit>().next();
-      AppToasts.showSuccessToast(context,"تم إرسال رمز التحقق إلى بريدك الإلكتروني");
+      AppToasts.showSuccessToast(context, tr("otp_sent_success"));
 
 
     } catch (e) {
       Navigator.pop(context);
-      AppToasts.showErrorToast(context,"خطأ في إرسال الرمز ");
+      AppToasts.showErrorToast(context, tr("send_code_failed"));
     }
   }
 
@@ -65,37 +64,43 @@ class PasswordLogic {
     } catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
-        AppToasts.showErrorToast(context,"الرمز غير صحيح أو انتهت صلاحيته");
+        AppToasts.showErrorToast(context, tr("errors.invalid_otp"));
 
       }
     }
   }
 
-  static Future<void> updateNewPassword(BuildContext context, Map<String, dynamic> data) async {
-    maserror(context);
+  static Future<void> updateNewPassword(BuildContext context, Map<String, dynamic> data, VoidCallback? onSuccess) async {
+    InternetCheck.internetCheck(context);
     try {
       ShowLoading.progressLoading(context);
-      await service.updatePassword( data['password']!.toString().trim());
+      await service.updatePassword(data['password']!.toString().trim());
+
+      await repo.fetchAndSaveUser();
 
       if (context.mounted) {
         Navigator.pop(context);
-        AppToasts.showSuccessToast(context, "تم تغيير كلمة المرور بنجاح");
+
+        context.read<LoginCubit>().setLoggedIn();
+
         Navigator.pop(context);
       }
+      if (onSuccess != null) onSuccess();
+      AppToasts.showSuccessToast(context, tr("success.password_updated"));
 
     } on AuthException catch (e) {
       if (context.mounted) Navigator.pop(context);
       if (e.message.contains("same as the old one") || e.message.contains("previously used")) {
-        AppToasts.showErrorToast(context, "عفواً! لا يمكنك استخدام كلمة مرور قديمة، اختر كلمة جديدة");
+        AppToasts.showErrorToast(context, tr("errors.old_password"));
       } else if (e.message.contains("at least 9 characters")) {
-        AppToasts.showErrorToast(context, "كلمة المرور ضعيفة جداً، يجب أن تكون 6 خانات على الأقل");
+        AppToasts.showErrorToast(context, tr("errors.weak_password"));
       } else {
-        AppToasts.showErrorToast(context, "فشل التحديث: ${e.message}");
+        AppToasts.showErrorToast(context, "${tr("errors.update_failed")}${e.message}");
       }
 
     } catch (e) {
       if (context.mounted) Navigator.pop(context);
-      AppToasts.showErrorToast(context, "حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى لاحقاً");
+      AppToasts.showErrorToast(context, tr("errors.unexpected"));
       debugPrint("Unexpected Password Update Error: $e");
     }
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import '../../../core/constants/app_colors.dart';
@@ -10,10 +11,12 @@ class CustomFormField extends StatefulWidget {
   final IconData? icon;
   final int maxLines;
   final Color? color;
+  final Color? labelColor;
   final List<String? Function(String?)>? validators;
   final TextInputType keyboardType;
   final String? initialValue;
   final bool isPasswordField; // خاصية لتحديد ما إذا كان الحقل كلمة مرور
+  final List<TextInputFormatter>? inputFormatters; // علشان افلتر الحفل يقبل ارقام فقط
 
   const CustomFormField({
     super.key,
@@ -27,6 +30,8 @@ class CustomFormField extends StatefulWidget {
     this.keyboardType = TextInputType.text,
     this.initialValue,
     this.isPasswordField = false, // القيمة الافتراضية ليست كلمة مرور
+    this.inputFormatters,
+    this.labelColor
   });
 
   @override
@@ -54,9 +59,12 @@ class _CustomFormFieldState extends State<CustomFormField> {
       keyboardType: widget.keyboardType,
       obscureText: _obscureText, // ربط المتغير بخاصية الإخفاء
       style: TextStyle(color: AppColors.textColor, fontSize: 14),
-      autovalidateMode: AutovalidateMode.disabled,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      inputFormatters: widget.inputFormatters,
+
 
       decoration: InputDecoration(
+
         labelText: widget.label,
         hintText: widget.hint,
         prefixIcon: widget.icon != null
@@ -80,26 +88,31 @@ class _CustomFormFieldState extends State<CustomFormField> {
         )
             : null,
 
-        labelStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-        hintStyle: TextStyle(color: AppColors.textSecondary.withOpacity(0.5), fontSize: 13),
+
+        labelStyle: TextStyle(color: widget.labelColor ?? AppColors.textSecondary, fontSize: 14),
+        hintStyle: TextStyle(color: Colors.white38),
         filled: true,
-        fillColor: AppColors.backgroundSecondary.withOpacity(0.3),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        fillColor: Colors.white.withOpacity(0.1),
+        contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(15), borderSide: BorderSide.none),        // hintStyle: TextStyle(color: AppColors.textSecondary.withOpacity(0.5), fontSize: 13),
+        // filled: true,
+        // fillColor: AppColors.backgroundSecondary.withOpacity(0.3),
+        // contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
 
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(7),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(color: AppColors.borderColor, width: 1),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(7),
-          borderSide: BorderSide(color: AppColors.primary, width: 1.5),
+          borderRadius: BorderRadius.circular(15),
+          borderSide: BorderSide(color: AppColors.primary.withOpacity(0.3), width: 1.9),
         ),
         errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(7),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(color: AppColors.error, width: 1),
         ),
         focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(7),
+          borderRadius: BorderRadius.circular(15),
           borderSide: BorderSide(color: AppColors.error, width: 1.5),
         ),
         errorStyle: TextStyle(color: AppColors.error, fontSize: 12),

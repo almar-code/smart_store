@@ -30,25 +30,25 @@ class UserProfile extends StatelessWidget {
 
     return BlocBuilder<LoginCubit, bool>(
       builder: (context, state) {
-        return (state)
+        return  (state)
             ? FutureBuilder(
           future: repo.getLocalUser(),
           builder: (context, asyncSnapshot) {
-            if (asyncSnapshot.connectionState == ConnectionState.waiting) {
+            if (asyncSnapshot.connectionState == ConnectionState.waiting || !asyncSnapshot.hasData) {
               return const UserProfileShimmer();
             }
-            var userData = asyncSnapshot.data;
+            var userData = asyncSnapshot.data!;
             return Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 InkWell(
                   onTap: isDrawer ? () {} : () {
-                    _showLargeImage(context, userData!.image);
+                    _showLargeImage(context, userData.image);
                   },
                   child: CircleAvatar(
                     radius: isDesktop ? 23 : 20,
                     backgroundColor: Colors.grey.shade200,
-                    backgroundImage: (userData!.image.toString().isNotEmpty)
+                    backgroundImage: (userData.image.toString().isNotEmpty)
                         ? MemoryImage(ImageHelper.decodeBase64(userData.image))
                         : null,
                     child: (userData.image == '' || userData.image.toString().isEmpty)
@@ -80,18 +80,17 @@ class UserProfile extends StatelessWidget {
               ],
             );
           },
-        )
-            : Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const CircleImage(
-              imagePath: '',
-              radius: 20,
-              icon: CupertinoIcons.person,
-            ),
-            const SizedBox(width: 7),
-            AppTitle(firstPart: 'Log', secondPart: 'in'),
-          ],
+        ) : Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+        const CircleImage(
+        imagePath: '',
+        radius: 20,
+        icon: CupertinoIcons.person,
+        ),
+        const SizedBox(width: 7),
+        AppTitle(firstPart: 'Log', secondPart: 'in'),
+        ],
         );
       },
     );

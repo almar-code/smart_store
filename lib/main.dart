@@ -4,6 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
+import 'package:smart_store/logic/countries_cubit/countries_cubit.dart';
+import 'package:smart_store/views/screens/sign/sign_up_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'logic/cart/cart_cubit.dart';
 import 'logic/favorites/favorites_cubit.dart';
@@ -22,6 +24,7 @@ import 'core/theme/bloc/theme_bloc.dart';
 import 'logic/categories/category_cubit.dart';
 import 'core/di/injection_container.dart' as di;
 import 'data/repos/category_repo.dart';
+import 'package:flutter/foundation.dart';
 
 // 🌟 استيراد ملفات الـ Product الـجديدة لربطها بالماين
 import 'logic/products/product_cubit.dart';
@@ -81,11 +84,11 @@ void main() async {
         ],
 
 
-          child: BlocBuilder<LoginCubitWeb, bool>(
+          child: (kIsWeb)? BlocBuilder<LoginCubitWeb, bool>(
               builder: (context, state) {
               return MyApp();
             }
-          ),
+          ): MyApp(),
         ),
       ),
   );

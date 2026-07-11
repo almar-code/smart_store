@@ -87,12 +87,10 @@ class _OtpStepState extends State<OtpStep> {
           onCompleted: (pin) async {
             try {
               await widget.onVerifyOtp(context, pin);
-              // await PasswordLogic.verifyOtpCode(context,pin);
             } catch (e) {
               _pinController.clear();
               FocusScope.of(context).unfocus();
-              setState (() {});
-
+              setState(() {});
             }
           },
           defaultPinTheme: PinTheme(

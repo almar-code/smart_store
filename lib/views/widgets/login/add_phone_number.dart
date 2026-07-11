@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
+import '../../../core/widgets/buttons/app_button.dart';
 import '../../../views/widgets/login/phone_number.dart';
 
 class AddPhoneNumber extends StatelessWidget {
@@ -32,7 +33,7 @@ class AddPhoneNumber extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
                 border: Border.all(
-                  color: AppColors.card,
+                  color: AppColors.primary.withOpacity(0.1),
                   width: 1.2,
                 ),
               ),
@@ -48,7 +49,7 @@ class AddPhoneNumber extends StatelessWidget {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(100),
                 border: Border.all(
-                  color: AppColors.card,
+                  color: AppColors.primary.withOpacity(0.1),
                   width: 1,
                 ),
               ),
@@ -102,28 +103,21 @@ class AddPhoneNumber extends StatelessWidget {
                     ),
 
                     const SizedBox(height: 10),
-
-
-                    ElevatedButton(
-                      onPressed: () {
-                        PhoneNumber.show(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        elevation: 0,
-                        backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
-                        ),
-                      ),
-                      child:  Text(
-                        tr('add_phone_number'),
-                        style: TextStyle(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w800,
-                          color: AppColors.textColor,
-                        ),
+                    SizedBox(
+                      width: 150,
+                      height: 45,
+                      child: AppButton(
+                        borderRadius: 17,
+                        label: tr('add'),
+                        icon: Icons.add_call,
+                        onTap: () {
+                          PhoneNumber.show(context);
+                        },
                       ),
                     ),
+
+
+
                   ],
                 ),
               ),
