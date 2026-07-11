@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:smart_store/core/widgets/app_messages.dart';
 
+import '../../../logic/cart/cart_cubit.dart';
+import '../../../logic/colors/colors_cubit.dart';
+import '../../../logic/size/size_cubit.dart';
 import '../../constants/app_colors.dart';
+import '../../constants/app_endpoints.dart';
 
 class AddToCartButton extends StatefulWidget {
   const AddToCartButton({super.key});
@@ -77,6 +83,12 @@ class _AddToCartButtonState extends State<AddToCartButton>
     // معرفة اتجاه اللغة (هل هي عربية؟)
     final bool isRtl = Directionality.of(context) == TextDirection.rtl;
     bool isDesktop = MediaQuery.of(context).size.width > 800;
+    final selectedSize = context.watch<DialogSizeCubit>().state;
+    final selectedColor = context.watch<DialogProductCubit>().state;
+    final parsedColor = AppColors.hexToColor(selectedColor.colorCode ?? "#000000");
+    // 🌟 التحقق من توفر صور لهذا اللون بالتحديد
+    final bool hasImage = selectedColor.images.isNotEmpty && selectedColor.images.first.imgUrl.isNotEmpty;
+    final String? firstImageUrl = hasImage ? selectedColor.images.first.imgUrl : null;
 
     return LayoutBuilder(builder: (context, constraints) {
       // عرض الزر يتغير حسب الهاتف أو الكمبيوتر
@@ -96,7 +108,14 @@ class _AddToCartButtonState extends State<AddToCartButton>
       ]).animate(_controller);
 
       return GestureDetector(
-        onTap: () => _controller.forward(from: 0.0),
+        onTap: () {
+          if (selectedSize != null) {
+            _controller.forward(from: 0.0);
+            context.read<CartCubit>().addToCart(customerId: 1, productId: selectedSize.pId, sizeId: selectedSize.sizeId,colorId: selectedColor.colorId,context: context );
+          } else {
+            AppToasts.showWarningToast(context, 'الرجاء اختيار مقاس ');
+          }
+        },
         child: Container(
           width: double.infinity, // يأخذ كامل العرض المتاح (responsive)
           height: 40,
@@ -151,7 +170,27 @@ class _AddToCartButtonState extends State<AddToCartButton>
                       opacity: _shirtOpacity.value,
                       child: Transform.scale(
                         scale: _shirtScale.value,
-                        child: _buildShirtIcon(),
+                        child: CircleAvatar(
+                          radius: 12,
+                          backgroundColor: parsedColor, // اللون الافتراضي في الخلفية إذا لم تتوفر صورة
+                          child: hasImage
+                              ? ClipOval(
+                            child: Image.network(
+                              // بناء رابط الصورة الكامل المرفوع على سيرفر لارافيل
+                              firstImageUrl!.startsWith('http')
+                                  ? firstImageUrl
+                                  : ApiEndpoints.productImageUrl(firstImageUrl),
+                              width: 24,
+                              height: 24,
+                              fit: BoxFit.cover,
+                              // 🌟 معامل الأمان: في حال فشل تحميل الصورة من السيرفر لأي سبب، يعود ليعرض لون الدائرة الأصلي
+                              errorBuilder: (context, error, stackTrace) {
+                                return _buildShirtIcon();
+                              },
+                            ),
+                          )
+                              : null, // إذا لم تكن هناك صورة أصلاً، سيبقى الـ backgroundColor للـ CircleAvatar ظاهراً
+                        ),
                       ),
                     ),
                   ),
