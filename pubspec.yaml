@@ -101,6 +101,7 @@ dependencies:
   uuid: ^4.3.3
   app_links: ^3.5.0
 #  country_pickers: ^3.0.1ة
+  country_pickers: ^3.0.1
   country_picker: ^2.0.24  # حزمة ممتازة ومحدثة تحتوي على كل اللغات
 
 dev_dependencies:

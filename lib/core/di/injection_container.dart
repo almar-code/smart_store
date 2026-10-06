@@ -1,4 +1,7 @@
 import 'package:get_it/get_it.dart';
+import 'package:smart_store/data/services/favorite_service.dart';
+import '../../data/repos/cart_repo.dart';
+import '../../data/repos/favorite_repo.dart';
 import 'package:smart_store/data/services/country_api_service.dart';
 import 'package:smart_store/logic/countries_cubit/countries_cubit.dart';
 import '../../data/repos/country_repo.dart';
