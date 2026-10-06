@@ -90,6 +90,7 @@ class LoginLogic {
     } catch (e) {
       if (context.mounted) {
         Navigator.pop(context);
+        print("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS${e.toString()}");
         AppToasts.showErrorToast(context, tr("google_login_failed"));
       }
     }
