@@ -6,6 +6,7 @@ import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../widgets/address/address_header_section.dart';
 import '../../widgets/address/address_list.dart';
+import '../../widgets/address/checkout_address_list.dart';
 import '../payment/payment_screen.dart';
 import 'add_address_screen.dart';
 
@@ -15,13 +16,6 @@ class SelectUsrAddress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-
-    // قائمة تجريبية للعناوين (يمكنك استبدالها ببيانات من الـ API لاحقاً)
-    final List<Map<String, dynamic>> addresses = [
-      {'title': 'Home', 'details': 'Street 10, Building 5, Riyadh, KSA', 'isDefault': true},
-      {'title': 'Office', 'details': 'Business Bay, Tower 2, Floor 15, Dubai, UAE', 'isDefault': false},
-    ];
-
     return SafeArea(
       child: Scaffold(
         extendBody : true,
@@ -70,7 +64,10 @@ class SelectUsrAddress extends StatelessWidget {
       
                 // استدعاء الكلاس الجديد هنا
                 Expanded(
-                  child: AddressListView(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 80),
+                    child: CheckoutAddressListView(),
+                  ),
                 ),
               ],
             ),

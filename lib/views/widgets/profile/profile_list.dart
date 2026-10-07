@@ -18,7 +18,6 @@ class ProfileList extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     return ListView(
-      padding:  EdgeInsets.symmetric(vertical: isDesktop ? 15 : 6 ,horizontal: isDesktop ? 200 : 0 ),
       children: [
         CustomTile(icon: CupertinoIcons.list_bullet_below_rectangle, title: "order management".tr(), onTap:  ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => OrdersScreen()))),
         CustomTile(icon: CupertinoIcons.cart, title: "shopping cart".tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => CartScreen(screenOnly: true,)))),

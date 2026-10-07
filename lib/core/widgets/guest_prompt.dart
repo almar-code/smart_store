@@ -4,9 +4,16 @@ import 'package:flutter_svg/svg.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/buttons/app_button.dart';
+import '../../views/widgets/login/login.dart';
 
-class EmptyCartScreen extends StatelessWidget {
-  const EmptyCartScreen({super.key});
+class GuestPrompt extends StatelessWidget {
+  final String? title;
+  final String subtitle;
+  const GuestPrompt({
+    super.key,
+    this.title,
+    required this.subtitle
+    ,});
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +27,7 @@ class EmptyCartScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               SvgPicture.asset(
-                "assets/images/shopping.svg",
+                "assets/images/svg/user-plus.svg",
                 width: isDesktop ? 90 : 60,
                 colorFilter: ColorFilter.mode(AppColors.iconColor, BlendMode.srcIn),
               ),
@@ -29,7 +36,7 @@ class EmptyCartScreen extends StatelessWidget {
 
               // العنوان
               Text(
-                tr('cart_empty_title'),
+                title ?? tr('guest_title'),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: isDesktop ? 20 : 15,
@@ -43,7 +50,7 @@ class EmptyCartScreen extends StatelessWidget {
 
               // الوصف
               Text(
-                tr('cart_empty_subtitle'),
+                subtitle,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: isDesktop ? 14 : 10,
@@ -53,19 +60,21 @@ class EmptyCartScreen extends StatelessWidget {
 
               SizedBox(height: isDesktop ? 30 : 15),
 
-              // زر تسوق الآن فقط
               SizedBox(
                 width: double.infinity,
                 height: isDesktop ? 45 : 35,
                 child: AppButton(
-                  label: tr('shop_now'),
-                  icon: Icons.shopping_bag_outlined,
+                  label: tr('sign_in_register'),
+                  icon: Icons.person_2_outlined,
                   color: AppColors.buttonColor,
                   textColor: Colors.white,
                   borderColor: AppColors.borderColor,
                   iconSize: 17,
                   onTap: () {
-                    // التنقل لصفحة التسوق أو الرئيسية
+                    Login login = Login();
+                    if (context.mounted) {
+                      login.loginDialog(context);
+                    }
                   },
                 ),
               ),

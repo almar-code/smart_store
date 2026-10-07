@@ -523,3 +523,89 @@ class UserProfileShimmer extends StatelessWidget {
     );
   }
 }
+class AddressShimmer extends StatelessWidget {
+  final int itemCount;
+
+  const AddressShimmer({
+    super.key,
+    this.itemCount = 6, // عدد البطاقات الهيكلية الافتراضي أثناء التحميل
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
+
+    return Shimmer.fromColors(
+      baseColor: AppColors.baseColor,
+      highlightColor: AppColors.highlightColor,
+      child: ListView.builder(
+        padding: EdgeInsets.all(isDesktop ? 16 : 8),
+        itemCount: itemCount,
+        shrinkWrap: true,
+        physics: const NeverScrollableScrollPhysics(),
+        itemBuilder: (context, index) {
+          return Container(
+            margin: const EdgeInsets.only(bottom: 16),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: AppColors.backgroundSecondary,
+              borderRadius: BorderRadius.circular(15),
+            ),
+            child: Row(
+              children: [
+                // 1. شيمر الأيقونة الدائرية
+                Container(
+                  width: isDesktop ? 45 : 40,
+                  height: isDesktop ? 45 : 40,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 15),
+
+                // 2. شيمر سطور النصوص (العنوان والتفاصيل)
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        width: 100,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      Container(
+                        width: double.infinity,
+                        height: 12,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(width: 15),
+
+                // 3. شيمر دائرة الاختيار (Radio Button)
+                Container(
+                  width: 22,
+                  height: 22,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+}

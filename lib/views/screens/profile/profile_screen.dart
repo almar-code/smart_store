@@ -57,13 +57,19 @@ class ProfileScreen extends StatelessWidget {
               SizedBox(width: 10),
             ],
           ),
-          body: Column(
-            children: [
-              if(hasNoPhone && state ) ...[
-                  AddPhoneNumber(),
-               ],
-              Expanded(child: ProfileList()),
-            ],
+          body: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: isDesktop ? MediaQuery.of(context).size.width * 0.2 : 7,
+              vertical: 20,
+            ),
+            child: Column(
+              children: [
+                if(hasNoPhone && state ) ...[
+                    AddPhoneNumber(),
+                 ],
+                Expanded(child: ProfileList()),
+              ],
+            ),
           ),
         );
       }

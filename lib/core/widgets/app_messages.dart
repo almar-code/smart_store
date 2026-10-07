@@ -44,4 +44,42 @@ class AppToasts {
       onDismiss: () {},
     ).show(context);
   }
+  static Future<bool?> showConfirmDialog({
+    required BuildContext context,
+    required String title,
+    required String message,
+  }) {
+    return showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        backgroundColor: AppColors.background,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+        title: Row(
+          spacing: 6,
+          children: [
+            Icon(Icons.warning_amber_rounded ,color: AppColors.redColor,size:30 ,),
+            Text(
+              title,
+              style: TextStyle(color: AppColors.textColor, fontWeight: FontWeight.bold),
+            ),
+          ],
+        ),
+        content: Text(
+          message,
+          style: TextStyle(color: AppColors.textSecondary),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, false),
+            child: Text(tr('cancel'), style: TextStyle(color: AppColors.textSecondary)),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(backgroundColor: AppColors.redColor),
+            onPressed: () => Navigator.pop(context, true),
+            child: Text(tr('delete'), style: const TextStyle(color: Colors.white)),
+          ),
+        ],
+      ),
+    );
+  }
 }

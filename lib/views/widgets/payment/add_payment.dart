@@ -7,7 +7,7 @@ import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/app_form_field.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/buttons/cancel_button.dart';
-import '../../../core/widgets/drop_card.dart';
+import '../../../core/widgets/cards/drop_card.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/underlined_title.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';

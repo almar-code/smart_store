@@ -4,8 +4,8 @@ class ApiEndpoints {
   // 1. جلب الرابط الأساسي من ملف الـ .env مع القيمة الافتراضية للمحاكي
   static String get _baseUrl => dotenv.env['API_BASE_URL'] ?? 'http://192.168.43.224:8000';
 
-  // ====================  روابط الفيديوهات الثابتة والديناميكية ====================
-
+  // ====================  روابط عناوين المستخدمين ====================
+  static String get userAddresses => '$_baseUrl/api/user-addresses';
   // روابط ثابتة للفيديوهات
   static String get getAllVideos => '$_baseUrl/api/get-all-videos';
 // أضف هذا السطر داخل كلاس ApiEndpoints الموجود لديك

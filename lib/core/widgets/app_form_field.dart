@@ -31,7 +31,7 @@ class CustomFormField extends StatefulWidget {
     this.initialValue,
     this.isPasswordField = false, // القيمة الافتراضية ليست كلمة مرور
     this.inputFormatters,
-    this.labelColor
+    this.labelColor,
   });
 
   @override
@@ -59,7 +59,6 @@ class _CustomFormFieldState extends State<CustomFormField> {
       keyboardType: widget.keyboardType,
       obscureText: _obscureText, // ربط المتغير بخاصية الإخفاء
       style: TextStyle(color: AppColors.textColor, fontSize: 14),
-      autovalidateMode: AutovalidateMode.onUserInteraction,
       inputFormatters: widget.inputFormatters,
 
 
@@ -67,6 +66,10 @@ class _CustomFormFieldState extends State<CustomFormField> {
 
         labelText: widget.label,
         hintText: widget.hint,
+        hintStyle: TextStyle(
+          color: AppColors.textSecondary,
+          fontSize: 13,
+        ),
         prefixIcon: widget.icon != null
             ? Icon(widget.icon, color: AppColors.primary, size: 20)
             : null,
@@ -90,7 +93,6 @@ class _CustomFormFieldState extends State<CustomFormField> {
 
 
         labelStyle: TextStyle(color: widget.labelColor ?? AppColors.textSecondary, fontSize: 14),
-        hintStyle: TextStyle(color: Colors.white38),
         filled: true,
         fillColor: Colors.white.withOpacity(0.1),
         contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 18),

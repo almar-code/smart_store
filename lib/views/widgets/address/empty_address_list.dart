@@ -1,41 +1,43 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/buttons/app_button.dart';
+import '../../screens/address/add_address_screen.dart';
 
-class EmptyCartScreen extends StatelessWidget {
-  const EmptyCartScreen({super.key});
+class EmptyAddressScreen extends StatelessWidget {
+  const EmptyAddressScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
+
     return Center(
       child: SizedBox(
-        width: isDesktop ? 400 : 250,
+        width: isDesktop ? 400 : 260,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset(
-                "assets/images/shopping.svg",
-                width: isDesktop ? 90 : 60,
-                colorFilter: ColorFilter.mode(AppColors.iconColor, BlendMode.srcIn),
+              // أيقونة العناوين الفارغة
+              Icon(
+                Icons.location_off_outlined,
+                size: isDesktop ? 90 : 60,
+                color: AppColors.iconColor,
               ),
 
               SizedBox(height: isDesktop ? 20 : 10),
 
               // العنوان
               Text(
-                tr('cart_empty_title'),
+                tr('address_empty_title'),
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: isDesktop ? 20 : 15,
                   fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
                   color: AppColors.textColor,
+                  letterSpacing: 0.5,
                 ),
               ),
 
@@ -43,29 +45,33 @@ class EmptyCartScreen extends StatelessWidget {
 
               // الوصف
               Text(
-                tr('cart_empty_subtitle'),
+                tr('address_empty_subtitle'),
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: isDesktop ? 14 : 10,
+                  fontSize: isDesktop ? 14 : 11,
                   color: AppColors.textSecondary,
                 ),
               ),
 
-              SizedBox(height: isDesktop ? 30 : 15),
+              SizedBox(height: isDesktop ? 30 : 20),
 
-              // زر تسوق الآن فقط
+              // زر إضافة عنوان جديد
               SizedBox(
                 width: double.infinity,
                 height: isDesktop ? 45 : 35,
                 child: AppButton(
-                  label: tr('shop_now'),
-                  icon: Icons.shopping_bag_outlined,
+                  label:  tr('add_address'),
+                  icon: Icons.add_location_alt_outlined,
                   color: AppColors.buttonColor,
                   textColor: Colors.white,
-                  borderColor: AppColors.borderColor,
-                  iconSize: 17,
+                  borderColor: Colors.transparent,
+                  iconSize: isDesktop ? 20 : 17,
                   onTap: () {
-                    // التنقل لصفحة التسوق أو الرئيسية
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const AddAddress(),
+                      ),
+                    );
                   },
                 ),
               ),

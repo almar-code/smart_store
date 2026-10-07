@@ -14,12 +14,6 @@ class UsrAddress extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
 
-    // قائمة تجريبية للعناوين (يمكنك استبدالها ببيانات من الـ API لاحقاً)
-    final List<Map<String, dynamic>> addresses = [
-      {'title': 'Home', 'details': 'Street 10, Building 5, Riyadh, KSA', 'isDefault': true},
-      {'title': 'Office', 'details': 'Business Bay, Tower 2, Floor 15, Dubai, UAE', 'isDefault': false},
-    ];
-
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.background,

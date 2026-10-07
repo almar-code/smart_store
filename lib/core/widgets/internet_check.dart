@@ -8,7 +8,7 @@ class InternetCheck {
   // جعل الدالة ترجع Future<bool> لتخبر الكود المستدعي هل يوجد نت أم لا
   static Future<bool> internetCheck(BuildContext context) async {
     bool connected = await NetworkService.hasInternet();
-    if (!connected) {
+    if (connected) {
       if (context.mounted) {
         AppToasts.showErrorToast(
           context,

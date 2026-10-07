@@ -17,6 +17,7 @@ import 'data/repos/product_repo.dart';
 import 'data/repos/subcategory_repo.dart';
 import 'data/repos/video_repo.dart';
 import 'logic/subcategories/subcategory_cubit.dart';
+import 'logic/user_address/UserAddressCubit.dart';
 import 'logic/videos/comments_cubit.dart';
 import 'logic/videos/video_cubit.dart';
 import 'my_app.dart';
@@ -80,6 +81,9 @@ void main() async {
           ),
           BlocProvider(
             create: (_) => di.sl<CartCubit>()..fetchCart(customerId: 1),
+          ),
+          BlocProvider(
+            create: (_) => di.sl<UserAddressCubit>(),
           ),
         ],
 

@@ -9,13 +9,16 @@ import 'package:smart_store/logic/cart/cart_state.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_endpoints.dart';
 import '../../../core/constants/app_shadow.dart';
+import '../../../core/widgets/app_messages.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/buttons/refresh_button.dart';
 import '../../../core/widgets/colors/circleOfColor.dart';
+import '../../../core/widgets/guest_prompt.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/buttons/smart_floating_button.dart';
 import '../../../core/widgets/three_dots_loader.dart';
+import '../../../logic/login/login_cubit.dart';
 import '../../widgets/cart/emptyCart.dart';
 import '../../widgets/flash/flash_screen.dart';
 import '../address/select_user_address_screen.dart';
@@ -54,7 +57,12 @@ class CartScreen extends StatelessWidget {
           backgroundColor: AppColors.backgroundSecondary,
           child: Padding(
             padding: EdgeInsets.symmetric(vertical: 8.0,horizontal: 20),
-            child: BlocBuilder<CartCubit,CartState>(
+            child: BlocBuilder<LoginCubit,bool>(
+              builder: (context, loginState) {
+                if(loginState) {
+                  return GuestPrompt(subtitle: tr('cart_guest_subtitle'),);
+                }
+              return BlocBuilder<CartCubit,CartState>(
                 builder: (context,state) {
                 if (state is CartLoading) {
                   return MasonryGridShimmer();
@@ -282,14 +290,26 @@ class CartScreen extends StatelessWidget {
 
                                               const SizedBox(width: 8),
                                               InkWell(
-                                                  onTap: (){
-                                                    item.quantity > 1 ?
-                                                    context.read<CartCubit>().updateItemQuantity(
-                                                      customerId: 1,
-                                                      product: item,
-                                                      newQuantity: item.quantity - 1,
-                                                    ): context.read<CartCubit>().deleteItemFromCart(customerId: 4, cartId: item.cartId,product: item,context: context);
-                                                  },
+                                                  onTap: ()async{
+                                                    if(item.quantity > 1) {
+                                                      context.read<CartCubit>().updateItemQuantity(
+                                                        customerId: 1,
+                                                        product: item,
+                                                        newQuantity: item.quantity - 1,
+                                                      );
+                                                    }else{
+                                                      final confirm = await AppToasts.showConfirmDialog(
+                                                        context: context,
+                                                        title: tr('confirm_delete_title'),
+                                                        message: tr('confirm_delete_cartItem_msg'),
+                                                      );
+
+                                                      if (confirm == true && context.mounted) {
+                                                        context.read<CartCubit>().deleteItemFromCart(customerId: 4, cartId: item.cartId,product: item,context: context);
+                                                      }
+
+                                                    }
+                                                    },
                                                   child: item.quantity == 1 ? Icon(Icons.delete_outline, size: 16) : Icon(Icons.remove, size: 16)),
 
                                               const SizedBox(width: 10),
@@ -335,7 +355,9 @@ class CartScreen extends StatelessWidget {
                   ),
                 );;
               }
-            ),
+            );
+  },
+),
           ),
         ),
         floatingActionButton: SmartFloatingButton(),

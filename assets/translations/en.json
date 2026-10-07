@@ -58,6 +58,9 @@
   "list": "List",
   "add_address": "Add Address",
   "add": "Add",
+  "title": "Address Title",
+  "address_title_hint": "e.g. Home, Work, Office",
+  "set_as_default_address": "Set as default address",
   "city": "City",
   "street": "Street",
   "building": "Building / Apt No.",
@@ -204,8 +207,24 @@
   "password_required_error": "Please enter a password",
   "phone_required_error": "Please enter your phone number",
   "name_required_error": "Please enter your full name",
-  "name_min_length_error": "Name must be at least 5 characters long"
-
-
-
+  "name_min_length_error": "Name must be at least 5 characters long",
+  "warning": "Warning",
+  "fetch_addresses_error": "Failed to fetch addresses",
+  "address_added_success": "Address added successfully",
+  "add_address_error": "Failed to save address",
+  "set_default_address_success": "Address set as default successfully",
+  "set_default_address_error": "Failed to change default address",
+  "delete_address_success": "Address deleted successfully",
+  "delete_address_error": "Failed to delete address",
+  "confirm_delete_title": "Confirm Delete",
+  "confirm_delete_address_msg": "Are you sure you want to delete this address?",
+  "delete": "Delete",
+  "default": "Default",
+  "no_addresses_found": "No addresses found",
+  "address_empty_title": "No Addresses Saved",
+  "address_empty_subtitle": "You haven't added any shipping address yet. Add your address for a faster checkout process.",
+  "add_new_address": "Add New Address",
+  "confirm_delete_cartItem_msg": "Are you sure you want to delete this product from cart?",
+  "guest_title": "Please sign in",
+  "cart_guest_subtitle": "Please sign in or create a new account to manage your shopping cart"
 }

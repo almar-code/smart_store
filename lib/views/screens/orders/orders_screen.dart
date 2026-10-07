@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 import '../../../core/widgets/app_title.dart';
-import '../../../core/widgets/drop_card.dart';
+import '../../../core/widgets/cards/drop_card.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/underlined_title.dart';
 // --- 1. الصفحة الرئيسية ---
