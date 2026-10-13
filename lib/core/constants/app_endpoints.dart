@@ -39,4 +39,11 @@ class ApiEndpoints {
   static String updateCartItem(int id) => '$_baseUrl/api/cart/update/$id';
   // لحذف صنف من السلة (DELETE) -> تعتمد على معرف السجل في السلة id
   static String deleteCartItem(int id) => '$_baseUrl/api/cart/delete/$id';
+
+  // روابط الإعلانات
+  static String get getAllAds => '$_baseUrl/api/get-ads';
+  static String generalAdProducts(int adsId) => '$_baseUrl/api/ads/$adsId/products';
+
+  // دالة مساعدة لترتيب مسار صور الإعلانات
+  static String adImageUrl(String imageName) => '$_baseUrl/storage/uploads/Advertisement/$imageName';
 }

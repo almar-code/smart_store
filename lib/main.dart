@@ -7,6 +7,7 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:smart_store/logic/countries_cubit/countries_cubit.dart';
 import 'package:smart_store/views/screens/sign/sign_up_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'logic/ads/ads_cubit.dart';
 import 'logic/cart/cart_cubit.dart';
 import 'logic/favorites/favorites_cubit.dart';
 import 'logic/login/login_cubit.dart';
@@ -80,6 +81,10 @@ void main() async {
           ),
           BlocProvider(
             create: (_) => di.sl<CartCubit>()..fetchCart(customerId: 1),
+          ),
+          // 🌟 إضافة كوبيت الإعلانات وجلب البيانات فور الإقلاع
+          BlocProvider(
+            create: (_) => di.sl<AdsCubit>()..fetchAds(),
           ),
         ],
 

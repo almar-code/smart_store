@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +15,7 @@ import '../../../core/widgets/colors/circleOfColor.dart';
 import '../../../core/widgets/heart_overlay_notifier.dart';
 import '../../../core/widgets/icons/share_icon.dart';
 import '../../../core/widgets/customCategoryList.dart';
+import '../../../core/widgets/rotating_adBanner.dart';
 import '../../../core/widgets/three_dots_loader.dart';
 import '../../../data/models/product_model.dart'; // 🌟 استيراد الموديل
 import '../../../logic/products/product_cubit.dart'; // 🌟 استيراد الكوبيت
@@ -23,6 +26,8 @@ import '../../screens/similar products/similar_products.dart';
 import '../favorites/empty_favorites.dart';
 import '../flash/flash_screen.dart';
 import 'empty_product_list.dart';
+import 'package:smart_store/data/models/AdModel.dart'; // 🌟 تأكد من استيراد AdModel من مساره الصحيح
+
 
 class AllProducts extends StatelessWidget {
   final bool showAddToCart;
@@ -264,7 +269,11 @@ class AllProducts extends StatelessWidget {
                                 ),
                               ),
                             ],
-                          ),
+                          ),item.generalAdvertisements.isEmpty
+                              ? const SizedBox.shrink()
+                                  : RotatingAdBanner(
+                              advertisements: item.generalAdvertisements,
+                              ),
                           Padding(
                             padding: const EdgeInsets.symmetric(horizontal: 8.0),
                             child: SizedBox(
