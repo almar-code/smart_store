@@ -41,7 +41,7 @@ class LoginLogic {
           }
         }
 
-        AppToasts.showSuccessToast(context, tr("login_success"),);
+        AppToasts.showSuccessToast(context, tr("password_updated"),);
       }
 
     } catch (e) {

@@ -52,6 +52,8 @@ class UpdatePassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
+
     return  BlocBuilder<SignUpCubit,int>(
         builder: (context, state) {
           return Scaffold(
@@ -68,14 +70,20 @@ class UpdatePassword extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    StepProgressIndicator(
-                      totalSteps: 3,
-                      currentStep: state + 1,
-                      selectedColor: AppColors.primary,
-                      unselectedColor: Colors.grey.withOpacity(0.2),
+                    Center(
+                      child: SizedBox(
+                        width: isDesktop ? 800 : 400,
+                        child: StepProgressIndicator(
+                          totalSteps: 3,
+                          currentStep: state + 1,
+                          selectedColor: AppColors.primary,
+                          unselectedColor: Colors.grey.withOpacity(0.2),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 30),
                     Container(
+                      width: isDesktop ? 800 : 400,
                       padding: const EdgeInsets.all(25),
                       decoration: BoxDecoration(
                         color: AppColors.ContainerColor,
@@ -180,7 +188,11 @@ class UserDataStep extends StatelessWidget {
       isPasswordField: true,
       validators: [
         FormBuilderValidators.required(errorText: tr('field_required')),
-        FormBuilderValidators.minLength(6, errorText: tr('min_length_6')),
+        FormBuilderValidators.minLength(8, errorText: tr('min_length_6')),
+        FormBuilderValidators.match(
+          RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&_#^()\-+=]).+$'),
+          errorText: tr('password_strength_error'),
+        ),
       ],
     ),
     SizedBox(height: 15,),

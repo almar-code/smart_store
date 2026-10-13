@@ -20,6 +20,8 @@ import '../../../core/widgets/scroll_wrapper.dart';
 import '../../../core/widgets/titleBar.dart';
 import '../../../data/repos/category_repo.dart';
 import '../../../data/services/category_service.dart';
+import '../../../logic/ads/ads_cubit.dart';
+import '../../../logic/ads/ads_state.dart';
 import '../../../logic/categories/category_cubit.dart';
 import '../../../logic/categories/category_state.dart';
 import '../../../logic/products/product_cubit.dart';
@@ -109,26 +111,44 @@ class HomeScreen extends StatelessWidget {
                         isDesktop ? Row(
                           spacing: 12,
                           children: [
-                            Expanded(child:
-                            SliderEds(
-                              images: [
-                                'assets/images/E3.jpg',
-                                'assets/images/a4.jpg',
-                                'assets/images/E.jpg',
-                              ],scrollPhysics: true
-                            )),
+                            Expanded(
+                              flex: 2,
+                              child: BlocBuilder<AdsCubit, AdsState>(
+                                builder: (context, state) {
+                                  if (state is AdsLoading) {
+                                    return const Center(child: CircularProgressIndicator());
+                                  } else if (state is AdsLoaded) {
+                                    final adsList = state.adsList;
+                                    if (adsList.isEmpty) {
+                                      return const Center(child: Text('لا توجد إعلانات حالياً'));
+                                    }
+                                    return SliderEds(
+                                      ads: adsList,
+                                      scrollPhysics: true,
+                                    );
+                                  } else if (state is AdsError) {
+                                    return Center(child: Text(state.message));
+                                  }
+                                  return const SizedBox.shrink();
+                                },
+                              ),
+                            ),
                             Expanded(
                                 flex: 2,
                                 child: ( context.watch<ProductCubit>().discountProducts).isEmpty ?  EmptyProductList() :Discounts()),
                           ],
                         ):
-                        SliderEds(
-                          images: [
-                            'assets/images/E3.jpg',
-                            'assets/images/a4.jpg',
-                            'assets/images/E.jpg',
-                          ],scrollPhysics: true
-                        ),
+                      BlocBuilder<AdsCubit, AdsState>(
+                  builder: (context, state) {
+                    if (state is AdsLoaded && state.adsList.isNotEmpty) {
+                      return SliderEds(
+                        ads: state.adsList,
+                        scrollPhysics: true,
+                      );
+                    }
+                    return const SizedBox.shrink(); // في حال التحميل أو الخطأ أو القائمة الفارغة لا يظهر شيئاً مزعجاً
+                  },
+                  ),
                         if(!isDesktop) SubcategoryBar(),
                         isDesktop?SubcategoryBar():( context.watch<ProductCubit>().discountProducts).isEmpty ? SizedBox() :Discounts(),
                         TitleBar(title: tr('forYou'),),

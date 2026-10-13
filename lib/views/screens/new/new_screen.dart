@@ -11,8 +11,11 @@ import '../../../core/widgets/icons/cart_icon.dart';
 import '../../../core/widgets/icons/favorite_icon.dart';
 import '../../../core/widgets/search/app_search.dart';
 import '../../../core/widgets/titleBar.dart';
+import '../../../data/models/AdModel.dart';
 import '../../../data/repos/product_repo.dart';
 import '../../../data/services/product_service.dart';
+import '../../../logic/ads/ads_cubit.dart';
+import '../../../logic/ads/ads_state.dart';
 import '../../../logic/products/product_cubit.dart';
 import '../../widgets/new/date_new.dart';
 import '../../widgets/new/img_new.dart';
@@ -82,22 +85,42 @@ class NewScreen extends StatelessWidget {
                     spacing: 10,
                     children: [
                       Expanded(
-                          flex: 1,
-                          child: SliderEds(images: [
-                        'assets/images/new_ar.png',
-                        'assets/images/new_phon_ar_10.png',
-                        'assets/images/new_phon_ar_9.png',
-                      ])),
+                        child: BlocBuilder<AdsCubit, AdsState>(
+                          builder: (context, state) {
+                            if (state is AdsLoading) {
+                              return const Center(child: CircularProgressIndicator());
+                            } else if (state is AdsLoaded) {
+                              final adsList = state.adsList;
+                              if (adsList.isEmpty) {
+                                return const Center(child: Text('لا توجد إعلانات حالياً'));
+                              }
+                              return SliderEds(
+                                ads: adsList,
+                                scrollPhysics: true,
+                              );
+                            } else if (state is AdsError) {
+                              return Center(child: Text(state.message));
+                            }
+                            return const SizedBox.shrink();
+                          },
+                        ),
+                      ),
                       Expanded(
                         flex: 2,
                           child: SheinNewInDates())
                     ],
                   ),
-                ):SliderEds(images: [
-                  'assets/images/new_ar.png',
-                  'assets/images/new_phon_ar_10.png',
-                  'assets/images/new_phon_ar_9.png',
-                ],scrollPhysics: true,),
+                ):BlocBuilder<AdsCubit, AdsState>(
+                  builder: (context, state) {
+                    if (state is AdsLoaded) {
+                      return SliderEds(
+                        ads: state.adsList,
+                        scrollPhysics: true,
+                      );
+                    }
+                    return const SizedBox.shrink(); // أو مؤشر تحميل بسيط أثناء جلب الإعلانات
+                  },
+                ),
                 isDesktop?SizedBox(): Padding(
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   child: SheinNewInDates(),
