@@ -89,6 +89,7 @@ class _AddAddressViewState extends State<AddAddressView> {
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
+          scrolledUnderElevation: 0,
           backgroundColor: AppColors.background,
           elevation: 0,
           automaticallyImplyLeading: false,
@@ -142,7 +143,7 @@ class _AddAddressViewState extends State<AddAddressView> {
           child: SingleChildScrollView(
             padding: EdgeInsets.symmetric(
               horizontal: isDesktop ? MediaQuery.of(context).size.width * 0.2 : 20,
-              vertical: 20,
+              vertical: 10,
             ),
             child: Column(
               children: [
@@ -224,7 +225,6 @@ class _AddAddressViewState extends State<AddAddressView> {
                   child: FormBuilder(
                     key: _formKey,
                     child: Column(
-                      spacing: 15,
                       children: [
                         CustomFormField(
                           name: 'title',
@@ -233,35 +233,41 @@ class _AddAddressViewState extends State<AddAddressView> {
                           icon: Icons.bookmark_outline_rounded,
                           validators: [FormBuilderValidators.required()],
                         ),
+                        const SizedBox(height: 12),
                         CustomFormField(
                           name: 'country',
                           label: tr('country'),
                           icon: Icons.public,
                           validators: [FormBuilderValidators.required()],
                         ),
+                        const SizedBox(height: 12),
                         CustomFormField(
                           name: 'city',
                           label: tr('city'),
                           icon: Icons.location_city,
                           validators: [FormBuilderValidators.required()],
                         ),
+                        const SizedBox(height: 12),
                         CustomFormField(
                           name: 'street',
                           label: tr('street'),
                           icon: Icons.add_road,
                           validators: [FormBuilderValidators.required()],
                         ),
+                        const SizedBox(height: 12),
                         CustomFormField(
                           name: 'building',
                           label: tr('building'),
                           icon: Icons.apartment,
                         ),
+                        const SizedBox(height: 12),
                         CustomFormField(
                           name: 'postal_code',
                           label: tr('postal_code'),
                           icon: Icons.mark_as_unread_sharp,
                           keyboardType: TextInputType.number,
                         ),
+                        const SizedBox(height: 5),
                         FormBuilderCheckbox(
                           name: 'is_default',
                           initialValue: false,
@@ -277,8 +283,7 @@ class _AddAddressViewState extends State<AddAddressView> {
                           contentPadding: EdgeInsets.zero,
                           controlAffinity: ListTileControlAffinity.leading,
                         ),
-                        const SizedBox(height: 1),
-
+                        const SizedBox(height: 5),
                         // أزرار الحفظ والتعديل والإلغاء الديناميكية
                         BlocBuilder<UserAddressCubit, UserAddressState>(
                           builder: (context, state) {
@@ -298,8 +303,7 @@ class _AddAddressViewState extends State<AddAddressView> {
                                             ? const CircularProgress(
                                           size: 20,
                                           color: Colors.white,
-                                        )
-                                            : null,
+                                        ): null,
                                         onTap: isLoading
                                             ? null
                                             : () {
