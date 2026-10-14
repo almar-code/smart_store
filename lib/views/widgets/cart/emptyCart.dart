@@ -1,6 +1,7 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:smart_store/views/screens/product/all_products_screen.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/buttons/app_button.dart';
@@ -64,9 +65,9 @@ class EmptyCartScreen extends StatelessWidget {
                   textColor: Colors.white,
                   borderColor: AppColors.borderColor,
                   iconSize: 17,
-                  onTap: () {
-                    // التنقل لصفحة التسوق أو الرئيسية
-                  },
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => AllProductsScreen()),
+                  ),
                 ),
               ),
             ],

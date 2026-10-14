@@ -105,6 +105,7 @@ class _AddressListViewState extends State<AddressListView> {
   }
 
   Widget _buildExpandedDetails(BuildContext context, UserAddressModel address) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
     return Column(
       children: [
         const SizedBox(height: 12),
@@ -132,7 +133,7 @@ class _AddressListViewState extends State<AddressListView> {
                   label:  tr('set_as_default_address'),
                   color:  AppColors.primary,
                   borderRadius: 12,
-                  icon: Icons.check_circle_outline,
+                  icon: Icons.check_outlined,
                   onTap: address.isDefault
                       ? null
                       : () {
@@ -168,7 +169,8 @@ class _AddressListViewState extends State<AddressListView> {
             ),
 
             // 3. زر الحذف مع رسالة التأكيد
-            Expanded(
+            if(isDesktop)
+              Expanded(
               child: SizedBox(
                 height: 45,
                 child: DeleteButton(
@@ -188,7 +190,31 @@ class _AddressListViewState extends State<AddressListView> {
               ),
             ),
           ],
-        )
+        ),
+
+        if(!isDesktop)
+          Column(
+            children: [
+              const SizedBox(height: 7),
+              SizedBox(
+                height: 45,
+                child: DeleteButton(
+                  onPressed: () async {
+                    final confirm = await AppToasts.showConfirmDialog(
+                      context: context,
+                      title: tr('confirm_delete_title'),
+                      message: tr('confirm_delete_address_msg'),
+                    );
+
+                    if (confirm == true && context.mounted) {
+                      context.read<UserAddressCubit>().deleteAddress(address.addressId);
+                    }
+                  },
+                  borderRadius: 12,
+                ),
+              ),
+            ],
+          ),
       ],
     );
   }
