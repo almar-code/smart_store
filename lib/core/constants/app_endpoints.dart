@@ -16,7 +16,7 @@ class ApiEndpoints {
   static String toggleSave(int videoId) => '$_baseUrl/api/videos/$videoId/save';
   static String getComments(int videoId) => '$_baseUrl/api/videos/$videoId/comments';
   static String addComment(int videoId) => '$_baseUrl/api/videos/comments/$videoId';
-  // ====================🛍 روابط المنتجات والأقسام الثابتة ====================
+  // ==================== روابط المنتجات والأقسام الثابتة ====================
   static String get getSubCategories => '$_baseUrl/api/categories';
   static String get getProducts => '$_baseUrl/api/products';
   static String get getCategories => '$_baseUrl/api/sections';
@@ -25,7 +25,7 @@ class ApiEndpoints {
   // static String get getFavoriteProducts => '$_baseUrl/api/customer/favorites';
   static String get toggleFavorite => '$_baseUrl/api/customer/favorites/toggle';
   static String get favoriteCount => '$_baseUrl/api/customer/favorites/count';
-// ====================🛍 روابط ملفات صور  المنتجات والأقسام الثابتة ====================
+// ==================== روابط ملفات صور  المنتجات والأقسام الثابتة ====================
   static String productImageUrl(String? image) => "$_baseUrl/storage/uploads/products/$image";
   static String countryFlag(String? code) => "https://flagcdn.io/flags/4x3/${code}.svg";
   static String subCategoryImageUrl(String? image) => "$_baseUrl/storage/uploads/subcategory/$image";
@@ -37,5 +37,18 @@ class ApiEndpoints {
   static String updateCartItem(int id) => '$_baseUrl/api/cart/update/$id';
   // لحذف صنف من السلة (DELETE) -> تعتمد على معرف السجل في السلة id
   static String deleteCartItem(int id) => '$_baseUrl/api/cart/delete/$id';
-
+  // ==================== روابط عمليات الدفع (Payment Endpoints) ====================
+  static String get getPaymentMethods => '$_baseUrl/api/payments/methods';
+  static String get setupCard => '$_baseUrl/api/payments/methods/setup';
+  static String get syncCard => '$_baseUrl/api/payments/methods/sync';
+  static String get createPaymentIntent => '$_baseUrl/api/payments/create-intent';
+  static String deletePaymentMethod(int paymentMethodId) => '$_baseUrl/api/payments/methods/$paymentMethodId';
+  static String get startCheckout => '$_baseUrl/api/checkout/start';
+  static String get getStorePaymentAccounts => '$_baseUrl/api/store-payment-accounts';
+  static String get createManualCheckout => '$_baseUrl/api/manual-payment/checkout';
+  // ====================  روابط الطلبات (Order Endpoints) ====================
+  static String getOrders(int customerId) => '$_baseUrl/api/orders/$customerId';
+  static String cancelOrder(int orderId) => '$_baseUrl/api/orders/cancel/$orderId';
+// 👈 الرابط الجديد المضاف الخاص بجلب وطباعة فاتورة الطلب بصيغة PDF من لارافيل
+  static String orderInvoice(int orderId) => '$_baseUrl/api/orders/$orderId/invoice';
 }
