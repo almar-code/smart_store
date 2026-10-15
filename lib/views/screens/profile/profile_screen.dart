@@ -31,7 +31,6 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    bool isDesktop = MediaQuery.of(context).size.width > 800;
     context.locale;
     return  BlocBuilder<LoginCubit, bool>(
       builder: (context, state){
@@ -79,19 +78,22 @@ class ProfileScreen extends StatelessWidget {
 }
 
 void _showLogoutDialog(BuildContext context) async{
+  bool isDesktop = MediaQuery.of(context).size.width > 800;
+
   bool connected = await NetworkService.hasInternet();
   if (!connected) {
     InternetCheck.internetCheck(context);
 
   }else{
 
-  showDialog(
+    showDialog(
     context: context,
     barrierDismissible: true,
     builder: (dialogContext) {
       return Dialog(
         backgroundColor: Colors.transparent,
         child: Container(
+          width: isDesktop ? 400 : 300,
           padding: const EdgeInsets.all(14),
           decoration: BoxDecoration(
             color: AppColors.ContainerColor,

@@ -8,9 +8,9 @@ class ProductRepo {
 
   ProductRepo({required this.apiService});
 
-  Future<Map<String, dynamic>> fetchProductsPaginated({int? subCatId, int? categoryId,int? productId, required int page,String? date ,int? seed,bool isDiscount = false,bool isFavorite = false,int? customerId}) async {
+  Future<Map<String, dynamic>> fetchProductsPaginated({int? subCatId, int? categoryId,int? productId, required int page,String? date ,int? seed,bool isDiscount = false,int? adsId,bool isFavorite = false,int? customerId}) async {
     try {
-      final Response response = await apiService.getProductsRaw(subCatId: subCatId,categoryId: categoryId,productId: productId, page: page ,seed: seed,date: date,isDiscount: isDiscount,isFavorite: isFavorite,customerId :customerId);
+      final Response response = await apiService.getProductsRaw(subCatId: subCatId,categoryId: categoryId,productId: productId, page: page ,seed: seed,date: date,isDiscount: isDiscount,adsId: adsId,isFavorite: isFavorite,customerId :customerId);
 
       if (response.statusCode == 200) {
         // الـ Dio يقوم بتحليل الـ JSON تلقائياً إلى Map، لذا نصل لـ response.data مباشرة

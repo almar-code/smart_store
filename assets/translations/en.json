@@ -159,7 +159,9 @@
   "save": "Save",
   "change": "Change",
   "field_required": "This field is required",
-  "min_length_6": "Must be at least 6 characters",
+  "min_length_6": "Must be at least 8 characters long",
+  "password_strength_error" : "must contain letters numbers and special characters",
+
   "confirm_password_required": "Please confirm password",
   "password_not_match": "Passwords do not match",
   "confirm_password": "Confirm Password",

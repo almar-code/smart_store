@@ -93,15 +93,22 @@ class SignUpScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(20),
                 child: Column(
                   children: [
-                    StepProgressIndicator(
-                      totalSteps: 4,
-                      currentStep: state + 1,
-                      selectedColor: AppColors.primary,
-                      unselectedColor: Colors.grey.withOpacity(0.2),
+                    Center(
+                      child: SizedBox(
+                        width: isDesktop ? 800:600,
+                        child: StepProgressIndicator(
+
+                          totalSteps: 4,
+                          currentStep: state + 1,
+                          selectedColor: AppColors.primary,
+                          unselectedColor: Colors.grey.withOpacity(0.2),
+                        ),
+                      ),
                     ),
                     const SizedBox(height: 30),
                     Container(
-                      padding: const EdgeInsets.all(25),
+                      width:  isDesktop ? 800: 600,
+                      padding: EdgeInsets.all(isDesktop ? 25 : 15),
                       decoration: BoxDecoration(
                         color: AppColors.ContainerColor,
                         borderRadius: BorderRadius.circular(15),
@@ -208,7 +215,11 @@ class AccountStep extends StatelessWidget {
       icon: Icons.lock_outline,
       isPasswordField: true,
       validators: [FormBuilderValidators.required(errorText:tr("password_required_error")),
-        FormBuilderValidators.minLength(6, errorText: tr('min_length_6')),
+        FormBuilderValidators.minLength(8, errorText: tr('min_length_6')),
+        FormBuilderValidators.match(
+          RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&_#^()\-+=]).+$'),
+          errorText: tr('password_strength_error'),
+        ),
 
       ],
     ),
@@ -294,9 +305,10 @@ class _AvatarStepState extends State<AvatarStep> {
 
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
 
     return Padding(
-      padding: const EdgeInsets.symmetric(
+      padding:  EdgeInsets.symmetric(
         horizontal: 30,
         vertical: 70,
       ),
@@ -305,13 +317,13 @@ class _AvatarStepState extends State<AvatarStep> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
 
-          Text(tr("add_user_image"), style: const TextStyle(
-            fontSize: 20,
+          Text(tr("add_user_image"), style:  TextStyle(
+            fontSize:isDesktop ? 20 :15,
               fontWeight: FontWeight.bold,
             ),
           ),
 
-          const SizedBox(height: 100),
+           SizedBox(height:isDesktop? 80:90),
 
           GestureDetector(
             onTap: _pickImage,

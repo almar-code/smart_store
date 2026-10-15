@@ -22,7 +22,7 @@ class ProductCubit extends Cubit<ProductState> {
   List<ProductModel> discountProducts = []; // 🌟 مصفوفة مخصصة للخصومات المفلترة مسبقاً
   int? currentSeed; // لحفظ رقم خلطة البيانات الحالية ومنع التكرار
   int _requestId = 0;
-  Future<void> fetchProducts({int? subCatId, int? categoryId, int? productId, int? similarProductId,String? date, bool isRefresh = false ,bool isDiscount = false,bool isFavorite = false}) async {
+  Future<void> fetchProducts({int? subCatId, int? categoryId, int? productId, int? similarProductId,String? date, bool isRefresh = false ,bool isDiscount = false,int? adsId,bool isFavorite = false}) async {
     categoryID = categoryId;
     if (isRefresh) {
       _requestId++; // إنشاء معرف جديد
@@ -53,6 +53,7 @@ class ProductCubit extends Cubit<ProductState> {
         seed: currentSeed,
         page: currentPage,
         isDiscount: isDiscount,
+        adsId:adsId,
         isFavorite: isFavorite,
         customerId: 1,
         date: date,

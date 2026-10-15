@@ -7,7 +7,7 @@ import '../../core/constants/app_endpoints.dart';
 class ProductService {
   final Dio dio = Dio();
 
-  Future<Response> getProductsRaw({int? subCatId, int? categoryId,int? productId, required int page ,int? seed,String? date,bool isDiscount = false,bool isFavorite = false , int? customerId}) async {
+  Future<Response> getProductsRaw({int? subCatId, int? categoryId,int? productId, required int page ,int? seed,String? date,bool isDiscount = false,int? adsId,bool isFavorite = false , int? customerId}) async {
     try {
       // تجهيز رقم الصفحة كمعامل أساسي
       Map<String, dynamic> queryParams = {'page': page};
@@ -16,6 +16,7 @@ class ProductService {
       if (categoryId != null) queryParams['category_id'] = categoryId;
       if (productId != null) queryParams['product_id'] = productId;
       if (isDiscount) queryParams['is_discount'] = isDiscount;
+      if (adsId != null) queryParams['adsId'] = adsId;
       if (isFavorite)   queryParams['is_favorite'] = isFavorite;
       if (customerId != null) queryParams['customer_id'] = customerId;
       if (seed != null) queryParams['seed'] = seed;

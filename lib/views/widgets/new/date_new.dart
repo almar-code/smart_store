@@ -4,6 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 import 'package:smart_store/logic/products/product_cubit.dart';
 import '../../../core/constants/app_shadow.dart';
+import '../../../data/models/AdModel.dart';
+import '../../../logic/ads/ads_cubit.dart';
+import '../../../logic/ads/ads_state.dart';
 import '../../../logic/products/product_state.dart';
 import '../flash/flash_screen.dart';
 import '../sliderEds/sliderEds.dart';
@@ -99,11 +102,25 @@ class SheinNewInDates extends StatelessWidget {
                 ),
               ),
               Expanded(
-                child: SliderEds(images: [
-                  'assets/images/new_phon_ar_9.png',
-                  'assets/images/new_ar.png',
-                  'assets/images/new_phon_ar_10.png',
-                ]),
+                child: BlocBuilder<AdsCubit, AdsState>(
+                  builder: (context, state) {
+                    if (state is AdsLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (state is AdsLoaded) {
+                      final adsList = state.adsList;
+                      if (adsList.isEmpty) {
+                        return const Center(child: Text('لا توجد إعلانات حالياً'));
+                      }
+                      return SliderEds(
+                        ads: adsList,
+                        scrollPhysics: true,
+                      );
+                    } else if (state is AdsError) {
+                      return Center(child: Text(state.message));
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
               ),
             ],
           )

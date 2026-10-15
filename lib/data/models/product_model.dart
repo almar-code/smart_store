@@ -1,7 +1,7 @@
 // model/product_model.dart
 
 import 'package:smart_store/data/models/video_model.dart';
-
+import 'package:smart_store/data/models/AdModel.dart'; // 🌟 تأكد من استيراد AdModel من مساره الصحيح
 class ProductModel {
   final int pId;
   final int subCatId;
@@ -13,6 +13,7 @@ class ProductModel {
   final String? pImage;
   final List<ColorModel> colors;
   final List<SizeModel> sizes; //  إضافة قائمة المقاسات الجديدة
+  final List<AdModel> generalAdvertisements; // 🌟 إضافة قائمة الإعلانات المخصصة للمنتج
   final DiscountModel? discount;
   final int? videoID;
   bool isFavorite;
@@ -28,6 +29,7 @@ class ProductModel {
     this.pImage,
     required this.colors,
     required this.sizes, //  تمرير المقاسات
+    required this.generalAdvertisements, // 🌟 استقبال الإعلانات
     this.discount,
     this.videoID,
     this.isFavorite = false,
@@ -55,6 +57,12 @@ class ProductModel {
       discount: json['discount'] != null ? DiscountModel.fromJson(json['discount']) : null,
       videoID: json['video_id'],
       isFavorite: json['is_favorite'] == true || json['is_favorite'] == 1,
+      // 🌟 التحقق من وجود general_advertisements وإنشاء كائنات AdModel منها
+      generalAdvertisements: json['general_advertisements'] != null
+          ? (json['general_advertisements'] as List)
+          .map((adJson) => AdModel.fromJson(adJson))
+          .toList()
+          : [],
     );
   }
 }

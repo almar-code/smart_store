@@ -20,11 +20,18 @@ class ApiEndpoints {
   static String get getSubCategories => '$_baseUrl/api/categories';
   static String get getProducts => '$_baseUrl/api/products';
   static String get getCategories => '$_baseUrl/api/sections';
-  static String get getCountry => 'https://countriesnow.space/api/v0.1/countries/codes';
+
   // ====================  روابط المفضلات الجديدة ====================
   // static String get getFavoriteProducts => '$_baseUrl/api/customer/favorites';
   static String get toggleFavorite => '$_baseUrl/api/customer/favorites/toggle';
   static String get favoriteCount => '$_baseUrl/api/customer/favorites/count';
+
+  static String get getCountry => 'https://countriesnow.space/api/v0.1/countries/codes';
+  // // ====================  روابط المفضلات الجديدة ====================
+  // // static String get getFavoriteProducts => '$_baseUrl/api/customer/favorites';
+  // static String get toggleFavorite => '$_baseUrl/api/customer/favorites/toggle';
+  // static String get favoriteCount => '$_baseUrl/api/customer/favorites/count';
+
 // ====================🛍 روابط ملفات صور  المنتجات والأقسام الثابتة ====================
   static String productImageUrl(String? image) => "$_baseUrl/storage/uploads/products/$image";
   static String countryFlag(String? code) => "https://flagcdn.io/flags/4x3/${code}.svg";
@@ -38,4 +45,10 @@ class ApiEndpoints {
   // لحذف صنف من السلة (DELETE) -> تعتمد على معرف السجل في السلة id
   static String deleteCartItem(int id) => '$_baseUrl/api/cart/delete/$id';
 
+  // روابط الإعلانات
+  static String get getAllAds => '$_baseUrl/api/get-ads';
+  static String generalAdProducts(int adsId) => '$_baseUrl/api/ads/$adsId/products';
+
+  // دالة مساعدة لترتيب مسار صور الإعلانات
+  static String adImageUrl(String imageName) => '$_baseUrl/storage/uploads/Advertisement/$imageName';
 }
