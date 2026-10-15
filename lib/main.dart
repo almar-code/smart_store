@@ -11,9 +11,10 @@ import 'logic/cart/cart_cubit.dart';
 import 'logic/favorites/favorites_cubit.dart';
 import 'logic/login/login_cubit.dart';
 import 'logic/login/login_cubit_web.dart';
+import 'logic/orders/order_cubit.dart';
+import 'logic/payments/payment_cubit.dart';
 import 'logic/signup/sign_up_cubit.dart';
 import 'logic/navigation/navigation_cubit.dart';
-import 'data/repos/product_repo.dart';
 import 'data/repos/subcategory_repo.dart';
 import 'data/repos/video_repo.dart';
 import 'logic/subcategories/subcategory_cubit.dart';
@@ -26,8 +27,7 @@ import 'logic/categories/category_cubit.dart';
 import 'core/di/injection_container.dart' as di;
 import 'data/repos/category_repo.dart';
 import 'package:flutter/foundation.dart';
-
-// 🌟 استيراد ملفات الـ Product الـجديدة لربطها بالماين
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'logic/products/product_cubit.dart';
 
 void main() async {
@@ -42,6 +42,11 @@ void main() async {
     anonKey: supaBaseKey, // المفتاح من صورتك الأخيرة
   );
   await di.init();
+  Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
+  if (!kIsWeb) {
+    Stripe.urlScheme = 'flutterstripe';
+    await Stripe.instance.applySettings();
+  }
   // await dotenv.load(fileName: ".env");
   runApp(
     EasyLocalization(
@@ -84,6 +89,12 @@ void main() async {
           ),
           BlocProvider(
             create: (_) => di.sl<UserAddressCubit>(),
+          ),
+          BlocProvider(
+            create: (_) => di.sl<PaymentCubit>(),
+          ),
+          BlocProvider(
+            create: (_) => di.sl<OrderCubit>(),
           ),
         ],
 

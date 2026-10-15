@@ -12,10 +12,12 @@ class CustomFormField extends StatefulWidget {
   final int maxLines;
   final Color? color;
   final Color? labelColor;
+  final Color? iconColor;
   final List<String? Function(String?)>? validators;
   final TextInputType keyboardType;
   final String? initialValue;
   final bool isPasswordField; // خاصية لتحديد ما إذا كان الحقل كلمة مرور
+  final bool readOnly;
   final List<TextInputFormatter>? inputFormatters; // علشان افلتر الحفل يقبل ارقام فقط
 
   const CustomFormField({
@@ -26,11 +28,13 @@ class CustomFormField extends StatefulWidget {
     this.icon,
     this.maxLines = 1,
     this.validators,
+    this.iconColor,
     this.color ,
     this.keyboardType = TextInputType.text,
     this.initialValue,
     this.isPasswordField = false, // القيمة الافتراضية ليست كلمة مرور
     this.inputFormatters,
+    this.readOnly = false,
     this.labelColor,
   });
 
@@ -60,8 +64,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
       obscureText: _obscureText, // ربط المتغير بخاصية الإخفاء
       style: TextStyle(color: AppColors.textColor, fontSize: 14),
       inputFormatters: widget.inputFormatters,
-
-
+      readOnly: widget.readOnly,
       decoration: InputDecoration(
 
         labelText: widget.label,
@@ -71,7 +74,7 @@ class _CustomFormFieldState extends State<CustomFormField> {
           fontSize: 13,
         ),
         prefixIcon: widget.icon != null
-            ? Icon(widget.icon, color: AppColors.primary, size: 20)
+            ? Icon(widget.icon, color: widget.iconColor ?? AppColors.primary, size: 20)
             : null,
 
         // إضافة أيقونة العين فقط إذا كان الحقل لكلمة المرور
