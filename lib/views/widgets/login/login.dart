@@ -182,7 +182,7 @@ class Login extends StatelessWidget {
     );
   }
 
-  Widget _socialButton(IconData icon, String label, VoidCallback onTap) {
+  Widget _socialButton(FaIconData icon, String label, VoidCallback onTap) {
     return InkWell(
       borderRadius:BorderRadius.circular(15),
       onTap: onTap,
@@ -192,7 +192,7 @@ class Login extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            FaIcon(icon, color: Colors.white, size: 18),
+            FaIcon(icon as FaIconData?, color: Colors.white, size: 18),
             SizedBox(width: 8),
             Text(label, style: TextStyle(color: Colors.white)),
           ],

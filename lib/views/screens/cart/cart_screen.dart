@@ -141,7 +141,7 @@ class CartScreen extends StatelessWidget {
 
                                           Padding(
                                             padding: const EdgeInsets.symmetric(
-                                                horizontal: 8.0),
+                                                horizontal: 2.0),
                                             child: ClipRRect(
                                               borderRadius: BorderRadius.circular(7),
                                               child:  Image.network(
@@ -412,19 +412,33 @@ class CartScreen extends StatelessWidget {
                           width: 600,
                           child: AppButton(label: tr('checkout'),
                             icon: Icons.credit_card,
-                            onTap: () =>
-                                Navigator.of(context,).push(MaterialPageRoute(
-                                    builder: (context) =>
-                                        SelectUsrAddress())),),
+                            onTap: () {
+                              context.read<CartCubit>().fetchCart(customerId: 1);
+                              if(state is CartEmpty){
+                              AppToasts.showSuccessToast(context,   'عذرا لا يوجد منتجات في السلة');
+                            }
+                            Navigator.of(context,).push(MaterialPageRoute(
+                                builder: (context) =>
+                                    SelectUsrAddress(
+                                      displayTotal: state.totalPrice -
+                                          state.totalDiscount,)));}
+                          )
                         ) : Expanded(
                           child: SizedBox(
                             height: 27,
                             child: AppButton(label: tr('checkout'),
                               icon: Icons.credit_card,
-                              onTap: () =>
+                                onTap: () {
+                                  context.read<CartCubit>().fetchCart(customerId: 1);
+                                  if(state is CartEmpty){
+                                    AppToasts.showSuccessToast(context,   'عذرا لا يوجد منتجات في السلة');
+                                  }
                                   Navigator.of(context,).push(MaterialPageRoute(
                                       builder: (context) =>
-                                          SelectUsrAddress())),),
+                                          SelectUsrAddress(
+                                            displayTotal: state.totalPrice -
+                                                state.totalDiscount,)));}
+                            )
                           ),
                         ),
                         SizedBox(width: 10,),

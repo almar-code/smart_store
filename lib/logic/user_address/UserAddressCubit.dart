@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../data/models/user_address_model.dart';
 import 'user_address_state.dart';
 import '../../data/repos/user_address_repo.dart';
 
@@ -6,7 +7,14 @@ class UserAddressCubit extends Cubit<UserAddressState> {
   final UserAddressRepo repo;
 
   UserAddressCubit(this.repo) : super(UserAddressInitial());
+  UserAddressModel? selectedAddress;
 
+  // دالة لتغيير العنوان المختار
+  void selectAddress(UserAddressModel? address) {
+    selectedAddress = address;
+    // يمكنك عمل Emit لحالة خاصة إذا أردت تحديث الواجهات الأخرى مباشرة
+    emit(UserAddressSelectedChanged(address));
+  }
   // جلب كافة العناوين
   Future<void> getAddresses() async {
     emit(UserAddressLoading());

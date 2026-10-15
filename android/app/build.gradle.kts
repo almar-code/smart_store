@@ -5,7 +5,7 @@ plugins {
 }
 android {
     namespace = "com.omarabdalfatah.smart_store"
-    compileSdk = 35 // يفضل استخدام 35 حالياً لضمان الاستقرار مع المكتبات
+    compileSdk = 36 // يفضل استخدام 35 حالياً لضمان الاستقرار مع المكتبات
     ndkVersion = flutter.ndkVersion
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -19,7 +19,7 @@ android {
     defaultConfig {
         applicationId = "com.omarabdalfatah.smart_store"
         minSdk = 23
-        targetSdk = 35
+        targetSdk = 36
         versionCode = flutter.versionCode
         versionName = flutter.versionName
         manifestPlaceholders["MAPS_API_KEY"] = "AIzaSyDOG6jlkeDYdq75yQrtEahdlNmOz1R8HHc"

@@ -22,3 +22,7 @@ class UserAddressError extends UserAddressState {
   final String message;
   UserAddressError(this.message);
 }
+class UserAddressSelectedChanged extends UserAddressState {
+  final UserAddressModel? selectedAddress;
+  UserAddressSelectedChanged(this.selectedAddress);
+}

@@ -50,6 +50,7 @@ class AppButton extends StatelessWidget {
       child: MaterialButton(
         onPressed: onTap, // 👈 تفعيل تعطيل الزر بمرونة عند إرسال null
         color: color ?? Colors.transparent,
+        disabledColor: color ?? Colors.transparent, // 👈 أضف هذه الخاصية لمنع تحوله للأبيض عند التعطيل
         padding: const EdgeInsets.symmetric(horizontal: 12),
         shape: RoundedRectangleBorder(
           side: BorderSide(color: borderColor),
