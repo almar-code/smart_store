@@ -30,7 +30,7 @@ class ProfileScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
     context.locale;
     return  BlocBuilder<LoginCubit, bool>(
       builder: (context, state){
