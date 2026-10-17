@@ -203,5 +203,8 @@
   "password_required_error": "يجب إدخال كلمة السر",
   "phone_required_error": "يرجى إدخال رقم الهاتف",
   "name_required_error": "يرجى إدخال الاسم الكامل",
-  "name_min_length_error": "يجب أن يتكون الاسم من 5 أحرف على الأقل"
+  "name_min_length_error": "يجب أن يتكون الاسم من 5 أحرف على الأقل",
+  "productReviewQuestion": "ما رأيك في هذا المنتج؟",
+  "noCommentsYet": "لا توجد تعليقات بعد، كن أول المضيفين!",
+  "writeCommentHint": "اكتب تعليقك هنا..."
 }

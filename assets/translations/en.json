@@ -206,7 +206,10 @@
   "password_required_error": "Please enter a password",
   "phone_required_error": "Please enter your phone number",
   "name_required_error": "Please enter your full name",
-  "name_min_length_error": "Name must be at least 5 characters long"
+  "name_min_length_error": "Name must be at least 5 characters long",
+  "productReviewQuestion": "What do you think about this product?",
+  "noCommentsYet": "No comments yet, be the first to comment!",
+  "writeCommentHint": "Write your comment here..."
 
 
 
