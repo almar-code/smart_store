@@ -51,4 +51,16 @@ class ApiEndpoints {
 
   // دالة مساعدة لترتيب مسار صور الإعلانات
   static String adImageUrl(String imageName) => '$_baseUrl/storage/uploads/Advertisement/$imageName';
+
+  // ==================== 💬 روابط تعليقات المنتجات ====================
+  // جلب تعليقات منتج معين (GET)
+  static String getProductComments(int productId) => '$_baseUrl/api/products/$productId/comments';
+
+  // إضافة تعليق جديد (POST)
+  static String get addProductComment => '$_baseUrl/api/product-comments';
+
+  // حذف تعليق (DELETE)
+  static String deleteProductComment(int commentId) => '$_baseUrl/api/product-comments/$commentId';
+
+  static String get syncCustomer => '$_baseUrl/api/customers/sync-supabase';
 }

@@ -30,6 +30,7 @@ import '../../../logic/login/login_cubit.dart';
 import '../../../logic/navigation/navigation_cubit.dart';
 import '../../widgets/category/category_bar.dart';
 import '../../widgets/discounts/discounts.dart';
+import '../../widgets/flash/flash_screen.dart';
 import '../../widgets/product/all_products.dart';
 import '../../widgets/product/empty_product_list.dart';
 import '../../widgets/sliderEds/sliderEds.dart';
@@ -88,6 +89,7 @@ class HomeScreen extends StatelessWidget {
            context.read<CategoryCubit>().getCategories();
            context.read<SubcategoryCubit>().getSubcategories();
           await context.read<ProductCubit>().fetchProducts(isRefresh: true);
+          context.read<AdsCubit>().fetchAds();
         },
         color: AppColors.primary, // لون مؤشر التحميل (يمكنك ربطه بهوية المشروع)
         backgroundColor: AppColors.backgroundSecondary,
@@ -116,7 +118,7 @@ class HomeScreen extends StatelessWidget {
                               child: BlocBuilder<AdsCubit, AdsState>(
                                 builder: (context, state) {
                                   if (state is AdsLoading) {
-                                    return const Center(child: CircularProgressIndicator());
+                                    return const Center(child: FlashAds());
                                   } else if (state is AdsLoaded) {
                                     final adsList = state.adsList;
                                     if (adsList.isEmpty) {
@@ -146,7 +148,7 @@ class HomeScreen extends StatelessWidget {
                         scrollPhysics: true,
                       );
                     }
-                    return const SizedBox.shrink(); // في حال التحميل أو الخطأ أو القائمة الفارغة لا يظهر شيئاً مزعجاً
+                    return const FlashAds(); // في حال التحميل أو الخطأ أو القائمة الفارغة لا يظهر شيئاً مزعجاً
                   },
                   ),
                         if(!isDesktop) SubcategoryBar(),

@@ -12,6 +12,7 @@ import 'logic/cart/cart_cubit.dart';
 import 'logic/favorites/favorites_cubit.dart';
 import 'logic/login/login_cubit.dart';
 import 'logic/login/login_cubit_web.dart';
+import 'logic/productcomment/product_comment_cubit.dart';
 import 'logic/signup/sign_up_cubit.dart';
 import 'logic/navigation/navigation_cubit.dart';
 import 'data/repos/product_repo.dart';
@@ -85,6 +86,9 @@ void main() async {
           // 🌟 إضافة كوبيت الإعلانات وجلب البيانات فور الإقلاع
           BlocProvider(
             create: (_) => di.sl<AdsCubit>()..fetchAds(),
+          ),
+          BlocProvider(
+            create: (_) => di.sl<ProductCommentCubit>(),
           ),
         ],
 

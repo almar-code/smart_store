@@ -7,6 +7,7 @@ import 'package:easy_localization/easy_localization.dart';
 import '../../core/widgets/app_messages.dart';
 import '../../core/widgets/internet_check.dart';
 import '../../core/widgets/show_loading.dart';
+import '../../data/local/CustomerSync.dart';
 import '../../data/local/user_local.dart';
 import '../../data/repos/auth_repo.dart';
 import '../../data/services/auth_service.dart';
@@ -29,6 +30,7 @@ class LoginLogic {
 
       if (res.session != null) {
         await repo.fetchAndSaveUser();
+        await CustomerSyncService.syncCustomerWithLaravel(); // 🌟 استدعاء المزامنة
 
         if (context.mounted) {
           context.read<LoginCubit>().setLoggedIn();
@@ -69,6 +71,7 @@ class LoginLogic {
       if (res != null && res.session != null) {
         try {
           await repo.fetchAndSaveUser();
+          await CustomerSyncService.syncCustomerWithLaravel(); // 🌟 استدعاء المزامنة
         } catch (e) {
           await Supabase.instance.client.auth.signOut();
           throw Exception("Failed to fetch user data due to weak internet");

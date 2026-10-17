@@ -5,8 +5,8 @@ import 'package:shimmer/shimmer.dart';
 import '../../../core/constants/app_colors.dart';
 
 
-class Flasheds extends StatelessWidget {
-  const Flasheds({super.key});
+class FlashAds extends StatelessWidget {
+  const FlashAds({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -523,3 +523,113 @@ class UserProfileShimmer extends StatelessWidget {
     );
   }
 }
+
+class ProductCommentFlash extends StatelessWidget {
+  const ProductCommentFlash({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: AppColors.baseColor,
+      highlightColor: AppColors.highlightColor,
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.30,
+        margin:  EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        padding: EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: AppColors.textColor.withOpacity(0.05),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.02),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // صف رأس الكارت (الصورة والاسم والنجوم)
+            Row(
+              children: [
+                // محاكاة دائرة الصورة الشخصية
+                Container(
+                  width: 30,
+                  height: 30,
+                  decoration: const BoxDecoration(
+                    color: Colors.white,
+                    shape: BoxShape.circle,
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // محاكاة سطر اسم العميل
+                      Container(
+                        width: 80,
+                        height: 10,
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      // محاكاة نجوم التقييم
+                      Row(
+                        children: List.generate(
+                          5,
+                              (i) => Container(
+                            width: 10,
+                            height: 10,
+                            margin: const EdgeInsets.only(right: 2),
+                            decoration: const BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            // محاكاة أسطر نص التعليق
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: double.infinity,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Container(
+                    width: MediaQuery.of(context).size.width * 0.20,
+                    height: 8,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
