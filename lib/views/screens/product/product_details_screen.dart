@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:hive/hive.dart';
 import 'package:smart_store/core/widgets/scroll_wrapper.dart';
 
 import '../../../core/constants/app_colors.dart';
@@ -60,7 +61,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         ? widget.product.colors.first
         : ColorModel(colorId: 0, colorName: '', images: [], colorCode: '#FFFFFF');
 
-    // 🌟 حقن الـ MultiBlocProvider محلياً داخل الشاشة لجعل اختيار اللون والمقاس تفاعلياً بدون setState
     return MultiBlocProvider(
       providers: [
         BlocProvider<DialogProductCubit>(
@@ -128,11 +128,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   Widget _buildMobileLayout(BuildContext context,ProductModel product) {
+    var box = Hive.box('user_info_box');
+    var customer_id = (box.isEmpty) ? '' :  box.get('customer_id');
+
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       spacing: 10,
       children: [
-        // 🌟 المعرض الكبير يستمع الآن ديناميكياً للون النشط ويعرض صوره من السيرفر
         SizedBox(
           height: 400,
           child: BlocBuilder<DialogProductCubit, ColorModel>(
@@ -150,7 +153,10 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           padding: const EdgeInsets.only(bottom: 10),
           child: _buildProductInfo(),
         ),
-        const ProductReviewsSection(),
+         ProductReviewsSection(
+          currentCustomerId: customer_id,
+          productId: product.pId,
+        ),
         const TitleBar(title: "product like"),
         AllProducts(
                 onProductTap: (product) {
@@ -168,6 +174,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   Widget _buildDesktopLayout(BuildContext context,ProductModel product) {
+    var box = Hive.box('user_info_box');
+    var customer_id = (box.isEmpty) ? '' :  box.get('customer_id');
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -179,7 +187,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
               Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  // 🌟 تحديث الصور بناءً على اللون النشط في وضع الـ Desktop أيضاً
                   BlocBuilder<DialogProductCubit, ColorModel>(
                     builder: (context, selectedColor) {
                       final imgPaths = selectedColor.images.map((img) => img.imgUrl).toList();
@@ -203,8 +210,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           flex: 2,
           child: Column(
             children: [
-              const ProductReviewsSection(),
-              const TitleBar(title: "product like"),
+               ProductReviewsSection(
+                currentCustomerId: customer_id,
+                productId: product.pId,
+              ),
+               TitleBar(title: "product like"),
               SizedBox(height: 12,),
               Expanded(
                 child: ScrollWrapper(
@@ -261,7 +271,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           ),
         ),
 
-        // 🌟 عرض تفاصيل السعر والخصم بشكل متناسق ومحسوب تلقائياً
         Row(
           children: [
             Text(

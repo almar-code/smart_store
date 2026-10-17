@@ -285,5 +285,11 @@
   "orders_empty_title": "No Previous Orders",
   "orders_empty_subtitle": "You haven't placed any orders yet, start shopping now!",
   "Failed to load invoice": "Failed to load invoice",
-  "An error occurred while connecting": "An error occurred while connecting"
+  "An error occurred while connecting": "An error occurred while connecting",
+  "productReviewQuestion": "What do you think about this product?",
+  "noCommentsYet": "No comments yet, be the first to comment!",
+  "writeCommentHint": "Write your comment here..."
+
+
+
 }

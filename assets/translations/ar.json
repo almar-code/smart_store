@@ -282,5 +282,8 @@
   "orders_empty_title": "لا توجد طلبات سابقة",
   "orders_empty_subtitle": "لم تقم بأي طلب حتى الآن، ابدأ بتسوق المنتجات الآن!",
   "Failed to load invoice": "فشل تحميل الفاتورة",
-  "An error occurred while connecting": "حدث خطأ أثناء الاتصال"
+  "An error occurred while connecting": "حدث خطأ أثناء الاتصال",
+  "productReviewQuestion": "ما رأيك في هذا المنتج؟",
+  "noCommentsYet": "لا توجد تعليقات بعد، كن أول المضيفين!",
+  "writeCommentHint": "اكتب تعليقك هنا..."
 }

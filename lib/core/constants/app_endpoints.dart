@@ -58,4 +58,16 @@ class ApiEndpoints {
   static String cancelOrder(int orderId) => '$_baseUrl/api/orders/cancel/$orderId';
 // 👈 الرابط الجديد المضاف الخاص بجلب وطباعة فاتورة الطلب بصيغة PDF من لارافيل
   static String orderInvoice(int orderId) => '$_baseUrl/api/orders/$orderId/invoice';
+
+  // ==================== 💬 روابط تعليقات المنتجات ====================
+  // جلب تعليقات منتج معين (GET)
+  static String getProductComments(int productId) => '$_baseUrl/api/products/$productId/comments';
+
+  // إضافة تعليق جديد (POST)
+  static String get addProductComment => '$_baseUrl/api/product-comments';
+
+  // حذف تعليق (DELETE)
+  static String deleteProductComment(int commentId) => '$_baseUrl/api/product-comments/$commentId';
+
+  static String get syncCustomer => '$_baseUrl/api/customers/sync-supabase';
 }

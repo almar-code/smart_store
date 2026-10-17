@@ -11,6 +11,7 @@ import '../../data/repos/cart_repo.dart';
 import '../../data/repos/favorite_repo.dart';
 import '../../data/repos/order_repo.dart';
 import '../../data/repos/payment_repo.dart';
+import '../../data/repos/product_comment_repository.dart';
 import '../../data/repos/product_repo.dart';
 import '../../data/repos/subcategory_repo.dart';
 import '../../data/repos/user_address_repo.dart';
@@ -19,6 +20,7 @@ import '../../data/services/AdService.dart';
 import '../../data/services/cart_service.dart';
 import '../../data/services/category_service.dart';
 import '../../data/repos/category_repo.dart';
+import '../../data/services/product_comment_service.dart';
 import '../../data/services/order_service.dart';
 import '../../data/services/payment_service.dart';
 import '../../data/services/product_service.dart';
@@ -28,6 +30,7 @@ import '../../data/services/video_service.dart';
 import '../../logic/ads/ads_cubit.dart';
 import '../../logic/cart/cart_cubit.dart';
 import '../../logic/favorites/favorites_cubit.dart';
+import '../../logic/productcomment/product_comment_cubit.dart';
 import '../../logic/orders/order_cubit.dart';
 import '../../logic/payments/payment_cubit.dart';
 import '../../logic/products/product_cubit.dart';
@@ -76,4 +79,9 @@ Future<void> init() async {
 
   // 🌟 2. تسجيل الـ AdsCubit (factory لإنشاء النسخة عند الحاجة أو Singleton)
   sl.registerFactory(() => AdsCubit(sl<AdRepo>()));
+
+  // ==================== 💬 تسجيل خدمة ومستودع وكيوبت التعليقات ====================
+  sl.registerLazySingleton(() => ProductCommentService());
+  sl.registerLazySingleton(() => ProductCommentRepository(apiService: sl<ProductCommentService>()));
+  sl.registerFactory(() => ProductCommentCubit(repository: sl<ProductCommentRepository>()));
 }
