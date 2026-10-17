@@ -6,22 +6,17 @@ import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../widgets/address/address_header_section.dart';
 import '../../widgets/address/address_list.dart';
+import '../../widgets/address/checkout_address_list.dart';
 import '../payment/payment_screen.dart';
 import 'add_address_screen.dart';
 
 class SelectUsrAddress extends StatelessWidget {
-  const SelectUsrAddress({super.key});
+  final double displayTotal;
+   SelectUsrAddress({super.key,required this.displayTotal});
 
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-
-    // قائمة تجريبية للعناوين (يمكنك استبدالها ببيانات من الـ API لاحقاً)
-    final List<Map<String, dynamic>> addresses = [
-      {'title': 'Home', 'details': 'Street 10, Building 5, Riyadh, KSA', 'isDefault': true},
-      {'title': 'Office', 'details': 'Business Bay, Tower 2, Floor 15, Dubai, UAE', 'isDefault': false},
-    ];
-
     return SafeArea(
       child: Scaffold(
         extendBody : true,
@@ -70,7 +65,10 @@ class SelectUsrAddress extends StatelessWidget {
       
                 // استدعاء الكلاس الجديد هنا
                 Expanded(
-                  child: AddressListView(),
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 50),
+                    child: CheckoutAddressListView(),
+                  ),
                 ),
               ],
             ),
@@ -79,8 +77,8 @@ class SelectUsrAddress extends StatelessWidget {
         bottomNavigationBar: Padding(
           // إضافة padding بسيط ليعطي مظهراً أفضل للأزرار في الأسفل
           padding: EdgeInsets.symmetric(
-            horizontal: isDesktop ? MediaQuery.of(context).size.width * 0.2 : 20,
-            vertical: 10,
+            horizontal: isDesktop ? MediaQuery.of(context).size.width * 0.22 : 14,
+            vertical: 15,
           ),
           child: Row(
             children: [
@@ -91,8 +89,8 @@ class SelectUsrAddress extends StatelessWidget {
                   child: AppButton(
                     label: 'next'.tr(),
                     icon: Icons.arrow_back_ios,
-                    borderRadius: 17,
-                    onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectPaymentMethodPage())),
+                    borderRadius: 13,
+                    onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectPaymentMethodPage(customerId: 1))),
                   ),
                 ),
               ),
@@ -110,7 +108,7 @@ class SelectUsrAddress extends StatelessWidget {
                     icon: Icons.arrow_forward_ios,
                     textColor: AppColors.textColor,
                     borderColor: AppColors.textSecondary,
-                    borderRadius: 17,
+                    borderRadius: 13,
                     onTap: ()=>  Navigator.pop(context),
                   ),
                 ),

@@ -1,8 +1,11 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 import '../../../core/widgets/buttons/app_button.dart';
+import '../../../logic/cart/cart_cubit.dart';
+import '../../../logic/navigation/navigation_cubit.dart';
 
 class PaymentSuccessPage extends StatelessWidget {
   const PaymentSuccessPage({super.key});
@@ -90,8 +93,10 @@ class PaymentSuccessPage extends StatelessWidget {
                         textColor: Colors.white,
                         icon: CupertinoIcons.home,
                         borderRadius: 17,
-                        onTap: () {
+                        onTap: () async{
                           // العودة للشاشة الرئيسية وإغلاق كل الصفحات
+                          context.read<NavigationCubit>().updateIndex(2);
+                          await context.read<CartCubit>().fetchCart(customerId: 1);
                           Navigator.of(context).popUntil((route) => route.isFirst);
                         },
                       ),

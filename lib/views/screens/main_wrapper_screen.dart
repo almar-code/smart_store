@@ -169,10 +169,10 @@ class MainWrapperScreen extends StatelessWidget {
 void handleNavigation(int index, BuildContext context) async {
 
   // فحص الإنترنت باستخدام الكلاس حقك
-  bool hasNet = await InternetCheck.internetCheck(context);
-  if (!hasNet) return;
+  // bool hasNet = await InternetCheck.internetCheck(context);
+  // if (!hasNet) return;
 
-  if (index == 4) {
+  if (index == 7) {
     final session = Supabase.instance.client.auth.currentSession;
 
     // الـ state هنا هو نفسه الـ bool (إما true أو false)

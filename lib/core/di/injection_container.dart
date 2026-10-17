@@ -9,23 +9,32 @@ import '../../data/repos/country_repo.dart';
 import 'package:smart_store/data/services/favorite_service.dart';
 import '../../data/repos/cart_repo.dart';
 import '../../data/repos/favorite_repo.dart';
+import '../../data/repos/order_repo.dart';
+import '../../data/repos/payment_repo.dart';
 import '../../data/repos/product_comment_repository.dart';
 import '../../data/repos/product_repo.dart';
 import '../../data/repos/subcategory_repo.dart';
+import '../../data/repos/user_address_repo.dart';
 import '../../data/repos/video_repo.dart';
 import '../../data/services/AdService.dart';
 import '../../data/services/cart_service.dart';
 import '../../data/services/category_service.dart';
 import '../../data/repos/category_repo.dart';
 import '../../data/services/product_comment_service.dart';
+import '../../data/services/order_service.dart';
+import '../../data/services/payment_service.dart';
 import '../../data/services/product_service.dart';
 import '../../data/services/subcategory_service.dart';
+import '../../data/services/user_address_service.dart';
 import '../../data/services/video_service.dart';
 import '../../logic/ads/ads_cubit.dart';
 import '../../logic/cart/cart_cubit.dart';
 import '../../logic/favorites/favorites_cubit.dart';
 import '../../logic/productcomment/product_comment_cubit.dart';
+import '../../logic/orders/order_cubit.dart';
+import '../../logic/payments/payment_cubit.dart';
 import '../../logic/products/product_cubit.dart';
+import '../../logic/user_address/UserAddressCubit.dart';
 
 // 1. إنشاء نسخة عالمية من GetIt
 final sl = GetIt.instance;
@@ -53,6 +62,17 @@ Future<void> init() async {
   sl.registerFactory(() => CartCubit(sl<CartRepository>()));
   sl.registerLazySingleton(()=>CountryRepo());
   sl.registerLazySingleton<CountriesCubit>(()=>CountriesCubit(sl<CountryRepo>()));
+  sl.registerLazySingleton(() => UserAddressService());
+  sl.registerLazySingleton(() => UserAddressRepo(sl<UserAddressService>()));
+  sl.registerFactory(() => UserAddressCubit(sl<UserAddressRepo>()));
+  // في ملف injection_container.dart
+  sl.registerFactory(() => PaymentCubit(sl()));
+  sl.registerLazySingleton(() => PaymentRepo(sl()));
+  sl.registerLazySingleton(() => PaymentService());
+  // Orders
+  sl.registerFactory(() => OrderCubit(sl()));
+  sl.registerLazySingleton(() => OrderRepo(sl()));
+  sl.registerLazySingleton(() => OrderService());
 // 🌟 1. تسجيل خدمة ومستودع الإعلانات
   sl.registerLazySingleton(() => AdService());
   sl.registerLazySingleton(() => AdRepo(sl<AdService>()));

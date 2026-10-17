@@ -6,19 +6,19 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 import 'package:internet_connection_checker/internet_connection_checker.dart';
-abstract class AddressState {}
-class AddressInitial extends AddressState {}
-class AddressLoading extends AddressState {}
-class AddressLoaded extends AddressState {
+abstract class MapState {}
+class AddressInitial extends MapState {}
+class AddressLoading extends MapState {}
+class AddressLoaded extends MapState {
   final Map<String, dynamic> addressData;
   AddressLoaded(this.addressData);
 }
-class AddressError extends AddressState {
+class AddressError extends MapState {
   final String message;
   AddressError(this.message);
 }
-class AddressCubit extends Cubit<AddressState> {
-  AddressCubit() : super(AddressInitial());
+class MapCubit extends Cubit<MapState> {
+  MapCubit() : super(AddressInitial());
 
   final String apiKey = dotenv.env['MAPS_API_KEY'] ?? '';
 

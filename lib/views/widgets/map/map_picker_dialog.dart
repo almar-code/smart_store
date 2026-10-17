@@ -11,7 +11,7 @@ import '../../../core/constants/app_colors.dart';
 import '../../../core/theme/map/map_styles.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/icons/app_icon.dart';
-import '../../../logic/map/address_cubit.dart';
+import '../../../logic/map/map_cubit.dart';
 
 class MapPickerDialog extends StatefulWidget {
   const MapPickerDialog({super.key});
@@ -32,7 +32,7 @@ class _MapPickerDialogState extends State<MapPickerDialog> {
     // الحصول على كود اللغة الحالية (ar أو en)
     String lang = context.locale.languageCode;
 
-    final String apiKey = context.read<AddressCubit>().apiKey;
+    final String apiKey = context.read<MapCubit>().apiKey;
     // إضافة language=$lang للرابط
     final String url = "https://maps.googleapis.com/maps/api/place/textsearch/json?query=$query&key=$apiKey&language=$lang";
 

@@ -22,7 +22,14 @@ class UserLocal {
       Map<String,dynamic>.from(box.toMap()),
     );
   }
+  Future<int> getCustomerId() async {
+    final box = await Hive.openBox(boxName);
+    if (box.isEmpty) return 1; // القيمة الوهمية الافتراضية حتى تتكامل مع المصادقة
 
+    // يفترض أن يحتوي UserModel على مفتاح customer_id أو id
+    final customerId = box.get('customer_id') ?? box.get('id');
+    return customerId ?? 1;
+  }
   Future<void> clearUser() async {
 
     final box = await Hive.openBox(boxName);

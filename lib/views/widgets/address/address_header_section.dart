@@ -56,7 +56,7 @@ class AddressHeaderSection extends StatelessWidget {
                 height: isDesktop ? 38 : 25,
                 child: AppButton(
                   label: tr('add_address'),
-                  icon: Icons.add,
+                  icon: Icons.add_location_alt_outlined,
                   fontSize: isDesktop ? 14 : 10,
                   onTap: onAddPressed,
                 ),
