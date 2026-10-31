@@ -139,7 +139,7 @@ class HomeScreen extends StatelessWidget {
                                         child: Builder(
                                           builder: (_) {
                                             if (isLoadingAds) {
-                                              return Flasheds();
+                                              return FlashAds();
                                             } else if (state is AdsLoaded && hasAdsList) {
                                               return SliderEds(
                                                 ads: state.adsList,
@@ -171,7 +171,7 @@ class HomeScreen extends StatelessWidget {
                       BlocBuilder<AdsCubit, AdsState>(
                   builder: (context, state) {
                     if (state is AdsLoading) {
-                      return Flasheds();
+                      return FlashAds();
                     } else if (state is AdsLoaded && state.adsList.isNotEmpty) {
                       return SliderEds(
                         ads: state.adsList,
