@@ -33,10 +33,10 @@ class FlashProducts extends StatelessWidget {
     // حساب حجم الشاشة لتحديد عدد الأعمدة كما هو في كود المنتجات الخاص بك تماماً
     bool isDesktop = MediaQuery.of(context).size.width > 900;
     bool isIpad = MediaQuery.of(context).size.width < 900 && MediaQuery.of(context).size.width > 450;
-    int itemCount = isDesktop ? 6 : isIpad ? 4 : 2;
+    int itemCount = isDesktop ? 5 : isIpad ? 4 : 2;
 
     // مصفوفة تحتوي على أطوال مختلفة لمحاكاة الأطوال المتفاوتة للكروت في الـ Masonry
-    final List<double> randomHeights = [240, 210, 220, 260, 230, 240];
+    final List<double> randomHeights = [400, 520, 390, 520, 400, 390];
 
     return Shimmer.fromColors(
       baseColor: AppColors.baseColor,

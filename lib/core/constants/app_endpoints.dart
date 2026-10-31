@@ -19,6 +19,7 @@ class ApiEndpoints {
   // ==================== روابط المنتجات والأقسام الثابتة ====================
   static String get getSubCategories => '$_baseUrl/api/categories';
   static String get getProducts => '$_baseUrl/api/products';
+  static String get getAllProductsUnfiltered => '$_baseUrl/api/products/all-unfiltered';
   static String get getCategories => '$_baseUrl/api/sections';
   static String get getCountry => 'https://countriesnow.space/api/v0.1/countries/codes';
   // ====================  روابط المفضلات الجديدة ====================
@@ -56,6 +57,6 @@ class ApiEndpoints {
   // ====================  روابط الطلبات (Order Endpoints) ====================
   static String getOrders(int customerId) => '$_baseUrl/api/orders/$customerId';
   static String cancelOrder(int orderId) => '$_baseUrl/api/orders/cancel/$orderId';
-// 👈 الرابط الجديد المضاف الخاص بجلب وطباعة فاتورة الطلب بصيغة PDF من لارافيل
+//  الرابط الجديد المضاف الخاص بجلب وطباعة فاتورة الطلب بصيغة PDF من لارافيل
   static String orderInvoice(int orderId) => '$_baseUrl/api/orders/$orderId/invoice';
-}
+  static String get visualSearchProducts => '$_baseUrl/api/products/visual-search';}

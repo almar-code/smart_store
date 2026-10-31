@@ -1,14 +1,21 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:http/http.dart';
+import '../../../logic/products/product_cubit.dart';
+import '../../../logic/search/search_cubit.dart';
 import '../../../views/screens/search/search_screen.dart';
 import '../../../views/screens/similar%20products/similar_products.dart';
 import '../../constants/app_colors.dart';
+import '../../di/injection_container.dart' as di;
+import '../icons/visual_search_icons.dart';
 
 class App_Search extends StatelessWidget {
   final double widthFactor;
   final bool isSearchScreen ;
-  const App_Search({super.key, this.widthFactor = 0.4 , this.isSearchScreen =false});
+  final TextEditingController? controller;
+  const App_Search({super.key, this.widthFactor = 0.4 , this.isSearchScreen =false,this.controller});
 
   @override
   Widget build(BuildContext context) {
@@ -28,18 +35,9 @@ class App_Search extends StatelessWidget {
         child: Row(
           children: [
             // 3. أيقونة الكاميرا للبحث بالصور في نهاية شريط البحث كزر مخصص
-            InkWell(
-              onTap: () {
-
-              },
-              child: Padding(
-                padding:  EdgeInsets.symmetric(horizontal: isDesktop ? 12 : 7, vertical: 4.0),
-                child: Icon(
-                  CupertinoIcons.photo_camera, // استخدام الشكل الممتلئ ليعطي طابعاً احترافياً
-                  color: AppColors.iconColor,
-                  size:  isDesktop ? 20 : 15,
-                ),
-              ),
+            Padding(
+                padding:  EdgeInsets.symmetric(horizontal: isDesktop ? 12 : 7),
+                child: CameraSearchIcon()
             ),
             // 1. أيقونة البحث الأساسية في البداية
             Padding(
@@ -51,13 +49,29 @@ class App_Search extends StatelessWidget {
               ),
             ),
 
-            // 2. حقل إدخال النص مع ضبط التمرير والمظهر
             Expanded(
               child: TextField(
+                controller: controller,
+                onChanged: (value) {
+                  // إرسال الكلمة للكوبيت لتوليد الاقتراحات المنسدلة
+                  context.read<SearchCubit>().onSearchTextChanged(value);
+                },
+                onSubmitted: (value) {
+                  if (value.trim().isNotEmpty) {
+                    context.read<SearchCubit>().performGlobalSearch(value);
+                  }
+                },
                 textAlignVertical: TextAlignVertical.center,
-                readOnly: isSearchScreen ? false : true, // نجعله للقراءة فقط لأنه ينقلنا لصفحة البحث عند النقر
-                onTap: isSearchScreen ? null : ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SearchScreen())),
-                style: TextStyle(
+                readOnly: isSearchScreen ? false : true,
+                onTap: isSearchScreen
+                    ? null
+                    : () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const SearchScreen(),
+                    ),
+                  );
+                },                style: TextStyle(
                   fontSize: 13,
                   color: AppColors.textColor,
                   fontWeight: FontWeight.w500,
@@ -69,7 +83,7 @@ class App_Search extends StatelessWidget {
                     fontSize: 13,
                   ),
                   border: InputBorder.none,
-                  contentPadding:  EdgeInsets.symmetric(vertical: isDesktop ? 14 : 13), // موازنة النص عمودياً بالمنتصف تماماً
+                  contentPadding: EdgeInsets.symmetric(vertical: isDesktop ? 14 : 13),
                 ),
               ),
             ),
