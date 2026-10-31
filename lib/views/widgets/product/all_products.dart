@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // 🌟 تم تفعيلها للمنطق
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:smart_store/core/widgets/buttons/refresh_button.dart';
+import 'package:smart_store/logic/search/search_cubit.dart';
 import 'package:smart_store/views/widgets/product/productdetailsheet.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_endpoints.dart';
@@ -15,6 +16,7 @@ import '../../../core/widgets/colors/circleOfColor.dart';
 import '../../../core/widgets/heart_overlay_notifier.dart';
 import '../../../core/widgets/icons/share_icon.dart';
 import '../../../core/widgets/customCategoryList.dart';
+import '../../../core/widgets/icons/visual_search_icons.dart';
 import '../../../core/widgets/rotating_adBanner.dart';
 import '../../../core/widgets/three_dots_loader.dart';
 import '../../../data/models/product_model.dart'; // 🌟 استيراد الموديل
@@ -46,13 +48,15 @@ class AllProducts extends StatelessWidget {
     int itemCount = isDesktop ? 5 : isIpad ? 4 : 2;
 
     // 🌟 تطبيق منطق الـ BlocBuilder على الكود الخاص بك دون المساس بالتصميم
+    return BlocBuilder<SearchCubit, ProductState>(
+  builder: (context, searchState) {
     return BlocBuilder<ProductCubit, ProductState>(
       builder: (context, state) {
-        if (state is ProductLoading) {
+        if (state is ProductLoading || searchState is ProductLoading) {
           return FlashProducts();
         }
 
-        if (state is ProductError) {
+        if (state is ProductError ) {
           return  Column(
             children: [
           Center(
@@ -70,9 +74,14 @@ class AllProducts extends StatelessWidget {
           );
         }
 
-        if (state is ProductLoaded) {
-          final List<ProductModel> products = state.products;
-
+        if (state is ProductLoaded || searchState is ProductLoaded) {
+           List<ProductModel> products =[];
+          if (state is ProductLoaded) {
+             products = state.products;
+          }
+          if (searchState is ProductLoaded) {
+            products = searchState.products;
+          }
           if (products.isEmpty) {
             return  Center(
               child: Padding(
@@ -249,24 +258,7 @@ class AllProducts extends StatelessWidget {
                               PositionedDirectional(
                                 bottom: 36,
                                 start: 8,
-                                child: GestureDetector(
-                                  onTap: () => Navigator.of(context).push(
-                                    MaterialPageRoute(builder: (context) => const SimilarProducts()),
-                                  ),
-                                  child: AnimatedContainer(
-                                    duration: const Duration(milliseconds: 200),
-                                    padding: const EdgeInsets.all(3),
-                                    decoration: BoxDecoration(
-                                      color: AppColors.backgroundSecondary,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: Icon(
-                                      Icons.center_focus_strong_outlined,
-                                      color: AppColors.iconColor,
-                                      size: 15,
-                                    ),
-                                  ),
-                                ),
+                                child: ProductVisualSearchIcon(imageUrl: ApiEndpoints.productImageUrl(item.pImage) ,),
                               ),
                             ],
                           ),item.generalAdvertisements.isEmpty
@@ -382,14 +374,19 @@ class AllProducts extends StatelessWidget {
         );
       },
     );
+  },
+);
   }
 }
 
 // 🌟 دالة قراءة مسار الصورة مع الحفاظ التام على هيكل دالة التحميل والأخطاء السابقة في كودك
 Widget _buildProductImage(ProductModel item) {
+
   if (item.pImage == null || item.pImage!.toString().isEmpty) {
     return _buildFakeImage();
   }
+  print("hghhhhhhhhhh${item.pImage!}");
+
   return Image.network(
     ApiEndpoints.productImageUrl(item.pImage),
     fit: BoxFit.cover,
@@ -412,7 +409,7 @@ Widget _buildProductImage(ProductModel item) {
 
 Widget _buildFakeImage() {
   return Image.asset(
-    'assets/images/image_placeholder.png',
+    'assets/images/app icon/icon.png',
     fit: BoxFit.contain,
   );
 }
