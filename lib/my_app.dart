@@ -11,7 +11,7 @@ import 'core/theme/bloc/theme_state.dart';
 import 'core/constants/app_colors.dart';
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const   MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,7 @@ class MyApp extends StatelessWidget {
             ),
             debugShowCheckedModeBanner: false,
 
-          // 🌍 الترجمة
+          //  الترجمة
           // localizationsDelegates: context.localizationDelegates,
           supportedLocales: context.supportedLocales,
           locale: context.locale,
@@ -40,7 +40,7 @@ class MyApp extends StatelessWidget {
                 CountryLocalizations.delegate,
               ],
 
-          // 🎨 الثيم
+          //  الثيم
           theme: ThemeData(
             brightness: state.isDark ? Brightness.dark : Brightness.light,
 
@@ -50,13 +50,13 @@ class MyApp extends StatelessWidget {
               elevation: 0,
             ),
 
-            //    🔥 مهم جدًا (لكن وحده لا يكفي)
+            //     مهم جدًا (لكن وحده لا يكفي)
             canvasColor: Colors.transparent,
 
             bottomNavigationBarTheme: BottomNavigationBarThemeData(
               backgroundColor: Colors.transparent,
               elevation: 0,
-              // 🔥 هذه أهم نقطة ناقصة عندك
+              //  هذه أهم نقطة ناقصة عندك
               selectedItemColor: Colors.white,
               unselectedItemColor: Colors.white70,
               type: BottomNavigationBarType.fixed,

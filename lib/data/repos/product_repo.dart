@@ -61,4 +61,64 @@ class ProductRepo {
       throw Exception("Repository Error: $e");
     }
   }
+  Future<List<ProductModel>> fetchAllProductsUnfiltered() async {
+    try {
+      final Response response = await apiService.getAllProductsUnfilteredRaw();
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = response.data;
+
+        if (responseData['status'] == true) {
+          final List<dynamic> productsData = responseData['data'];
+          return productsData.map((p) => ProductModel.fromJson(p)).toList();
+        } else {
+          throw Exception(responseData['message'] ?? "Unknown error occurred");
+        }
+      } else {
+        throw Exception("Server Error: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Repository Error (Unfiltered): $e");
+    }
+  }
+  Future<Map<String, dynamic>> getVisualSearchProducts({
+    required String imagePathOrUrl,
+    required int page,
+    int? seed,
+  }) async {
+    try {
+      // 1. استدعاء دالة الـ Service التي أنشأناها بالأعلى
+      final Response response = await apiService.getVisualSearchProducts(
+        imagePathOrUrl: imagePathOrUrl,
+        page: page,
+        seed: seed,
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = response.data;
+
+        if (responseData['status'] == true) {
+          final List<dynamic> productsData = responseData['data'];
+          final bool hasMore = responseData['meta']['has_more'];
+
+          // تحويل بيانات الـ JSON إلى كائنات ProductModel
+          List<ProductModel> productsList = productsData
+              .map((p) => ProductModel.fromJson(p))
+              .toList();
+
+          return {
+            'products': productsList,
+            'hasMore': hasMore,
+            'seed': responseData['meta']['seed'],
+          };
+        } else {
+          throw Exception(responseData['message'] ?? "Unknown visual search error");
+        }
+      } else {
+        throw Exception("Server Error: ${response.statusCode}");
+      }
+    } catch (e) {
+      throw Exception("Repository Visual Search Error: $e");
+    }
+  }
 }
