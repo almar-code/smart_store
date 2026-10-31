@@ -61,4 +61,60 @@ class ProductService {
       throw Exception("Failed to toggle favorite status: $e");
     }
   }
+  Future<Response> getAllProductsUnfilteredRaw() async {
+    try {
+      final response = await dio.get(
+        ApiEndpoints.getAllProductsUnfiltered,
+        options: Options(
+          headers: {
+            'Content-Type': 'application/json',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+      return response;
+    } catch (e) {
+      throw Exception("Failed to connect to server for all products: $e");
+    }
+  }
+  Future<Response> getVisualSearchProducts({
+    required String imagePathOrUrl,
+    required int page,
+    int? seed,
+  }) async {
+    try {
+      FormData formData = FormData.fromMap({
+        'page': page,
+        if (seed != null) 'seed': seed,
+      });
+
+      if (imagePathOrUrl.startsWith('http')|| imagePathOrUrl.startsWith('blob:')) {
+        // إرسال رابط الصورة
+        formData.fields.add(MapEntry('image_url', imagePathOrUrl));
+      } else {
+        // إرسال ملف الصورة محلياً من الجهاز
+        formData.files.add(MapEntry(
+          'image',
+          await MultipartFile.fromFile(
+            imagePathOrUrl,
+            filename: imagePathOrUrl.split('/').last,
+          ),
+        ));
+      }
+
+      final response = await dio.post(
+        ApiEndpoints.visualSearchProducts,
+        data: formData,
+        options: Options(
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            'Accept': 'application/json',
+          },
+        ),
+      );
+      return response;
+    } catch (e) {
+      throw Exception("Visual Search Repository Error: $e");
+    }
+  }
 }

@@ -31,6 +31,7 @@ import '../../logic/favorites/favorites_cubit.dart';
 import '../../logic/orders/order_cubit.dart';
 import '../../logic/payments/payment_cubit.dart';
 import '../../logic/products/product_cubit.dart';
+import '../../logic/search/search_cubit.dart';
 import '../../logic/user_address/UserAddressCubit.dart';
 
 // 1. إنشاء نسخة عالمية من GetIt
@@ -76,4 +77,5 @@ Future<void> init() async {
 
   // 🌟 2. تسجيل الـ AdsCubit (factory لإنشاء النسخة عند الحاجة أو Singleton)
   sl.registerFactory(() => AdsCubit(sl<AdRepo>()));
+  sl.registerFactory(() => SearchCubit(repository: sl()));
 }

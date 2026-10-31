@@ -14,6 +14,7 @@ import 'logic/login/login_cubit.dart';
 import 'logic/login/login_cubit_web.dart';
 import 'logic/orders/order_cubit.dart';
 import 'logic/payments/payment_cubit.dart';
+import 'logic/search/search_cubit.dart';
 import 'logic/signup/sign_up_cubit.dart';
 import 'logic/navigation/navigation_cubit.dart';
 import 'data/repos/subcategory_repo.dart';
@@ -36,6 +37,7 @@ void main() async {
   await dotenv.load(fileName: ".env");
   await EasyLocalization.ensureInitialized();
   await Hive.initFlutter();
+  await Hive.openBox('search_history_box');
   await Hive.openBox('user_info_box');
   final String supaBaseKey = dotenv.env['supaBase_AnonKey'] ?? '';
   await Supabase.initialize(
@@ -70,7 +72,6 @@ void main() async {
           BlocProvider(
             create: (_) => SubcategoryCubit(di.sl<SubcategoryRepo>())..getSubcategories(),
           ),
-          // 🌟 إضافة الـ ProductCubit وحقن الـ ProductRepository من الـ Service Locator تلقائياً
           BlocProvider(
             create: (_) => di.sl<ProductCubit>()..fetchProducts(isRefresh: true),
           ),
@@ -97,9 +98,11 @@ void main() async {
           BlocProvider(
             create: (_) => di.sl<OrderCubit>(),
           ),
-          // 🌟 إضافة كوبيت الإعلانات وجلب البيانات فور الإقلاع
           BlocProvider(
             create: (_) => di.sl<AdsCubit>()..fetchAds(),
+          ),
+          BlocProvider(
+            create: (_) => di.sl<SearchCubit>(),
           ),
         ],
 
