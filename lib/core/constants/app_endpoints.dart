@@ -9,7 +9,14 @@ class ApiEndpoints {
   // روابط ثابتة للفيديوهات
   static String get getAllVideos => '$_baseUrl/api/get-all-videos';
 // أضف هذا السطر داخل كلاس ApiEndpoints الموجود لديك
-  static String get n8nChatAgent => 'https://n8n-production-7bdd.up.railway.app/webhook/abaya-customer-service';
+  static String get n8nChatAgent => 'https://smartabayastore.app.n8n.cloud/webhook/abaya-customer-service';
+  // ==================== روابط ملفات الصور (عبر /api/media لدعم CORS على الويب) ====================
+  static String _media(String folder, String? image) =>
+      '$_baseUrl/api/media/uploads/$folder/$image';
+
+  static String productImageUrl(String? image) => _media('products', image);
+  static String subCategoryImageUrl(String? image) => _media('subcategory', image);
+  static String adImageUrl(String imageName) => _media('Advertisement', imageName);
   // روابط ديناميكية (تعتمد على معرف الفيديو videoId)
   static String toggleLike(int videoId) => '$_baseUrl/api/videos/$videoId/like';
   static String incrementShare(int videoId) => '$_baseUrl/api/videos/$videoId/share';
@@ -27,9 +34,9 @@ class ApiEndpoints {
   static String get toggleFavorite => '$_baseUrl/api/customer/favorites/toggle';
   static String get favoriteCount => '$_baseUrl/api/customer/favorites/count';
 // ==================== روابط ملفات صور  المنتجات والأقسام الثابتة ====================
-  static String productImageUrl(String? image) => "$_baseUrl/storage/uploads/products/$image";
+//   static String productImageUrl(String? image) => "$_baseUrl/storage/uploads/products/$image";
   static String countryFlag(String? code) => "https://flagcdn.io/flags/4x3/${code}.svg";
-  static String subCategoryImageUrl(String? image) => "$_baseUrl/storage/uploads/subcategory/$image";
+  // static String subCategoryImageUrl(String? image) => "$_baseUrl/storage/uploads/subcategory/$image";
   // لعرض محتويات السلة (GET) -> ستحتاج لتمرير customer_id كـ Query Parameter
   static String get getCart => '$_baseUrl/api/cart';
   // لإضافة منتج جديد إلى السلة (POST)
@@ -44,7 +51,7 @@ class ApiEndpoints {
   static String generalAdProducts(int adsId) => '$_baseUrl/api/ads/$adsId/products';
 
   // دالة مساعدة لترتيب مسار صور الإعلانات
-  static String adImageUrl(String imageName) => '$_baseUrl/storage/uploads/Advertisement/$imageName';
+  // static String adImageUrl(String imageName) => '$_baseUrl/storage/uploads/Advertisement/$imageName';
   // ==================== روابط عمليات الدفع (Payment Endpoints) ====================
   static String get getPaymentMethods => '$_baseUrl/api/payments/methods';
   static String get setupCard => '$_baseUrl/api/payments/methods/setup';
@@ -72,4 +79,12 @@ class ApiEndpoints {
   static String deleteProductComment(int commentId) => '$_baseUrl/api/product-comments/$commentId';
 
   static String get syncCustomer => '$_baseUrl/api/customers/sync-supabase';
+  // ==================== التجربة الحية (Decart) ====================
+  static String get decartApiKey => dotenv.env['DECART_API_KEY'] ?? '';
+  static int get liveTryOnSeconds => int.tryParse(dotenv.env['LIVE_TRYON_SECONDS'] ?? '') ?? 60;
+  // ==================== التجربة بالصورة (Decart - Lucy Image) ====================
+  static String get decartImageEdit => 'https://api.decart.ai/v1/generate/lucy-image-2';
+  // ==================== روابط إحصائيات المنتج ====================
+  static String recordProductView(int productId) => '$_baseUrl/api/products/$productId/view';
+  static String recordProductShare(int productId) => '$_baseUrl/api/products/$productId/share';
 }

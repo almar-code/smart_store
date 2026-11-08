@@ -16,6 +16,7 @@ import '../../../core/theme/bloc/theme_bloc.dart';
 import '../../../core/theme/bloc/theme_event.dart';
 import '../../../core/theme/bloc/theme_state.dart';
 import '../../../core/widgets/icons/favorite_icon.dart';
+import '../../../core/widgets/icons/live_try_on_icon.dart';
 import '../../../core/widgets/icons/theme_icon.dart';
 import '../../../core/widgets/scroll_wrapper.dart';
 import '../../../core/widgets/titleBar.dart';
@@ -72,6 +73,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: const App_Search(widthFactor:0.3),
             ),
+          const LiveTryOnIcon(),
           FavoriteIcon(),
           ThemeIcon(),
           BlocBuilder<LoginCubit,bool>(

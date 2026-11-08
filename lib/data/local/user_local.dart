@@ -36,4 +36,12 @@ class UserLocal {
     await box.clear();
 
   }
+  /// يرجع رقم العميل الحقيقي، أو null إذا لم يكن مسجلاً
+  /// (بدون القيمة الوهمية 1 حتى لا تُدمج مشاهدات كل الزوار في عميل واحد)
+  Future<int?> getCustomerIdOrNull() async {
+    final box = await Hive.openBox(boxName);
+    final value = box.get('customer_id');
+    if (value == null) return null;
+    return int.tryParse(value.toString());
+  }
 }

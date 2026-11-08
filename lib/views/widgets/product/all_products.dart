@@ -16,10 +16,13 @@ import '../../../core/widgets/colors/circleOfColor.dart';
 import '../../../core/widgets/heart_overlay_notifier.dart';
 import '../../../core/widgets/icons/share_icon.dart';
 import '../../../core/widgets/customCategoryList.dart';
+import '../../../core/widgets/icons/try_on_icon.dart';
 import '../../../core/widgets/icons/visual_search_icons.dart';
 import '../../../core/widgets/rotating_adBanner.dart';
 import '../../../core/widgets/three_dots_loader.dart';
+import '../../../core/widgets/web_drag/web_draggable_image.dart';
 import '../../../data/models/product_model.dart'; // 🌟 استيراد الموديل
+import '../../../logic/live_try_on/live_try_on_cubit.dart';
 import '../../../logic/products/product_cubit.dart'; // 🌟 استيراد الكوبيت
 import '../../../logic/products/product_state.dart'; // 🌟 استيراد الحالة
 import '../../screens/favorites/favorites_screen.dart';
@@ -119,6 +122,7 @@ class AllProducts extends StatelessWidget {
 
                   return InkWell(
                     onTap: () {
+                      if (context.read<LiveTryOnCubit>().handleProductTap(item)) return;
                       if (onProductTap != null) {
                         onProductTap!(item);
                       } else {
@@ -254,6 +258,16 @@ class AllProducts extends StatelessWidget {
                                 bottom: 6,
                                 end: 6,
                                 child:ShareButton(product: item,),
+                              ),
+                              PositionedDirectional(
+                                bottom: 96, // فوق آخر أيقونة عندك، عدّل الرقم حسب ترتيب الأيقونات
+                                start: 8,
+                                child: WebDraggableImage(imageUrl: ApiEndpoints.productImageUrl(item.pImage)),
+                              ),
+                              PositionedDirectional(
+                                bottom: 66,
+                                start: 8,
+                                child: ProductTryOnIcon(imageUrl: ApiEndpoints.productImageUrl(item.pImage)),
                               ),
                               PositionedDirectional(
                                 bottom: 36,

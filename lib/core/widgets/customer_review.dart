@@ -188,7 +188,7 @@ class _ProductReviewsViewState extends State<_ProductReviewsView> {
                                               ? MemoryImage(ImageHelper.decodeBase64(imag))
                                               : null,
                                           child: (imag.isEmpty || imag.isEmpty)
-                                              ?  Icon(Icons.person, size: 100, color: AppColors.iconColor)
+                                              ?  Icon(Icons.person, size: 30, color: AppColors.primary)
                                               : null,
                                         ),
                                       const SizedBox(width: 8),

@@ -36,11 +36,11 @@ class _SmartFloatingButtonState extends State<SmartFloatingButton> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: () => Navigator.of(context).push(
+      onTap: () => Navigator.of(context).push(
         MaterialPageRoute(builder: (context) => const SmartChatScreen()),
       ),
       // استدعاء الكلاس المنعزل وتمرير الـ context
-      onTap: () => AiRippleManager.toggleRipple(
+      onLongPress: () => AiRippleManager.toggleRipple(
         context,
         onStateChanged: () => setState(() {}), // لتحديث حالة الزر البصرية إن لزم الأمر
       ),

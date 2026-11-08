@@ -121,4 +121,19 @@ class ProductRepo {
       throw Exception("Repository Visual Search Error: $e");
     }
   }
+  // 👁️ تسجيل مشاهدة (في الخلفية)
+  Future<void> recordProductView({required int productId, int? customerId}) async {
+    try {
+      await apiService.recordProductViewRaw(productId: productId, customerId: customerId);
+    } catch (_) {
+      // تجاهل الخطأ: الإحصائيات لا يجب أن تعطل تجربة العميل
+    }
+  }
+
+// 🔗 تسجيل مشاركة (في الخلفية)
+  Future<void> recordProductShare({required int productId}) async {
+    try {
+      await apiService.recordProductShareRaw(productId: productId);
+    } catch (_) {}
+  }
 }

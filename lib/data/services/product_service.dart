@@ -117,4 +117,20 @@ class ProductService {
       throw Exception("Visual Search Repository Error: $e");
     }
   }
+  // 👁️ تسجيل مشاهدة منتج
+  Future<Response> recordProductViewRaw({required int productId, int? customerId}) async {
+    return await dio.post(
+      ApiEndpoints.recordProductView(productId),
+      data: {if (customerId != null) 'customer_id': customerId},
+      options: Options(headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}),
+    );
+  }
+
+// 🔗 تسجيل مشاركة منتج
+  Future<Response> recordProductShareRaw({required int productId}) async {
+    return await dio.post(
+      ApiEndpoints.recordProductShare(productId),
+      options: Options(headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}),
+    );
+  }
 }

@@ -9,6 +9,7 @@ import 'views/screens/main_wrapper_screen.dart';
 import 'core/theme/bloc/theme_bloc.dart';
 import 'core/theme/bloc/theme_state.dart';
 import 'core/constants/app_colors.dart';
+import 'views/widgets/live_try_on/live_try_on_panel.dart';
 
 class MyApp extends StatelessWidget {
   const   MyApp({super.key});
@@ -62,8 +63,8 @@ class MyApp extends StatelessWidget {
               type: BottomNavigationBarType.fixed,
             ),
           ),
-
-          home: MainWrapperScreen()
+              builder: (context, child) => LiveTryOnOverlay(child: child!),
+              home: MainWrapperScreen()
         );
       }
         );

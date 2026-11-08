@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'logic/ads/ads_cubit.dart';
 import 'logic/cart/cart_cubit.dart';
 import 'logic/favorites/favorites_cubit.dart';
+import 'logic/live_try_on/live_try_on_cubit.dart';
 import 'logic/login/login_cubit.dart';
 import 'logic/login/login_cubit_web.dart';
 import 'logic/productcomment/product_comment_cubit.dart';
@@ -108,6 +109,7 @@ void main() async {
           BlocProvider(
             create: (_) => di.sl<SearchCubit>(),
           ),
+          BlocProvider(create: (_) => LiveTryOnCubit()), //  التجربة الحية
         ],
 
 
