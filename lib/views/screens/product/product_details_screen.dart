@@ -24,6 +24,7 @@ import '../../../logic/size/size_cubit.dart';
 import '../../widgets/floatingActionButton/cartFloatingButton.dart';
 import '../../widgets/product/all_products.dart';
 import '../../widgets/product/product_details.dart';
+import '../../widgets/size_finder/size_finder_widgets.dart';
 import '../search/search_screen.dart';
 
 
@@ -325,6 +326,24 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
 
         const SizedBox(height: 7),
         TitleBar(title: 'size'.tr(), isDecoration: false),
+
+        // 🌟 استخدام الوجت المطور للمقاسات المرتبط بكوبيت المقاسات والسيرفر
+        Padding(
+          padding: const EdgeInsets.only(bottom: 10),
+          child: ProductSizeSelector(sizes: widget.product.sizes),
+        ),
+        // 🌟 استخدام الوجت المطور للألوان المرتبط بالكوبيت والسيرفر
+        ProductColorSelector(colors: widget.product.colors),
+
+        const SizedBox(height: 7),
+        FindMySizeButton(sizes: widget.product.sizes),
+
+
+            TitleBar(
+              title: 'size'.tr(),
+              isDecoration: false,
+            ),
+
 
         // 🌟 استخدام الوجت المطور للمقاسات المرتبط بكوبيت المقاسات والسيرفر
         Padding(

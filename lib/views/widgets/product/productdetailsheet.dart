@@ -6,6 +6,7 @@ import '../../../data/models/product_model.dart';
 import '../../../logic/colors/colors_cubit.dart';
 import '../../../logic/size/size_cubit.dart';
 import '../../screens/product/product_details_screen.dart';
+import '../size_finder/size_finder_widgets.dart';
 import 'product_details.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/titleBar.dart';
@@ -209,6 +210,18 @@ Widget buildProductDetailSheet(BuildContext context, ProductModel product) {
                   const SizedBox(height: 7),
 
                   TitleBar(title: 'size'.tr(), isDecoration: false),
+
+
+                  const SizedBox(height: 7),
+                  FindMySizeButton(sizes: product.sizes), // 📏 زر اعرفي مقاسك
+
+
+                      TitleBar(
+                        title: 'size'.tr(),
+                        isDecoration: false,
+                      ),
+
+
 
                   const SizedBox(height: 5),
 
