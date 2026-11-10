@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../constants/app_colors.dart';
 
+//كلاس الثلاث نقاط عند التحميل
 class ThreeDotsLoader extends StatefulWidget {
   final bool isSmall;
   const ThreeDotsLoader({super.key,this.isSmall = false});

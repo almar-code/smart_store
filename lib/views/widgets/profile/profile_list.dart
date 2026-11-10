@@ -9,6 +9,8 @@ import '../../../core/widgets/buttons/cancel_button.dart';
 import '../../screens/address/user_addresses_screen.dart';
 import '../../screens/help center screen/help_center_screen.dart';
 import '../../screens/orders/orders_screen.dart';
+import '../../screens/sizefinder/size_finder_screen.dart';
+import '../size_finder/size_finder_widgets.dart';
 import 'custom_tile.dart';
 
 class ProfileList extends StatelessWidget {
@@ -24,7 +26,7 @@ class ProfileList extends StatelessWidget {
         CustomTile(icon: CupertinoIcons.cart, title: "shopping cart".tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => CartScreen(screenOnly: true,)))),
         CustomTile(icon: CupertinoIcons.heart, title: "favorites".tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen()))),
         CustomTile(icon: CupertinoIcons.chat_bubble_2, title: "messages".tr(), onTap: () {}),
-        CustomTile(icon: CupertinoIcons.person_crop_circle, title: "my size".tr(), onTap: () {}),
+        CustomTile(icon: Icons.straighten_rounded, title: 'size'.tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) =>   SizeFinderScreen(),))),
         CustomTile(
           icon: CupertinoIcons.globe,
           title: "language".tr(),

@@ -172,7 +172,7 @@ void handleNavigation(int index, BuildContext context) async {
   // bool hasNet = await InternetCheck.internetCheck(context);
   // if (!hasNet) return;
 
-  if (index == 7) {
+  if (index == 4) {
     final session = Supabase.instance.client.auth.currentSession;
 
     // الـ state هنا هو نفسه الـ bool (إما true أو false)
