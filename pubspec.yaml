@@ -106,6 +106,7 @@ dependencies:
   pdf: ^3.10.4   # لتصميم المستند أو الفاتورة كـ PDF
   printing: ^5.11.1 # لفتح نافذة المعاينة والطباعة
 #  arabic_reshaper: ^0.0.1
+cached_network_image: ^3.4.1
 
 
 dev_dependencies:
