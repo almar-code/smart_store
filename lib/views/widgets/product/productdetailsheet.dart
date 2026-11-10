@@ -118,7 +118,10 @@ Widget buildProductDetailSheet(BuildContext context, ProductModel product) {
           ),
 
           // 🌟 معرض الصور يستمع الآن ديناميكياً للون المختار
-          ProductImageSlider(images: imgPaths.isNotEmpty ? imgPaths : [product.pImage ?? '']),
+          Padding(
+            padding: const EdgeInsets.only(left: 20.0),
+            child: ProductImageSlider(images: imgPaths.isNotEmpty ? imgPaths : [product.pImage ?? '']),
+          ),
 
           const SizedBox(height: 15),
 

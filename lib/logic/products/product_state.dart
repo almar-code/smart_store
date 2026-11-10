@@ -14,3 +14,13 @@ class ProductError extends ProductState {
   final String message;
   ProductError(this.message);
 }
+class AllProductsUnfilteredInitial extends ProductState {}
+class AllProductsUnfilteredLoading extends ProductState {}
+class AllProductsUnfilteredLoaded extends ProductState {
+  final List<ProductModel> products;
+  AllProductsUnfilteredLoaded({required this.products});
+}
+class AllProductsUnfilteredError extends ProductState {
+  final String message;
+  AllProductsUnfilteredError(this.message);
+}

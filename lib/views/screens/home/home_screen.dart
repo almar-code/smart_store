@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
+import 'package:smart_store/core/widgets/circularProgress.dart';
 import 'package:smart_store/core/widgets/search/app_search.dart';
 import 'package:smart_store/core/widgets/app_title.dart';
 import 'package:smart_store/core/widgets/app_logo.dart';
@@ -15,6 +16,7 @@ import '../../../core/theme/bloc/theme_bloc.dart';
 import '../../../core/theme/bloc/theme_event.dart';
 import '../../../core/theme/bloc/theme_state.dart';
 import '../../../core/widgets/icons/favorite_icon.dart';
+import '../../../core/widgets/icons/live_try_on_icon.dart';
 import '../../../core/widgets/icons/theme_icon.dart';
 import '../../../core/widgets/scroll_wrapper.dart';
 import '../../../core/widgets/titleBar.dart';
@@ -71,6 +73,7 @@ class HomeScreen extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 10),
               child: const App_Search(widthFactor:0.3),
             ),
+          const LiveTryOnIcon(),
           FavoriteIcon(),
           ThemeIcon(),
           BlocBuilder<LoginCubit,bool>(
@@ -110,46 +113,76 @@ class HomeScreen extends StatelessWidget {
                     child: Column(
                       spacing: 8,
                       children:[
-                        isDesktop ? Row(
-                          spacing: 12,
-                          children: [
-                            Expanded(
-                              flex: 2,
-                              child: BlocBuilder<AdsCubit, AdsState>(
-                                builder: (context, state) {
-                                  if (state is AdsLoading) {
-                                    return FlashAds();
-                                  } else if (state is AdsLoaded) {
-                                    final adsList = state.adsList;
-                                    if (adsList.isEmpty) {
-                                      return const Center(child: Text('لا توجد إعلانات حالياً'));
-                                    }
-                                    return SliderEds(
-                                      ads: adsList,
-                                      scrollPhysics: true,
-                                    );
-                                  } else if (state is AdsError) {
-                                    return Center(child: Text(state.message));
-                                  }
-                                  return const SizedBox.shrink();
-                                },
-                              ),
-                            ),
-                            Expanded(
-                                flex: 2,
-                                child: ( context.watch<ProductCubit>().discountProducts).isEmpty ?  EmptyProductList() :Discounts()),
-                          ],
-                        ): BlocBuilder<AdsCubit, AdsState>(
-                            builder: (context, state) {
-                              if (state is AdsLoaded && state.adsList.isNotEmpty) {
-                                return SliderEds(
-                                  ads: state.adsList,
-                                  scrollPhysics: true,
+                        isDesktop ? Builder(
+                          builder: (context) {
+                            // 1. فحص قائمة الخصومات
+                            final discountProducts = context.watch<ProductCubit>().discountProducts;
+                            final hasDiscounts = discountProducts.isNotEmpty;
+
+                            return BlocBuilder<AdsCubit, AdsState>(
+                              builder: (context, state) {
+                                // 2. فحص حالة وقائمة الإعلانات
+                                final bool isLoadingAds = state is AdsLoading;
+                                final bool isErrorAds = state is AdsError;
+                                final bool hasAdsList = state is AdsLoaded && state.adsList.isNotEmpty;
+
+                                // 3. إذا لم تكن هناك إعلانات ولا خصومات (ولسنا في حالة تحميل أو خطأ للإعلانات)، لا نُظهر أي شيء
+                                if (!isLoadingAds && !isErrorAds && !hasAdsList && !hasDiscounts) {
+                                  return const SizedBox(height: 7,);
+                                }
+
+                                return Row(
+                                  spacing: 12,
+                                  children: [
+                                    // --- قسم الإعلانات ---
+                                    // يظهر فقط في حالة التحميل/الخطأ أو عند وجود إعلانات بالفعل
+                                    if (isLoadingAds || isErrorAds || hasAdsList)
+                                      Expanded(
+                                        child: Builder(
+                                          builder: (_) {
+                                            if (isLoadingAds) {
+                                              return FlashAds();
+                                            } else if (state is AdsLoaded && hasAdsList) {
+                                              return SliderEds(
+                                                ads: state.adsList,
+                                                scrollPhysics: true,
+                                              );
+                                            } else if (isErrorAds) {
+                                              return Center(child: Text(state.message));
+                                            }
+                                            return const SizedBox.shrink();
+                                          },
+                                        ),
+                                      ),
+
+                                    // --- قسم الخصومات ---
+                                    // يظهر فقط إذا كانت هناك منتجات خصومات
+                                    if (hasDiscounts)
+                                      const Expanded(
+                                        child: Padding(
+                                          padding: EdgeInsets.symmetric(vertical: 8.0),
+                                          child: Discounts(),
+                                        ),
+                                      ),
+                                  ],
                                 );
-                              }
-                              return  FlashAds(); // في حال التحميل أو الخطأ أو القائمة الفارغة لا يظهر شيئاً مزعجاً
-                            },
-                            ),
+                              },
+                            );
+                          },
+                        ):
+                      BlocBuilder<AdsCubit, AdsState>(
+                  builder: (context, state) {
+                    if (state is AdsLoading) {
+                      return FlashAds();
+                    } else if (state is AdsLoaded && state.adsList.isNotEmpty) {
+                      return SliderEds(
+                        ads: state.adsList,
+                        scrollPhysics: true,
+                      );
+                    }
+                    return const SizedBox.shrink(); // في حال التحميل أو الخطأ أو القائمة الفارغة لا يظهر شيئاً مزعجاً
+                  },
+                  ),
                         if(!isDesktop) SubcategoryBar(),
                         isDesktop?SubcategoryBar():( context.watch<ProductCubit>().discountProducts).isEmpty ? SizedBox() :Discounts(),
                         TitleBar(title: tr('forYou'),),

@@ -21,16 +21,28 @@ class ChatCubit extends Cubit<ChatState> {
   final ScrollController scrollController = ScrollController();
 
   Uint8List? _selectedImage;
+  String? _selectedImageName;
   bool _isLoading = false;
-// ==================== أضف هذه الأسطر هنا لتجنب أي خطأ ====================
+
+  // 1. إنشاء نسخة ثابتة (Static Instance)
+  static final ChatCubit _instance = ChatCubit._internal();
+
+  // 2. Constructor خاص للـ Singleton
+  ChatCubit._internal() : super(ChatInitial()) {
+    messageController.addListener(_onTextChanged);
+    _emitUpdatedState();
+  }
+
+  // 3. Factory Constructor لإرجاع نفس النسخة دائماً وعدم فقدان المحادثة
+  factory ChatCubit() {
+    return _instance;
+  }
+
+  // Getters
   List<ChatMessage> get messages => _messages;
   Uint8List? get selectedImage => _selectedImage;
   bool get isLoading => _isLoading;
   bool get isTyping => messageController.text.trim().isNotEmpty;
-  ChatCubit() : super(ChatInitial()) {
-    messageController.addListener(_onTextChanged);
-    _emitUpdatedState();
-  }
 
   void _onTextChanged() {
     _emitUpdatedState();
@@ -54,6 +66,7 @@ class ChatCubit extends Cubit<ChatState> {
 
     if (result != null) {
       _selectedImage = await result.readAsBytes();
+      _selectedImageName = result.name;
       _emitUpdatedState();
     }
   }
@@ -61,6 +74,7 @@ class ChatCubit extends Cubit<ChatState> {
   /// إزالة صورة المعاينة
   void removeSelectedImage() {
     _selectedImage = null;
+    _selectedImageName = null;
     _emitUpdatedState();
   }
 
@@ -68,8 +82,9 @@ class ChatCubit extends Cubit<ChatState> {
   Future<void> sendMessage() async {
     final String userText = messageController.text.trim();
     final bool hasText = userText.isNotEmpty;
-    final bool hasImage = _selectedImage != null;
-
+    final Uint8List? imageToSend = _selectedImage;
+    final String? imageNameToSend = _selectedImageName;
+    final bool hasImage = imageToSend != null;
     if (!hasText && !hasImage) return;
 
     // إضافة رسالة المستخدم محلياً للواجهة أولاً
@@ -89,12 +104,23 @@ class ChatCubit extends Cubit<ChatState> {
     scrollToBottom();
 
     try {
-      final String reply = await _repository.getBotReply(
+      final Map<String, dynamic> responseMap = await _repository.getBotReply(
         chatId: _chatId,
         message: userText,
+        image: imageToSend,
+        imageName: imageNameToSend,
       );
 
-      _messages.add(ChatMessage(text: reply, isMe: false));
+      final String replyMessage = responseMap['message'] ?? '';
+      final List<dynamic> productsList = responseMap['similar_products'] ?? [];
+
+      _messages.add(
+        ChatMessage(
+          text: replyMessage,
+          isMe: false,
+          similarProducts: productsList, // إرفاق المنتجات بالرسالة
+        ),
+      );
     } catch (e) {
       _messages.add(ChatMessage(text: "عذراً، واجهت مشكلة في الاتصال بالخادم الرئيسي.", isMe: false));
     } finally {
@@ -118,9 +144,9 @@ class ChatCubit extends Cubit<ChatState> {
 
   @override
   Future<void> close() {
-    messageController.removeListener(_onTextChanged);
-    messageController.dispose();
-    scrollController.dispose();
-    return super.close();
+    // بما أننا نستخدم Singleton، لن نقوم بحذف الـ Listeners أو إغلاق الكلاس نهائياً
+    // لكي تظل الرسائل محفوظة عند الخروج والعودة للشاشة.
+    return Future.value();
   }
+
 }

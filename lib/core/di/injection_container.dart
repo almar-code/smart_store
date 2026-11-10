@@ -14,6 +14,7 @@ import '../../data/repos/payment_repo.dart';
 import '../../data/repos/product_comment_repository.dart';
 import '../../data/repos/product_repo.dart';
 import '../../data/repos/subcategory_repo.dart';
+import '../../data/repos/try_on_repo.dart';
 import '../../data/repos/user_address_repo.dart';
 import '../../data/repos/video_repo.dart';
 import '../../data/services/AdService.dart';
@@ -25,6 +26,7 @@ import '../../data/services/order_service.dart';
 import '../../data/services/payment_service.dart';
 import '../../data/services/product_service.dart';
 import '../../data/services/subcategory_service.dart';
+import '../../data/services/try_on_service.dart';
 import '../../data/services/user_address_service.dart';
 import '../../data/services/video_service.dart';
 import '../../logic/ads/ads_cubit.dart';
@@ -34,6 +36,8 @@ import '../../logic/productcomment/product_comment_cubit.dart';
 import '../../logic/orders/order_cubit.dart';
 import '../../logic/payments/payment_cubit.dart';
 import '../../logic/products/product_cubit.dart';
+import '../../logic/search/search_cubit.dart';
+import '../../logic/try_on/try_on_cubit.dart';
 import '../../logic/user_address/UserAddressCubit.dart';
 import '../../data/services/size_prediction_service.dart';
 import '../../data/repos/size_prediction_repo.dart';
@@ -77,17 +81,22 @@ Future<void> init() async {
   sl.registerFactory(() => OrderCubit(sl()));
   sl.registerLazySingleton(() => OrderRepo(sl()));
   sl.registerLazySingleton(() => OrderService());
-// 🌟 1. تسجيل خدمة ومستودع الإعلانات
+//  1. تسجيل خدمة ومستودع الإعلانات
   sl.registerLazySingleton(() => AdService());
   sl.registerLazySingleton(() => AdRepo(sl<AdService>()));
 
-  // 🌟 2. تسجيل الـ AdsCubit (factory لإنشاء النسخة عند الحاجة أو Singleton)
+  //  2. تسجيل الـ AdsCubit (factory لإنشاء النسخة عند الحاجة أو Singleton)
   sl.registerFactory(() => AdsCubit(sl<AdRepo>()));
+  sl.registerFactory(() => SearchCubit(repository: sl()));
 
-  // ==================== 💬 تسجيل خدمة ومستودع وكيوبت التعليقات ====================
+  // ==================== تسجيل خدمة ومستودع وكيوبت التعليقات ====================
   sl.registerLazySingleton(() => ProductCommentService());
   sl.registerLazySingleton(() => ProductCommentRepository(apiService: sl<ProductCommentService>()));
   sl.registerFactory(() => ProductCommentCubit(repository: sl<ProductCommentRepository>()));
+  // ====================  التجربة الافتراضية ====================
+  sl.registerLazySingleton(() => TryOnService());
+  sl.registerLazySingleton(() => TryOnRepo(sl<TryOnService>()));
+  sl.registerFactory(() => TryOnCubit(sl<TryOnRepo>()));
 
   // ==================== 📏 تسجيل خدمة ومستودع وكيوبت التنبؤ بالمقاس ====================
   sl.registerLazySingleton(() => SizePredictionService());

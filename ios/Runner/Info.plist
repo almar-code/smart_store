@@ -51,5 +51,7 @@
 		<string>$(MAPS_API_KEY)</string>
 		<key>UIStatusBarHidden</key>
 		<false/>
+		<key>NSCameraUsageDescription</key>
+        <string>نحتاج الكاميرا لتجربة العبايات مباشرة</string>
 	</dict>
 </plist>

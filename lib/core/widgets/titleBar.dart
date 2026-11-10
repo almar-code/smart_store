@@ -7,13 +7,13 @@ import 'icons/app_icon.dart';
 class TitleBar extends StatelessWidget {
   final String title;
   final bool isDecoration ;
-  final bool isViewMoreTextShow ;
+  final Widget? viewMoreShow ;
   final Color? color ;
   const TitleBar({
     super.key,
     this.title = "",
     this.isDecoration = true,
-    this.isViewMoreTextShow = false,
+    this.viewMoreShow,
     this.color
   });
 
@@ -34,7 +34,7 @@ class TitleBar extends StatelessWidget {
         ),
       ) : null,
       child: Row(
-        mainAxisAlignment: isViewMoreTextShow ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
+        mainAxisAlignment: (viewMoreShow != null) ? MainAxisAlignment.spaceBetween : MainAxisAlignment.start,
         children: [
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -60,13 +60,9 @@ class TitleBar extends StatelessWidget {
               ),
             ],
           ),
-          isViewMoreTextShow ?  Row(
-            children: [
-              ViewMoreText(),
-              SizedBox(width: 4),
-              ArrowForwardIcon()
-            ],
-          ) : SizedBox() ,
+          if(viewMoreShow != null) ...[
+            viewMoreShow ?? SizedBox()
+            ]
         ],
       ),
     );

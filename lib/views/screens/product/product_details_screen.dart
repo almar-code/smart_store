@@ -26,7 +26,7 @@ import '../../widgets/product/all_products.dart';
 import '../../widgets/product/product_details.dart';
 import '../../widgets/size_finder/size_finder_widgets.dart';
 import '../search/search_screen.dart';
-
+import '../../../data/local/user_local.dart';
 
 class ProductDetailsScreen extends StatefulWidget {
   final ProductModel product; // 🌟 تعديل: استقبال كائن المنتج بالكامل لتوفير البيانات فوراَ
@@ -51,6 +51,15 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   void initState() {
     super.initState();
     _localIsExpanded = widget.isExpanded;
+    _recordView();
+  }
+  // تسجيل مشاهدة المنتج في الخلفية بدون انتظار حتى لا تتأخر الشاشة
+  Future<void> _recordView() async {
+    final customerId = await UserLocal().getCustomerIdOrNull();
+    di.sl<ProductRepo>().recordProductView(
+      productId: widget.product.pId,
+      customerId: customerId,
+    );
   }
 
   @override

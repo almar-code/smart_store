@@ -26,52 +26,108 @@ class ProductImageSlider extends StatelessWidget {
   final List<String> images;
   const ProductImageSlider({super.key, required this.images});
 
+
   @override
   Widget build(BuildContext context) {
-    double width = images.length == 1 ? 368 : images.length == 2 ? 180 : 140;
-    double height = images.length == 1 ? 300 : images.length == 2 ? 250 : 200;
-    return  SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8),
-        child: Row(
-          spacing: 8,
-          children: images.map((path) {
-            // صياغة الرابط بشكل صحيح ومسبق
-            final String fullImageUrl = path.startsWith('http')
-                ? path
-                : ApiEndpoints.productImageUrl(path);
+    final double width =  (MediaQuery.of(context).size.width * 0.31) / 3;
 
-            return Container(
-              width: width,
-              height: height,
-              decoration: BoxDecoration(
-                color: AppColors.background,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              // 🌟 الحل: استخدام الـ ClipRRect لقص الصورة لتأخذ نفس انحناء الحواف (BorderRadius) الخاص بالحاوية
+    final double height = 230;
+
+    if (images.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    return SizedBox(
+      width:(MediaQuery.of(context).size.width * 0.32) ,
+      child: Stack(
+
+        children: [
+          // خلفية واحدة خلف شريط الصور بالكامل
+          if (images.length <= 2)
+            Positioned.fill(
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(8),
-                child: CachedNetworkImage(
-                  imageUrl: ApiEndpoints.productImageUrl(fullImageUrl),
-                  fit: BoxFit.cover,
-                  placeholder: (context, url) =>  ImageProduct(
-                    height: height,
-                  ),
-                  errorWidget: (context, error, stackTrace) {
-                    return Image.asset(
-                      'assets/images/image_placeholder.png',
-                      fit: BoxFit.contain,
-                    );
-                  },
+                child: Stack(
+                  fit: StackFit.expand,
+                  children: [
+                    Image.network(
+                      images[0].startsWith('http')
+                          ? images[0]
+                          : ApiEndpoints.productImageUrl(images[0]),
+                      fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.transparent,
+                        );
+                      },
+                    ),
+                    Container(
+                      color: Colors.white.withValues(alpha: 0.40),
+                    ),
+                  ],
                 ),
               ),
-            );
-          }).toList(),
-        ),
+            ),
+
+          // الصور في المقدمة
+          LayoutBuilder(
+            builder: (context, constraints) {
+              return SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minWidth: constraints.maxWidth,
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 10,
+                    children: images.map((path) {
+                      final String fullImageUrl = path.startsWith('http')
+                          ? path
+                          : ApiEndpoints.productImageUrl(path);
+
+                      return Container(
+                        width: width,
+                        height: height,
+                        decoration: BoxDecoration(
+                          color: Colors.transparent,
+                          border: Border.all(
+                            color: AppColors.borderColor,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8),
+                          child: Image.network(
+                            fullImageUrl,
+                            fit: images.length < 3
+                                ? BoxFit.fill
+                                : BoxFit.cover,
+                            loadingBuilder: (context, child, loadingProgress) {
+                              if (loadingProgress == null) return child;
+                              return Center(child: ThreeDotsLoader());
+                            },
+                            errorBuilder: (context, error, stackTrace) {
+                              return Image.asset(
+                                'assets/images/image_placeholder.png',
+                                fit: BoxFit.fill,
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
+              );
+            },
+          )        ],
       ),
     );
   }
+
 }
 
 class ProductImageGallery extends StatelessWidget {

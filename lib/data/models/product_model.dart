@@ -1,7 +1,10 @@
 // model/product_model.dart
 
+import 'package:smart_store/data/models/subcategory_model.dart';
 import 'package:smart_store/data/models/video_model.dart';
-import 'package:smart_store/data/models/AdModel.dart'; // 🌟 تأكد من استيراد AdModel من مساره الصحيح
+import 'package:smart_store/data/models/AdModel.dart';
+
+import 'category_model.dart'; // 🌟 تأكد من استيراد AdModel من مساره الصحيح
 class ProductModel {
   final int pId;
   final int subCatId;
@@ -17,6 +20,8 @@ class ProductModel {
   final DiscountModel? discount;
   final int? videoID;
   bool isFavorite;
+  final SubcategoryModel? subcategory;
+  final CategoryModel? category;
 
   ProductModel({
     required this.pId,
@@ -33,9 +38,22 @@ class ProductModel {
     this.discount,
     this.videoID,
     this.isFavorite = false,
+    this.subcategory,
+    this.category,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) {
+    SubcategoryModel? subCatObj;
+    if (json['subcategory'] != null && json['subcategory'] is Map<String, dynamic>) {
+      subCatObj = SubcategoryModel.fromJson(json['subcategory']);
+    }
+
+    CategoryModel? catObj;
+    if (json['subcategory'] != null && json['subcategory']['category'] != null) {
+      catObj = CategoryModel.fromJson(json['subcategory']['category']);
+    } else if (json['category'] != null && json['category'] is Map<String, dynamic>) {
+      catObj = CategoryModel.fromJson(json['category']);
+    }
     return ProductModel(
       pId: json['p_id'],
       subCatId: json['subcat_id'],
@@ -43,6 +61,8 @@ class ProductModel {
       pNameEn: json['p_name_en'],
       pDescription: json['p_description'],
       pDescriptionEn: json['p_description_en'],
+      subcategory: subCatObj,
+      category: catObj,
       pPrice: json['p_price'] != null
           ? (double.tryParse(json['p_price'].toString()) ?? 0.0)
           : 0.0,
