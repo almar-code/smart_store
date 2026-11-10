@@ -26,11 +26,9 @@ import '../../../logic/user_address/UserAddressCubit.dart';
 import '../../widgets/payment/add_payment.dart';
 
 class SelectPaymentMethodPage extends StatefulWidget {
-  final int customerId;
 
   const SelectPaymentMethodPage({
     super.key,
-    required this.customerId,
   });
 
   @override
@@ -70,7 +68,7 @@ class _SelectPaymentMethodPageState extends State<SelectPaymentMethodPage> {
   }
 
   Future<void> _loadPaymentData() async {
-    await context.read<PaymentCubit>().loadPaymentData(widget.customerId);
+    await context.read<PaymentCubit>().loadPaymentData();
   }
 
   @override
@@ -100,7 +98,7 @@ class _SelectPaymentMethodPageState extends State<SelectPaymentMethodPage> {
           });
         } else if (state is PaymentSuccess) {
           AppToasts.showSuccessToast(context, tr('order_created_successfully'));
-          context.read<CartCubit>().fetchCart(customerId: 1);
+          context.read<CartCubit>().fetchCart();
           Navigator.of(context).pushAndRemoveUntil(
             MaterialPageRoute(builder: (_) => PaymentSuccessPage()),
                 (route) => route.isFirst, // يبقي الصفحة الرئيسية فقط ويمسح باقي الصفحات خلفها
@@ -361,7 +359,6 @@ class _SelectPaymentMethodPageState extends State<SelectPaymentMethodPage> {
                             onTap: () => _toggleExpand("add_main", tagAdd: "add_card"),
                             isSmall: true,
                             expandedContent: AddCardForm(
-                              customerId: widget.customerId,
                               onCancel: () {
                                 setState(() {
                                   _activeTag = null;
@@ -807,7 +804,6 @@ class _SelectPaymentMethodPageState extends State<SelectPaymentMethodPage> {
       final int? mySelectedId = context.read<UserAddressCubit>().selectedAddress?.addressId;
 
       final data = await context.read<PaymentCubit>().startCheckout(
-        customerId: widget.customerId,
         addressId: mySelectedId,
         customerPaymentMethodId: card.customerPaymentMethodId,
       );
@@ -832,7 +828,7 @@ class _SelectPaymentMethodPageState extends State<SelectPaymentMethodPage> {
 
       if (paymentIntent.status == PaymentIntentsStatus.Succeeded) {
         AppToasts.showSuccessToast(context, tr('order_created_successfully'));
-        context.read<CartCubit>().fetchCart(customerId: 1);
+        context.read<CartCubit>().fetchCart();
         Navigator.of(context).pushAndRemoveUntil(
           MaterialPageRoute(builder: (_) => PaymentSuccessPage()),
               (route) => route.isFirst, // يبقي الصفحة الرئيسية فقط ويمسح باقي الصفحات خلفها
@@ -882,7 +878,6 @@ class _SelectPaymentMethodPageState extends State<SelectPaymentMethodPage> {
     setState(() => _isPaying = true);
 
     await context.read<PaymentCubit>().createManualCheckout(
-      customerId: widget.customerId,
       addressId: address.addressId!,
       paymentType: paymentType,
       storePaymentAccountId: storePaymentAccountId,

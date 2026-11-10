@@ -96,7 +96,7 @@ class PaymentSuccessPage extends StatelessWidget {
                         onTap: () async{
                           // العودة للشاشة الرئيسية وإغلاق كل الصفحات
                           context.read<NavigationCubit>().updateIndex(2);
-                          await context.read<CartCubit>().fetchCart(customerId: 1);
+                          await context.read<CartCubit>().fetchCart();
                           Navigator.of(context).popUntil((route) => route.isFirst);
                         },
                       ),

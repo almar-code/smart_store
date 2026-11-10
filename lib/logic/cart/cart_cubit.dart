@@ -15,11 +15,11 @@ class CartCubit extends Cubit<CartState> {
   int itemCount = 0 ;
 
   // 📥 1. جلب محتويات السلة
-  Future<void> fetchCart({required int customerId}) async {
+  Future<void> fetchCart() async {
     emit(CartLoading());
     try {
       allProducts.clear();
-      final List<CartModel> items = await _cartRepository.getCartItems(customerId: customerId);
+      final List<CartModel> items = await _cartRepository.getCartItems();
       if (items.isEmpty) {
         emit(CartEmpty());
         return;
@@ -37,7 +37,6 @@ class CartCubit extends Cubit<CartState> {
 
   // ➕ 2. إضافة صنف جديد للسلة
   Future<void> addToCart({
-    required int customerId,
     required int productId,
     int? colorId,
     required int sizeId,
@@ -46,14 +45,13 @@ class CartCubit extends Cubit<CartState> {
     emit(CartAdding());
     try {
       final String serverMessage = await _cartRepository.addToCart(
-        customerId: customerId,
         productId: productId,
         colorId: colorId,
         sizeId: sizeId,
       );
 
       AppToasts.showSuccessToast(context, serverMessage);
-      fetchCart(customerId: customerId);
+      fetchCart();
     } catch (e) {
       String errorMessage = e.toString().replaceAll("Exception: ", "");
       AppToasts.showErrorToast(context, errorMessage);
@@ -62,14 +60,13 @@ class CartCubit extends Cubit<CartState> {
 
   // 🔄 3. تحديث كمية المنتج (زيادة أو نقصان)
   Future<void> updateItemQuantity({
-    required int customerId,
     required CartModel product,
     required int newQuantity,
   }) async {
     try {
       int oldQuantity = 0;
       allProducts = allProducts.map((p) {
-        if (p.cartId == product.cartId) {
+        if (p.cartItemId == product.cartItemId) {
           oldQuantity = p.quantity;
           p.quantity = newQuantity;
         }
@@ -80,11 +77,11 @@ class CartCubit extends Cubit<CartState> {
       totalAccount();
       emit(CartLoaded(List.from(allProducts), totalDiscount: totalDiscount, totalPrice: totalPrice));
 
-      final success = await _cartRepository.updateQuantity(cartId: product.cartId, quantity: newQuantity);
+      final success = await _cartRepository.updateQuantity(cartItemId: product.cartItemId, quantity: newQuantity);
 
       if (!success) {
         allProducts = allProducts.map((p) {
-          if (p.cartId == product.cartId) {
+          if (p.cartItemId == product.cartItemId) {
             p.quantity = oldQuantity;
           }
           return p;
@@ -99,12 +96,11 @@ class CartCubit extends Cubit<CartState> {
 
   // ❌ 4. حذف صنف من السلة
   Future<void> deleteItemFromCart({
-    required int customerId,
-    required int cartId,
+    required int cartItemId,
     required CartModel product,
     required BuildContext context
   }) async {
-    final int itemIndex = allProducts.indexWhere((p) => p.cartId == cartId);
+    final int itemIndex = allProducts.indexWhere((p) => p.cartItemId == cartItemId);
     try {
       if (itemIndex != -1) {
         allProducts.removeAt(itemIndex);
@@ -116,7 +112,7 @@ class CartCubit extends Cubit<CartState> {
         }
       }
 
-      final success = await _cartRepository.deleteItem(cartId: cartId);
+      final success = await _cartRepository.deleteItem(cartItemId: cartItemId);
 
       if (success) {
         if (allProducts.isEmpty) {

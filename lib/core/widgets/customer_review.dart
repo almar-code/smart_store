@@ -11,6 +11,7 @@ import '../../logic/productcomment/product_comment_state.dart';
 import '../../views/widgets/flash/flash_screen.dart';
 import '../../views/widgets/login/login.dart';
 import '../di/injection_container.dart' as di;
+import 'app_messages.dart';
 import 'circleImage/circle_image.dart';
 import 'image_helper.dart';
 
@@ -50,6 +51,7 @@ class _ProductReviewsView extends StatefulWidget {
 }
 
 class _ProductReviewsViewState extends State<_ProductReviewsView> {
+  bool _isSubmitting = false;
   final TextEditingController _commentController = TextEditingController();
 
   @override
@@ -66,21 +68,65 @@ class _ProductReviewsViewState extends State<_ProductReviewsView> {
     super.dispose();
   }
 
-  void _submitReview(BuildContext context) {
+  // void _submitReview(BuildContext context) {
+  //
+  //   var box = Hive.box('user_info_box');
+  //   String userName = (box.isEmpty) ? '' :  box.get('name');
+  //   if (_commentController.text.trim().isEmpty) return;
+  //
+  //   context.read<ProductCommentCubit>().sendComment(
+  //     customerName: userName,
+  //     customerId: widget.currentCustomerId,
+  //     productId: widget.productId,
+  //     commentText: _commentController.text.trim(),
+  //     stars: 5.0,
+  //   );
+  //   _commentController.clear();
+  //   FocusScope.of(context).unfocus();
+  // }
 
-    var box = Hive.box('user_info_box');
-    String userName = (box.isEmpty) ? '' :  box.get('name');
-    if (_commentController.text.trim().isEmpty) return;
-
-    context.read<ProductCommentCubit>().sendComment(
+  Future<void> _submitReview(BuildContext context) async {
+    if (_isSubmitting) return;
+    final commentText = _commentController.text.trim();
+    if (commentText.isEmpty) return;
+    final box = Hive.box('user_info_box');
+    final String userName =(box.isEmpty) ? '' :  box.get('name');
+    setState(() {_isSubmitting = true;});
+    // إفراغ الحقل مؤقتًا، مع الاحتفاظ بالنص لإعادته عند الرفض.
+    _commentController.clear();
+    FocusScope.of(context).unfocus();
+    final result = await context
+        .read<ProductCommentCubit>()
+        .sendComment(
       customerName: userName,
       customerId: widget.currentCustomerId,
       productId: widget.productId,
-      commentText: _commentController.text.trim(),
+      commentText: commentText,
       stars: 5.0,
     );
-    _commentController.clear();
-    FocusScope.of(context).unfocus();
+
+    if (!mounted) return;
+
+    if (result == CommentSubmitResult.rejected) {
+      // إعادة النص ليتمكن العميل من تعديله.
+      _commentController.text = commentText;
+      AppToasts.showErrorToast(context,  'تعليقك غير مقبول لأنه يخالف سياسة التعليقات في متجر NICE.',);
+    } else if (result == CommentSubmitResult.failed) {
+      // لم يتم تأكيد الحفظ؛ نحتفظ بالنص ليعيد العميل المحاولة.
+      _commentController.text = commentText;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'تعذر التحقق من التعليق أو إرساله. حاول مرة أخرى.',
+          ),
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+    setState(() {
+      _isSubmitting = false;
+    });
   }
 
   @override
@@ -275,7 +321,43 @@ class _ProductReviewsViewState extends State<_ProductReviewsView> {
                         },
                       );
                     } else if (state is ProductCommentError) {
-                      return Center(child: Text(state.message));
+                      return Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 10),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Expanded(
+                                child: Image.asset(
+
+                                  'assets/images/blackcommint.png',
+                                  width: 300,
+                                  height: 240,
+                                  fit: BoxFit.fill,
+                                  color:Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color
+                                      ?.withOpacity(0.65),
+                                ),
+                              ),
+                              Text(
+                                "حدث خطأ غير متوقع ",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  height: 1.5,
+                                  color: Theme.of(context)
+                                      .textTheme
+                                      .bodyMedium
+                                      ?.color
+                                      ?.withOpacity(0.65),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      );
                     }
                     return const SizedBox();
                   },
@@ -345,6 +427,8 @@ class _ProductReviewsViewState extends State<_ProductReviewsView> {
                   end: 7,
                   child: GestureDetector(
                     onTap: () {
+                      if (_isSubmitting) return;
+
                       if (isFullyLoggedIn) {
                         if (isTyping) {
                           _submitReview(context);

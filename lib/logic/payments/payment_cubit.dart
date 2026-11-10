@@ -8,10 +8,10 @@ class PaymentCubit extends Cubit<PaymentState> {
   PaymentCubit(this.repo) : super(PaymentInitial());
 
   // جلب بطاقات العميل وحسابات المتجر
-  Future<void> loadPaymentData(int customerId) async {
+  Future<void> loadPaymentData() async {
     emit(PaymentLoading());
     try {
-      final methods = await repo.getPaymentMethods(customerId);
+      final methods = await repo.getPaymentMethods();
       final storeAccounts = await repo.getStorePaymentAccounts();
       emit(PaymentMethodsLoaded(methods, storeAccounts));
     } catch (e) {
@@ -20,19 +20,19 @@ class PaymentCubit extends Cubit<PaymentState> {
   }
 
   // إعداد البطاقة عبر Stripe
-  Future<Map<String, dynamic>> setupCard(int customerId) async {
+  Future<Map<String, dynamic>> setupCard() async {
     try {
-      return await repo.setupCard(customerId);
+      return await repo.setupCard();
     } catch (e) {
       throw Exception(e.toString());
     }
   }
 
   // مزامنة البطاقة بعد نجاح الـ SetupIntent
-  Future<void> syncCard({required int customerId, required String setupIntentId}) async {
+  Future<void> syncCard({required String setupIntentId}) async {
     try {
-      await repo.syncCard(customerId: customerId, setupIntentId: setupIntentId);
-      loadPaymentData(customerId); // تحديث القائمة
+      await repo.syncCard( setupIntentId: setupIntentId);
+      loadPaymentData(); // تحديث القائمة
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -40,13 +40,11 @@ class PaymentCubit extends Cubit<PaymentState> {
 
   // بدء الدفع الإلكتروني (Stripe)
   Future<Map<String, dynamic>> startCheckout({
-    required int customerId,
     required int? addressId,
     required int customerPaymentMethodId,
   }) async {
     try {
       return await repo.startCheckout(
-        customerId: customerId,
         addressId: addressId,
         customerPaymentMethodId: customerPaymentMethodId,
       );
@@ -57,7 +55,6 @@ class PaymentCubit extends Cubit<PaymentState> {
 
   // إرسال الطلب اليدوي (كاش، محافظ، حوالات)
   Future<void> createManualCheckout({
-    required int customerId,
     required int addressId,
     required String paymentType,
     int? storePaymentAccountId,
@@ -67,7 +64,6 @@ class PaymentCubit extends Cubit<PaymentState> {
     emit(PaymentLoading());
     try {
       final result = await repo.createManualCheckout(
-        customerId: customerId,
         addressId: addressId,
         paymentType: paymentType,
         storePaymentAccountId: storePaymentAccountId,
@@ -80,11 +76,11 @@ class PaymentCubit extends Cubit<PaymentState> {
     }
   }
   // حذف بطاقة دفع محفوظة
-  Future<void> deletePaymentMethod(int paymentMethodId, int customerId) async {
+  Future<void> deletePaymentMethod(int paymentMethodId) async {
     emit(PaymentLoading());
     try {
-      await repo.deletePaymentMethod(paymentMethodId, customerId);
-      loadPaymentData(customerId); // إعادة تحميل القائمة بعد الحذف بنجاح
+      await repo.deletePaymentMethod(paymentMethodId);
+      loadPaymentData(); // إعادة تحميل القائمة بعد الحذف بنجاح
     } catch (e) {
       emit(PaymentError(e.toString().replaceFirst('Exception: ', '')));
     }
