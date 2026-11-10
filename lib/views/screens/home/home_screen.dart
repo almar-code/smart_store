@@ -88,8 +88,8 @@ class HomeScreen extends StatelessWidget {
         onRefresh: () async {
            context.read<CategoryCubit>().getCategories();
            context.read<SubcategoryCubit>().getSubcategories();
-          await context.read<ProductCubit>().fetchProducts(isRefresh: true);
-          context.read<AdsCubit>().fetchAds();
+           context.read<AdsCubit>().fetchAds();
+           await context.read<ProductCubit>().fetchProducts(isRefresh: true);
         },
         color: AppColors.primary, // لون مؤشر التحميل (يمكنك ربطه بهوية المشروع)
         backgroundColor: AppColors.backgroundSecondary,
@@ -118,7 +118,7 @@ class HomeScreen extends StatelessWidget {
                               child: BlocBuilder<AdsCubit, AdsState>(
                                 builder: (context, state) {
                                   if (state is AdsLoading) {
-                                    return const Center(child: FlashAds());
+                                    return FlashAds();
                                   } else if (state is AdsLoaded) {
                                     final adsList = state.adsList;
                                     if (adsList.isEmpty) {
@@ -139,18 +139,17 @@ class HomeScreen extends StatelessWidget {
                                 flex: 2,
                                 child: ( context.watch<ProductCubit>().discountProducts).isEmpty ?  EmptyProductList() :Discounts()),
                           ],
-                        ):
-                      BlocBuilder<AdsCubit, AdsState>(
-                  builder: (context, state) {
-                    if (state is AdsLoaded && state.adsList.isNotEmpty) {
-                      return SliderEds(
-                        ads: state.adsList,
-                        scrollPhysics: true,
-                      );
-                    }
-                    return const FlashAds(); // في حال التحميل أو الخطأ أو القائمة الفارغة لا يظهر شيئاً مزعجاً
-                  },
-                  ),
+                        ): BlocBuilder<AdsCubit, AdsState>(
+                            builder: (context, state) {
+                              if (state is AdsLoaded && state.adsList.isNotEmpty) {
+                                return SliderEds(
+                                  ads: state.adsList,
+                                  scrollPhysics: true,
+                                );
+                              }
+                              return  FlashAds(); // في حال التحميل أو الخطأ أو القائمة الفارغة لا يظهر شيئاً مزعجاً
+                            },
+                            ),
                         if(!isDesktop) SubcategoryBar(),
                         isDesktop?SubcategoryBar():( context.watch<ProductCubit>().discountProducts).isEmpty ? SizedBox() :Discounts(),
                         TitleBar(title: tr('forYou'),),
