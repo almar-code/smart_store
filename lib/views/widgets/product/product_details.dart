@@ -1,8 +1,10 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_store/data/models/video_model.dart';
 import 'package:smart_store/views/screens/reels/reels_screen.dart';
+import 'package:smart_store/views/widgets/flash/flash_screen.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_endpoints.dart';
@@ -167,26 +169,22 @@ class ProductImageGallery extends StatelessWidget {
                         ),
                         child: ClipRRect(
                           borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            mainImagePath.startsWith('http')
+                          child: CachedNetworkImage(
+                            imageUrl: mainImagePath.startsWith('http')
                                 ? mainImagePath
                                 : ApiEndpoints.productImageUrl(mainImagePath),
                             fit: BoxFit.cover,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Container(
-                                color: AppColors.backgroundSecondary,
-                                width: double.infinity,
-                                height: double.infinity,
-                                child: const Center(child: ThreeDotsLoader()),
-                              );
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                'assets/images/image_placeholder.png',
-                                fit: BoxFit.cover,
-                              );
-                            },
+                            width: double.infinity,
+                            height: double.infinity,
+                            // مؤشر التحميل أثناء جلب الصورة لأول مرة
+                            placeholder: (context, url) => ImageProduct(
+                              height: double.infinity,
+                            ),
+                            // في حال فشل التحميل أو عدم توفر إنترنت
+                            errorWidget: (context, url, error) => Image.asset(
+                              'assets/images/image_placeholder.png',
+                              fit: BoxFit.cover,
+                            ),
                           ),
                         ),
                       ),
@@ -246,28 +244,22 @@ class ProductImageGallery extends StatelessWidget {
                           ),
                           child: ClipRRect(
                             borderRadius: BorderRadius.circular(index < 3 ? 6 : 8), // تناسق الحواف مع الـ Border
-                            child: Image.network(
-                              thumbPath.startsWith('http')
+                            child: CachedNetworkImage(
+                              imageUrl: thumbPath.startsWith('http')
                                   ? thumbPath
                                   : ApiEndpoints.productImageUrl(thumbPath),
                               fit: BoxFit.cover,
-                              loadingBuilder: (context, child, loadingProgress) {
-                                if (loadingProgress == null) return child;
-                                return Container(
-                                  color: AppColors.backgroundSecondary,
-                                  alignment: Alignment.center,
-                                  child: SizedBox(
-                                    width: 45,
-                                    child: Center(child: ThreeDotsLoader(isSmall: true,)),
-                                  ),
-                                );
-                              },
-                              errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  'assets/images/image_placeholder.png',
-                                  fit: BoxFit.cover,
-                                );
-                              },
+                              width: double.infinity,
+                              height: double.infinity,
+                              // مؤشر التحميل باستخدام الثلاث نقاط الصغيرة
+                              placeholder: (context, url) => ImageProduct(
+                                width: 40,
+                              ),
+                              // في حال فشل التحميل أو انقطاع الإنترنت
+                              errorWidget: (context, url, error) => Image.asset(
+                                'assets/images/image_placeholder.png',
+                                fit: BoxFit.cover,
+                              ),
                             ),
                           ),
                         ),

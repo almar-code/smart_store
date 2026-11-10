@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -399,25 +400,15 @@ Widget _buildProductImage(ProductModel item) {
   if (item.pImage == null || item.pImage!.toString().isEmpty) {
     return _buildFakeImage();
   }
-  print("hghhhhhhhhhh${item.pImage!}");
-
-  return Image.network(
-    ApiEndpoints.productImageUrl(item.pImage),
+  return CachedNetworkImage(
+    imageUrl: ApiEndpoints.productImageUrl(item.pImage),
     fit: BoxFit.cover,
-    loadingBuilder: (context, child, loadingProgress) {
-      if (loadingProgress == null) {
-        return child;
-      }
-      return Container(
-        color: AppColors.background,
-        width: double.infinity,
-        height: 250, // طول الصورة الأصلي الثابت في كودك
-        child: Center(child: ThreeDotsLoader()),
-      );
-    },
-    errorBuilder: (context, error, stackTrace) {
-      return _buildFakeImage();
-    },
+    // استخدام الشمر أثناء التحميل بدلاً من الثلاث نقاط
+    placeholder: (context, url) =>
+    const ImageProduct(
+      height: 250,
+    ),
+    errorWidget: (context, url, error) => _buildFakeImage(),
   );
 }
 

@@ -23,12 +23,9 @@ class UserLocal {
     );
   }
   Future<int> getCustomerId() async {
-    final box = await Hive.openBox(boxName);
-    if (box.isEmpty) return 1; // القيمة الوهمية الافتراضية حتى تتكامل مع المصادقة
-
-    // يفترض أن يحتوي UserModel على مفتاح customer_id أو id
-    final customerId = box.get('customer_id') ?? box.get('id');
-    return customerId ?? 1;
+    final box = Hive.box('user_info_box');
+    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
+    return customerId;
   }
   Future<void> clearUser() async {
 

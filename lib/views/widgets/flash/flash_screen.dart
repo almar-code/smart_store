@@ -66,9 +66,33 @@ class FlashProducts extends StatelessWidget {
   }
 }
 
+class ImageProduct extends StatelessWidget {
+  final double width;
+  final double height;
 
-class Flashsubcategory extends StatelessWidget {
-  const Flashsubcategory({super.key});
+  const ImageProduct({
+    super.key,
+    this.width = double.infinity,
+    this.height = 250,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Shimmer.fromColors(
+      baseColor: AppColors.background,
+      highlightColor: Colors.grey[200]!,
+      child: Container(
+        width: width,
+        height: height,
+        color: Colors.white,
+      ),
+    );
+  }
+}
+
+
+class FlashSubcategory extends StatelessWidget {
+  const FlashSubcategory({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -118,7 +142,29 @@ class Flashsubcategory extends StatelessWidget {
       ),
     );
   }
-}class CategoryBarShimmer extends StatelessWidget {
+}
+class ImageSubcategory extends StatelessWidget {
+  const ImageSubcategory({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
+    return  Shimmer.fromColors(
+      baseColor: AppColors.baseColor,
+      highlightColor: AppColors.highlightColor,
+      child: Container(
+        width: isDesktop ? 55 : 45,
+        height: isDesktop ? 55 : 45,
+        decoration: BoxDecoration(
+          color: AppColors.backgroundSecondary,
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+    );
+  }
+}
+
+class CategoryBarShimmer extends StatelessWidget {
   const CategoryBarShimmer({super.key});
 
   @override
@@ -610,17 +656,20 @@ class AddressShimmer extends StatelessWidget {
   }
 }
 class ProductCommentFlash extends StatelessWidget {
-  const ProductCommentFlash({super.key});
+  final bool isDesktop; // تمرير حالة الشاشة إذا متوفرة أو حسابها
+  const ProductCommentFlash({super.key, this.isDesktop = false});
 
   @override
   Widget build(BuildContext context) {
+    final double screenWidth = MediaQuery.of(context).size.width;
+
     return Shimmer.fromColors(
       baseColor: AppColors.baseColor,
       highlightColor: AppColors.highlightColor,
       child: Container(
-        width: MediaQuery.of(context).size.width * 0.30,
-        margin:  EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-        padding: EdgeInsets.all(12),
+        width: screenWidth * (isDesktop ? 0.30 : 0.75), // عرض متجاوب مطابق للكارت الحقيقي تماماً
+        margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+        padding: const EdgeInsets.all(12),
         decoration: BoxDecoration(
           color: AppColors.background,
           borderRadius: BorderRadius.circular(16),
@@ -637,6 +686,7 @@ class ProductCommentFlash extends StatelessWidget {
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min, // مهم جداً لمنع الـ Overflow الرأسي
           children: [
             // صف رأس الكارت (الصورة والاسم والنجوم)
             Row(
@@ -686,30 +736,28 @@ class ProductCommentFlash extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
-            // محاكاة أسطر نص التعليق
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    width: double.infinity,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+            // محاكاة أسطر نص التعليق (بدون Expanded لكي لا يسبب مشكلة ارتفاع)
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                  const SizedBox(height: 6),
-                  Container(
-                    width: MediaQuery.of(context).size.width * 0.20,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(4),
-                    ),
+                ),
+                const SizedBox(height: 6),
+                Container(
+                  width: screenWidth * 0.20,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ],
         ),
@@ -717,4 +765,3 @@ class ProductCommentFlash extends StatelessWidget {
     );
   }
 }
-

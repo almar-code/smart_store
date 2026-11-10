@@ -1,12 +1,15 @@
 import 'package:dio/dio.dart';
+import 'package:hive/hive.dart';
 import '../../core/constants/app_endpoints.dart';
 
 class CartApiService {
   final Dio _dio = Dio();
+  final box = Hive.box('user_info_box');
 
   // 1. جلب محتويات السلة لعميل معين
-  Future<Response> getCartRaw({required int customerId}) async {
+  Future<Response> getCartRaw() async {
     try {
+      final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
       final response = await _dio.get(
         ApiEndpoints.getCart,
         queryParameters: {'customer_id': customerId},
@@ -20,12 +23,12 @@ class CartApiService {
 
   // 2. إضافة منتج للسلة
   Future<Response> addToCartRaw({
-    required int customerId,
     required int productId,
     int? colorId,
     int? sizeId,
   }) async {
     try {
+      final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
       final response = await _dio.post(
         ApiEndpoints.addToCart,
         data: {
@@ -44,10 +47,10 @@ class CartApiService {
   }
 
   // 3. تحديث كمية المنتج في السلة (الزيادة والنقصان)
-  Future<Response> updateCartQuantityRaw({required int cartId, required int quantity}) async {
+  Future<Response> updateCartQuantityRaw({required int cartItemId, required int quantity}) async {
     try {
       final response = await _dio.put(
-        ApiEndpoints.updateCartItem(cartId),
+        ApiEndpoints.updateCartItem(cartItemId),
         data: {'quantity': quantity},
         options: Options(headers: {'Accept': 'application/json'}),
       );
@@ -58,10 +61,10 @@ class CartApiService {
   }
 
   // 4. حذف صنف تماماً من السلة
-  Future<Response> deleteCartItemRaw({required int cartId}) async {
+  Future<Response> deleteCartItemRaw({required int cartItemId}) async {
     try {
       final response = await _dio.delete(
-        ApiEndpoints.deleteCartItem(cartId),
+        ApiEndpoints.deleteCartItem(cartItemId),
         options: Options(headers: {'Accept': 'application/json'}),
       );
       return response;

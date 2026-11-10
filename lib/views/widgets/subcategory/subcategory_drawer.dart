@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -61,10 +62,18 @@ class SubCategoryItems extends StatelessWidget {
                         backgroundColor: Colors.grey[100],
                         // 🖼️ استدعاء دالة بناء الصورة الذكية المجهزة بالفحص ومؤشر التحميل
                         child: ClipOval(
-                          child: CustomNetworkImage(
+                          child: CachedNetworkImage(
                             imageUrl: ApiEndpoints.subCategoryImageUrl(item.subcatImage), // ممرر رابط الصورة مباشرة من الموديل
-                            width: 40,
-                            height: 40,
+                            width:  45,
+                            height:  45,
+                            fit:BoxFit.fill,
+                            placeholder: (context, url) => ImageSubcategory(),
+                            errorWidget: (context, url, error) => Image.asset(
+                              'assets/images/image_placeholder.png',
+                              fit: BoxFit.fill,
+                              width:  45,
+                              height:  45,
+                            ),
                           ),
                         ),
                       ),

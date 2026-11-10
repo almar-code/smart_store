@@ -90,7 +90,7 @@ class SelectUsrAddress extends StatelessWidget {
                     label: 'next'.tr(),
                     icon: Icons.arrow_back_ios,
                     borderRadius: 13,
-                    onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectPaymentMethodPage(customerId: 1))),
+                    onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectPaymentMethodPage())),
                   ),
                 ),
               ),

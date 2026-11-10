@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -108,10 +109,19 @@ class NewProducts extends StatelessWidget {
                             borderRadius: const BorderRadius.vertical(
                               top: Radius.circular(7),
                             ),
-                            child: CustomNetworkImage(
+                            child: CachedNetworkImage(
                               imageUrl: ApiEndpoints.productImageUrl(item.pImage),
                               height: isDesktop ? 150 : 120,
                               width: double.infinity,
+                              fit: BoxFit.cover,
+                              placeholder: (context, url) => Center(
+                                child: SizedBox(
+                                  width: 24,
+                                  height: 24,
+                                  child: CircularProgressIndicator(strokeWidth: 2),
+                                ),
+                              ),
+                              errorWidget: (context, url, error) => const Icon(Icons.error_outline),
                             ),
                           ),
                           // 🏷️ اختياري: يمكنك هنا إضافة شارة النسبة المئوية للخصم (Badge) إذا كان discountPercent > 0

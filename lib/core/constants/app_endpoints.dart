@@ -17,6 +17,10 @@ class ApiEndpoints {
   static String productImageUrl(String? image) => _media('products', image);
   static String subCategoryImageUrl(String? image) => _media('subcategory', image);
   static String adImageUrl(String imageName) => _media('Advertisement', imageName);
+//   static String get n8nChatAgent => 'https://n8n-production-7bdd.up.railway.app/webhook/abaya-customer-service';
+  // ==================== 📏 رابط التنبؤ بمقاس العباية (n8n) ====================
+  static String get n8nSizePredictor => 'https://almar33.app.n8n.cloud/webhook/abaya-size';
+  static const String classifyProductComment = 'https://almar33.app.n8n.cloud/webhook/comment';
   // روابط ديناميكية (تعتمد على معرف الفيديو videoId)
   static String toggleLike(int videoId) => '$_baseUrl/api/videos/$videoId/like';
   static String incrementShare(int videoId) => '$_baseUrl/api/videos/$videoId/share';

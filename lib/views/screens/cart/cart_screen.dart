@@ -51,7 +51,7 @@ class CartScreen extends StatelessWidget {
         ),
         body:RefreshIndicator(
           onRefresh: () async {
-            context.read<CartCubit>().fetchCart(customerId: 1);
+            context.read<CartCubit>().fetchCart();
           },
           color: AppColors.primary, // لون مؤشر التحميل (يمكنك ربطه بهوية المشروع)
           backgroundColor: AppColors.backgroundSecondary,
@@ -59,7 +59,7 @@ class CartScreen extends StatelessWidget {
             padding: EdgeInsets.symmetric(vertical: 8.0,horizontal: 20),
             child: BlocBuilder<LoginCubit,bool>(
               builder: (context, loginState) {
-                if(loginState) {
+                if(!loginState) {
                   return GuestPrompt(subtitle: tr('cart_guest_subtitle'),);
                 }
               return BlocBuilder<CartCubit,CartState>(
@@ -76,7 +76,7 @@ class CartScreen extends StatelessWidget {
                       height: 30,
                       width: 120,
                       child: RefreshButton(onPressed: () async {
-                        await context.read<CartCubit>().fetchCart(customerId: 1);
+                        await context.read<CartCubit>().fetchCart();
                       }),
                     ),
                   );
@@ -120,7 +120,7 @@ class CartScreen extends StatelessWidget {
                                 if (hasDiscount && item.productPrice > 0) {
                                   discountPercent = ((discountAmount / item.productPrice) * 100).round().toDouble();                                }
                                 return Container(
-                                  key: ValueKey(item.cartId),
+                                  key: ValueKey(item.cartItemId),
                                   decoration: BoxDecoration(
                                     color: AppColors.backgroundSecondary,
                                     border: Border.all(color: AppColors.borderColor),
@@ -293,7 +293,6 @@ class CartScreen extends StatelessWidget {
                                                   onTap: ()async{
                                                     if(item.quantity > 1) {
                                                       context.read<CartCubit>().updateItemQuantity(
-                                                        customerId: 1,
                                                         product: item,
                                                         newQuantity: item.quantity - 1,
                                                       );
@@ -305,7 +304,7 @@ class CartScreen extends StatelessWidget {
                                                       );
 
                                                       if (confirm == true && context.mounted) {
-                                                        context.read<CartCubit>().deleteItemFromCart(customerId: 4, cartId: item.cartId,product: item,context: context);
+                                                        context.read<CartCubit>().deleteItemFromCart( cartItemId: item.cartItemId,product: item,context: context);
                                                       }
 
                                                     }
@@ -323,7 +322,6 @@ class CartScreen extends StatelessWidget {
                                               InkWell(
                                                 onTap: (){
                                                   context.read<CartCubit>().updateItemQuantity(
-                                                    customerId: 1,
                                                     product: item,
                                                     newQuantity: item.quantity + 1,
                                                   );
@@ -350,7 +348,7 @@ class CartScreen extends StatelessWidget {
                     height: 30,
                     width: 120,
                     child: RefreshButton(onPressed: () async {
-                      await context.read<CartCubit>().fetchCart(customerId: 1);
+                      await context.read<CartCubit>().fetchCart();
                     }),
                   ),
                 );;
@@ -413,7 +411,7 @@ class CartScreen extends StatelessWidget {
                           child: AppButton(label: tr('checkout'),
                             icon: Icons.credit_card,
                             onTap: () {
-                              context.read<CartCubit>().fetchCart(customerId: 1);
+                              context.read<CartCubit>().fetchCart();
                               if(state is CartEmpty){
                               AppToasts.showSuccessToast(context,   'عذرا لا يوجد منتجات في السلة');
                             }
@@ -429,7 +427,7 @@ class CartScreen extends StatelessWidget {
                             child: AppButton(label: tr('checkout'),
                               icon: Icons.credit_card,
                                 onTap: () {
-                                  context.read<CartCubit>().fetchCart(customerId: 1);
+                                  context.read<CartCubit>().fetchCart();
                                   if(state is CartEmpty){
                                     AppToasts.showSuccessToast(context,   'عذرا لا يوجد منتجات في السلة');
                                   }

@@ -89,7 +89,7 @@ void main() async {
             create: (_) => CommentsCubit(di.sl<VideoRepo>()),
           ),
           BlocProvider(
-            create: (_) => di.sl<CartCubit>()..fetchCart(customerId: 1),
+            create: (_) => di.sl<CartCubit>()..fetchCart(),
           ),
           BlocProvider(
             create: (_) => di.sl<UserAddressCubit>(),

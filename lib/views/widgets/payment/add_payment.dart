@@ -10,13 +10,11 @@ import '../../../core/widgets/circularProgress.dart';
 import '../../../logic/payments/payment_cubit.dart';
 
 class AddCardForm extends StatefulWidget {
-  final int customerId;
   final VoidCallback onCancel;
   final VoidCallback onCardAdded;
 
   const AddCardForm({
     super.key,
-    required this.customerId,
     required this.onCancel,
     required this.onCardAdded,
   });
@@ -37,7 +35,7 @@ class _AddCardFormState extends State<AddCardForm> {
 
     try {
       final paymentCubit = context.read<PaymentCubit>();
-      final data = await paymentCubit.setupCard(widget.customerId);
+      final data = await paymentCubit.setupCard();
 
       if (data['success'] != true) {
         AppToasts.showWarningToast(context, tr('error_try_again'));
@@ -62,7 +60,6 @@ class _AddCardFormState extends State<AddCardForm> {
       );
 
       await paymentCubit.syncCard(
-        customerId: widget.customerId,
         setupIntentId: setupIntent.id,
       );
 

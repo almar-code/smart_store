@@ -153,8 +153,13 @@ class Login extends StatelessWidget {
                           }
                           )),
                           SizedBox(width: 10),
-                          Expanded(child: _socialButton(FontAwesomeIcons.facebook, tr("facebook"), () async{
-          
+                          Expanded(child: _socialButton(FontAwesomeIcons.facebook, tr("facebook"), () async {
+                            bool connected = await NetworkService.hasInternet();
+                            if (!connected) {
+                              InternetCheck.internetCheck(context);
+                            } else {
+                              await LoginLogic.facebookSignIn(context, onSuccess);
+                            }
                           })),
                         ],
                       ),

@@ -6,6 +6,10 @@ class ProductCommentRepository {
 
   ProductCommentRepository({required this.apiService});
 
+  Future<String> classifyComment(String comment) async {
+    return await apiService.classifyComment(comment);
+  }
+
   Future<List<ProductCommentModel>> getComments(int productId) async {
     return await apiService.getComments(productId);
   }
@@ -16,6 +20,8 @@ class ProductCommentRepository {
     required String commentAr,
     required String commentEn,
     required double stars,
+    required String sentiment,
+
   }) async {
     return await apiService.addComment(
       customerId: customerId,
@@ -23,6 +29,8 @@ class ProductCommentRepository {
       commentAr: commentAr,
       commentEn: commentEn,
       stars: stars,
+      sentiment: sentiment,
+
     );
   }
 

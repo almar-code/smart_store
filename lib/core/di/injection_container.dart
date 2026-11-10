@@ -39,6 +39,10 @@ import '../../logic/products/product_cubit.dart';
 import '../../logic/search/search_cubit.dart';
 import '../../logic/try_on/try_on_cubit.dart';
 import '../../logic/user_address/UserAddressCubit.dart';
+import '../../data/services/size_prediction_service.dart';
+import '../../data/repos/size_prediction_repo.dart';
+import '../../logic/size_prediction/size_prediction_cubit.dart';
+
 
 // 1. إنشاء نسخة عالمية من GetIt
 final sl = GetIt.instance;
@@ -93,4 +97,9 @@ Future<void> init() async {
   sl.registerLazySingleton(() => TryOnService());
   sl.registerLazySingleton(() => TryOnRepo(sl<TryOnService>()));
   sl.registerFactory(() => TryOnCubit(sl<TryOnRepo>()));
+
+  // ==================== 📏 تسجيل خدمة ومستودع وكيوبت التنبؤ بالمقاس ====================
+  sl.registerLazySingleton(() => SizePredictionService());
+  sl.registerLazySingleton(() => SizePredictionRepo(sl<SizePredictionService>()));
+  sl.registerFactory(() => SizePredictionCubit(sl<SizePredictionRepo>()));
 }

@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../logic/navigation/navigation_cubit.dart';
 import 'app_colors.dart';
 class SocialIcon extends StatefulWidget {
-  final FaIconData icon;
+  final IconData icon;
   final Color color;
   final double size;
 

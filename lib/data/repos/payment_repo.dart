@@ -5,26 +5,24 @@ class PaymentRepo {
   final PaymentService service;
   PaymentRepo(this.service);
 
-  Future<List<CustomerPaymentMethodModel>> getPaymentMethods(int customerId) async {
-    final data = await service.getPaymentMethods(customerId);
+  Future<List<CustomerPaymentMethodModel>> getPaymentMethods() async {
+    final data = await service.getPaymentMethods();
     return data.map((json) => CustomerPaymentMethodModel.fromJson(json)).toList();
   }
 
-  Future<Map<String, dynamic>> setupCard(int customerId) async {
-    return await service.setupCard(customerId);
+  Future<Map<String, dynamic>> setupCard() async {
+    return await service.setupCard();
   }
 
-  Future<Map<String, dynamic>> syncCard({required int customerId, required String setupIntentId}) async {
-    return await service.syncCard(customerId: customerId, setupIntentId: setupIntentId);
+  Future<Map<String, dynamic>> syncCard({ required String setupIntentId}) async {
+    return await service.syncCard(setupIntentId: setupIntentId);
   }
 
   Future<Map<String, dynamic>> startCheckout({
-    required int customerId,
     required int? addressId,
     required int customerPaymentMethodId,
   }) async {
     return await service.startCheckout(
-      customerId: customerId,
       addressId: addressId,
       customerPaymentMethodId: customerPaymentMethodId,
     );
@@ -36,7 +34,6 @@ class PaymentRepo {
   }
 
   Future<Map<String, dynamic>> createManualCheckout({
-    required int customerId,
     required int addressId,
     required String paymentType,
     int? storePaymentAccountId,
@@ -44,7 +41,6 @@ class PaymentRepo {
     String? bankName,
   }) async {
     return await service.createManualCheckout(
-      customerId: customerId,
       addressId: addressId,
       paymentType: paymentType,
       storePaymentAccountId: storePaymentAccountId,
@@ -52,7 +48,7 @@ class PaymentRepo {
       bankName: bankName,
     );
   }
-  Future<void> deletePaymentMethod(int paymentMethodId, int customerId) async {
-    await service.deletePaymentMethod(paymentMethodId, customerId);
+  Future<void> deletePaymentMethod(int paymentMethodId) async {
+    await service.deletePaymentMethod(paymentMethodId);
   }
 }

@@ -3,12 +3,20 @@ import '../../data/models/product_comment_model.dart';
 import '../../data/repos/product_comment_repository.dart';
 import 'product_comment_state.dart';
 
+
+enum CommentSubmitResult {
+  accepted,
+  rejected,
+  failed,
+}
 class ProductCommentCubit extends Cubit<ProductCommentState> {
   final ProductCommentRepository repo;
 
   ProductCommentCubit({required ProductCommentRepository repository})
       : repo = repository,
         super(ProductCommentInitial());
+
+
 
   void loadComments(int productId) async {
     emit(ProductCommentLoading());
@@ -20,24 +28,25 @@ class ProductCommentCubit extends Cubit<ProductCommentState> {
     }
   }
 
-  void sendComment({
-    required String customerId,
-    required int productId,
-    required String commentText,
-    required double stars,
-    required String customerName, // اسم العميل الحالي لعرضه فوراً
-    String? customerImage,        // صورة العميل الحالي
-  }) async {
-    // 1. جلب القائمة الحالية إذا كانت محملة
-    final currentState = state;
-    List<ProductCommentModel> currentComments = [];
-    if (currentState is ProductCommentLoaded) {
-      currentComments = List.from(currentState.comments);
-    }
+  Future<CommentSubmitResult> sendComment({
+      required String customerId,
+      required int productId,
+      required String commentText,
+      required double stars,
+      required String customerName,
+      String? customerImage,
+      }) async {
+      // الاحتفاظ بالقائمة الأصلية حتى نستعيدها عند الرفض.
+      final currentState = state;
 
-    // 2. إنشاء تعليق افتراضي مؤقت يظهر فوراً في الواجهة مع isSending = true
-    final tempComment = ProductCommentModel(
-      commentId: -999, // معرف مؤقت مميز
+      final List<ProductCommentModel> originalComments =
+      currentState is ProductCommentLoaded
+      ? List<ProductCommentModel>.from(currentState.comments)
+          : <ProductCommentModel>[];
+
+      // إظهار التعليق مباشرةً في الواجهة، قبل التصنيف.
+      final tempComment = ProductCommentModel(
+      commentId: -999,
       customerId: customerId,
       productId: productId,
       commentAr: commentText,
@@ -46,30 +55,59 @@ class ProductCommentCubit extends Cubit<ProductCommentState> {
       customerName: customerName,
       customerImage: customerImage,
       createdAt: 'الآن',
-      isSending: true, // مؤشر بأنه قيد الإرسال
-    );
-
-    // 3. إضافة التعليق المؤقت في أعلى القائمة وإظهاره للمستخدم فوراً
-    currentComments.insert(0, tempComment);
-    emit(ProductCommentLoaded(currentComments));
-
-    try {
-      // 4. إرسال الطلب الفعلي للسيرفر
-      final updatedComments = await repo.addComment(
-        customerId: customerId,
-        productId: productId,
-        commentAr: commentText,
-        commentEn: commentText,
-        stars: stars,
+      isSending: true,
       );
 
-      // 5. استبدال القائمة المؤقتة بالقائمة الحقيقية القادمة من لارافيل
+      final optimisticComments =
+      List<ProductCommentModel>.from(originalComments)
+      ..insert(0, tempComment);
+
+      emit(ProductCommentLoaded(optimisticComments));
+
+      try {
+      // الخطوة الأولى: إرسال التعليق إلى نموذج n8n للتصنيف.
+      final classification = await repo.classifyComment(commentText);
+
+      // الخطوة الثانية: إذا كان غير لائق، لا نستدعي Laravel إطلاقًا.
+      if (classification == 'Inappropriate') {
+         emit(ProductCommentLoaded(originalComments));
+
+      return CommentSubmitResult.rejected;
+      }
+
+      // لا نسمح بأي تصنيف غير متوقع بالمرور.
+      const allowedClassifications = {'Positive', 'Negative', 'Neutral',};
+
+      if (!allowedClassifications.contains(classification)) {
+      emit(ProductCommentLoaded(originalComments));
+
+      return CommentSubmitResult.failed;
+      }
+
+      // الخطوة الثالثة: التعليق مقبول مبدئيًا،
+      // لذلك نرسله إلى Laravel للحفظ.
+      final updatedComments = await repo.addComment(
+          customerId: customerId,
+          productId: productId,
+          commentAr: commentText,
+          commentEn: commentText,
+          stars: stars,
+        sentiment: classification,
+
+      );
+
+      // استبدال التعليق المؤقت بالقائمة الحقيقية من Laravel.
       emit(ProductCommentLoaded(updatedComments));
-    } catch (e) {
-      // في حال حدث خطأ، يمكنك إعادة القائمة القديمة أو تنبيه المستخدم
-      emit(ProductCommentError(e.toString()));
-    }
-  }
+
+      return CommentSubmitResult.accepted;
+      } catch (e) {
+      // عند فشل التصنيف أو الاتصال أو الحفظ،
+      // نحذف التعليق المؤقت ولا نتركه ظاهرًا كتعليق محفوظ.
+      emit(ProductCommentLoaded(originalComments));
+
+        return CommentSubmitResult.failed;
+        }
+      }
 
   void removeComment(int commentId, String customerId) async {
     try {

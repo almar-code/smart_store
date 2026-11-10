@@ -111,7 +111,7 @@ class _AddToCartButtonState extends State<AddToCartButton>
         onTap: () {
           if (selectedSize != null) {
             _controller.forward(from: 0.0);
-            context.read<CartCubit>().addToCart(customerId: 1, productId: selectedSize.pId, sizeId: selectedSize.sizeId,colorId: selectedColor.colorId,context: context );
+            context.read<CartCubit>().addToCart( productId: selectedSize.pId, sizeId: selectedSize.sizeId,colorId: selectedColor.colorId,context: context );
           } else {
             AppToasts.showWarningToast(context, 'الرجاء اختيار مقاس ');
           }

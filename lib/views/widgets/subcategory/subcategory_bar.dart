@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart'; // 🔵 استيراد البلوك
@@ -28,7 +29,7 @@ class SubcategoryBar extends StatelessWidget {
 
         // 1. حالة التحميل (Loading)
         if (state is SubcategoryLoading) {
-          return const Flashsubcategory();
+          return const FlashSubcategory();
         }
 
         // 2. حالة الخطأ (Error)
@@ -86,10 +87,18 @@ class SubcategoryBar extends StatelessWidget {
                     children: [
                       ClipRRect(
                         borderRadius: BorderRadius.circular(10),
-                        child: CustomNetworkImage(
+                        child: CachedNetworkImage(
                           imageUrl: ApiEndpoints.subCategoryImageUrl(item.subcatImage), // ممرر رابط الصورة مباشرة من الموديل
                           width: isDesktop ? 55 : 45,
                           height: isDesktop ? 55 : 45,
+                            fit:BoxFit.fill,
+                          placeholder: (context, url) => ImageSubcategory(),
+                          errorWidget: (context, url, error) => Image.asset(
+                            'assets/images/image_placeholder.png',
+                            fit: BoxFit.fill,
+                            width: isDesktop ? 55 : 45,
+                            height: isDesktop ? 55 : 45,
+                          ),
                         ),
                       ),
                       const SizedBox(height: 8),

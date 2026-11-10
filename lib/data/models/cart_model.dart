@@ -1,7 +1,7 @@
 import 'product_model.dart';
 
 class CartModel {
-  final int cartId;
+  final int cartItemId;
   final int productId;
   final String productName;
   final String? productNameEn;
@@ -12,7 +12,7 @@ class CartModel {
   final DiscountModel? discount;
 
   CartModel({
-    required this.cartId,
+    required this.cartItemId,
     required this.productId,
     required this.productName,
     this.productNameEn,
@@ -25,7 +25,7 @@ class CartModel {
 
   factory CartModel.fromJson(Map<String, dynamic> json) {
     return CartModel(
-      cartId: json['cart_id'],
+      cartItemId: json['cart_id'],
       productId: json['product_id'],
       // قراءة بيانات المنتج الأساسية الممررة بشكل مسطح أو متداخل من لارافيل
       productName: json['p_name'] ?? json['product']?['p_name'] ?? '',

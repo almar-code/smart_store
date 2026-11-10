@@ -1,10 +1,14 @@
 import 'package:dio/dio.dart';
+import 'package:hive/hive.dart';
 import '../../core/constants/app_endpoints.dart';
 
 class PaymentService {
   final Dio dio = Dio();
+  final box = Hive.box('user_info_box');
 
-  Future<List<dynamic>> getPaymentMethods(int customerId) async {
+  Future<List<dynamic>> getPaymentMethods() async {
+    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
+
     final response = await dio.get(
       ApiEndpoints.getPaymentMethods,
       queryParameters: {'customer_id': customerId},
@@ -13,7 +17,8 @@ class PaymentService {
     return response.data['data'] ?? [];
   }
 
-  Future<Map<String, dynamic>> setupCard(int customerId) async {
+  Future<Map<String, dynamic>> setupCard() async {
+    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
     final response = await dio.post(
       ApiEndpoints.setupCard,
       data: {'customer_id': customerId},
@@ -22,7 +27,8 @@ class PaymentService {
     return response.data;
   }
 
-  Future<Map<String, dynamic>> syncCard({required int customerId, required String setupIntentId}) async {
+  Future<Map<String, dynamic>> syncCard({ required String setupIntentId}) async {
+    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
     final response = await dio.post(
       ApiEndpoints.syncCard,
       data: {'customer_id': customerId, 'setup_intent_id': setupIntentId},
@@ -32,10 +38,11 @@ class PaymentService {
   }
 
   Future<Map<String, dynamic>> startCheckout({
-    required int customerId,
     required int? addressId,
     required int customerPaymentMethodId,
   }) async {
+    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
+
     final response = await dio.post(
       ApiEndpoints.startCheckout,
       data: {
@@ -57,13 +64,13 @@ class PaymentService {
   }
 
   Future<Map<String, dynamic>> createManualCheckout({
-    required int customerId,
     required int addressId,
     required String paymentType,
     int? storePaymentAccountId,
     String? transactionReference,
     String? bankName,
   }) async {
+    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
     final response = await dio.post(
       ApiEndpoints.createManualCheckout,
       data: {
@@ -78,7 +85,9 @@ class PaymentService {
     );
     return response.data['data'];
   }
-  Future<Map<String, dynamic>> deletePaymentMethod(int paymentMethodId, int customerId) async {
+  Future<Map<String, dynamic>> deletePaymentMethod(int paymentMethodId) async {
+    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
+
     final response = await dio.delete(
       ApiEndpoints.deletePaymentMethod(paymentMethodId),
       data: {'customer_id': customerId},
