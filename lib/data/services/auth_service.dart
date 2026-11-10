@@ -4,13 +4,14 @@ import 'package:google_sign_in/google_sign_in.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:flutter/foundation.dart';
 import '../../core/widgets/image_helper.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 class AuthService {
   final String serverClientId = dotenv.env['serverClientId'] ?? '';
   final _supabase = Supabase.instance.client;
 
-  Future<AuthResponse> signUp({required String email, required String password,}) async {
-
+  Future<AuthResponse> signUp(
+      {required String email, required String password,}) async {
     return await _supabase.auth.signUp(
       email: email,
       password: password,
@@ -18,8 +19,8 @@ class AuthService {
   }
 
 
-  Future<AuthResponse> verifyOtp({required String email, required String token,}) async {
-
+  Future<AuthResponse> verifyOtp(
+      {required String email, required String token,}) async {
     return await _supabase.auth.verifyOTP(
       email: email,
       token: token,
@@ -27,8 +28,8 @@ class AuthService {
     );
   }
 
-  Future<void> createProfile({required String userId, required String userName, required String phone,}) async {
-
+  Future<void> createProfile(
+      {required String userId, required String userName, required String phone,}) async {
     await _supabase.from('profiles').upsert({
       'id': userId,
       'user_name': userName,
@@ -37,18 +38,16 @@ class AuthService {
   }
 
   Future<void> resendCode(String email) async {
-
     await _supabase.auth.resend(
       type: OtpType.signup,
       email: email,
     );
   }
 
-  Future<Map<String,dynamic>?> fetchUser() async {
-
+  Future<Map<String, dynamic>?> fetchUser() async {
     final user = _supabase.auth.currentUser;
 
-    if(user == null) return null;
+    if (user == null) return null;
 
     final data = await _supabase
         .from('profiles')
@@ -56,32 +55,30 @@ class AuthService {
         .eq('id', user.id)
         .maybeSingle();
 
-    if(data != null) {
+    if (data != null) {
+      String? base64Image;
 
-    String? base64Image;
-
-    if (data['avatar_url'] != null && data['avatar_url'].toString().isNotEmpty) {
-      try {
-        base64Image = await ImageHelper.convertUrlToBase64(data['avatar_url']);
-      } catch (e) {
-        print("⚠️ فشل تحويل الصورة إلى Base64: ");
-
+      if (data['avatar_url'] != null && data['avatar_url']
+          .toString()
+          .isNotEmpty) {
+        try {
+          base64Image =
+          await ImageHelper.convertUrlToBase64(data['avatar_url']);
+        } catch (e) {
+          print("⚠️ فشل تحويل الصورة إلى Base64: ");
+        }
       }
-    }
 
-    return {
-      'user_id': user.id,
-      'name': data['user_name'],
-      'email': user.email,
-      'phone': data['phone_number'],
-      'image': base64Image,
-    };
+      return {
+        'user_id': user.id,
+        'name': data['user_name'],
+        'email': user.email,
+        'phone': data['phone_number'],
+        'image': base64Image,
+      };
     }
-      return null;
+    return null;
   }
-
-
-
 
 
   Future<AuthResponse> signInWithPassword(String email, String password) async {
@@ -89,7 +86,6 @@ class AuthService {
       email: email,
       password: password,
     );
-
   }
 
   Future<AuthResponse?> signInWithGoogle() async {
@@ -97,7 +93,8 @@ class AuthService {
     if (kIsWeb) {
       await _supabase.auth.signInWithOAuth(
         OAuthProvider.google,
-        redirectTo: 'http://localhost:5050', // تأكد أن هذا البورت هو نفسه اللي شغال عليه المشروع
+        redirectTo: 'http://localhost:5050',
+        // تأكد أن هذا البورت هو نفسه اللي شغال عليه المشروع
         authScreenLaunchMode: LaunchMode.platformDefault,
         // هذا السطر هو السر في إظهار قائمة الحسابات في كل مرة في الويب
         queryParams: {
@@ -123,7 +120,8 @@ class AuthService {
       throw 'تم الغاء عمليه تسجيل الدخول';
     }
 
-    final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+    final GoogleSignInAuthentication googleAuth = await googleUser
+        .authentication;
     final idToken = googleAuth.idToken;
     final accessToken = googleAuth.accessToken;
 
@@ -131,7 +129,7 @@ class AuthService {
       throw 'No ID Token found.';
     }
 
-   return await _supabase.auth.signInWithIdToken(
+    return await _supabase.auth.signInWithIdToken(
       provider: OAuthProvider.google,
       idToken: idToken,
       accessToken: accessToken,
@@ -139,21 +137,18 @@ class AuthService {
   }
 
 
-
-
-
   Future<void> sendResetCode(String email) async {
     await _supabase.auth.resetPasswordForEmail(email);
   }
 
-  Future<AuthResponse> verifyRecoveryOtp({required String email, required String token}) async {
+  Future<AuthResponse> verifyRecoveryOtp(
+      {required String email, required String token}) async {
     return await _supabase.auth.verifyOTP(
       email: email,
       token: token,
       type: OtpType.recovery,
     );
   }
-
 
 
   Future<void> updatePhoneNumber(String userId, String phoneNumber) async {
@@ -170,17 +165,12 @@ class AuthService {
   }
 
 
-
-
-
-
-  Future<String> uploadAvatar(
-      Uint8List imageBytes,
-      String userId,
-      ) async {
-
+  Future<String> uploadAvatar(Uint8List imageBytes,
+      String userId,) async {
     final fileName =
-        'avatar_${userId}_${DateTime.now().millisecondsSinceEpoch}.jpg';
+        'avatar_${userId}_${DateTime
+        .now()
+        .millisecondsSinceEpoch}.jpg';
 
     await _supabase.storage
         .from('avatars')
@@ -209,4 +199,31 @@ class AuthService {
 
   User? get currentUser =>
       _supabase.auth.currentUser;
+
+  Future<void> signInWithFacebook() async {
+    // فيسبوك عبر المتصفح في الويب والجوال
+    // فيسبوك عبر متصفح داخل التطبيق
+    await _supabase.auth.signInWithOAuth(
+      OAuthProvider.facebook,
+      redirectTo: kIsWeb
+          ? 'http://localhost:5050'
+          : 'io.supabase.smartstore://login-callback/',
+      authScreenLaunchMode: kIsWeb
+          ? LaunchMode.platformDefault
+          : LaunchMode.inAppBrowserView,
+      scopes: 'email,public_profile',
+    );
+  }
+
+  // انتظار رجوع المستخدم مسجلا من المتصفح
+  Future<Session?> waitForSession({Duration timeout = const Duration(minutes: 2)}) async {
+    try {
+      final state = await _supabase.auth.onAuthStateChange
+          .firstWhere((s) => s.event == AuthChangeEvent.signedIn && s.session != null)
+          .timeout(timeout);
+      return state.session;
+    } catch (_) {
+      return null;
+    }
+  }
 }

@@ -55,8 +55,8 @@ class LoginLogic {
 
   static Future<void> googleSignIn(BuildContext context, VoidCallback? onSuccess) async {
 
-    bool hasNet = await InternetCheck.internetCheck(context);
-    if (!hasNet) return;
+    // bool hasNet = await InternetCheck.internetCheck(context);
+    // if (!hasNet) return;
 
     try {
       ShowLoading.progressLoading(context);
@@ -95,6 +95,53 @@ class LoginLogic {
         Navigator.pop(context);
         print("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS${e.toString()}");
         AppToasts.showErrorToast(context, tr("google_login_failed"));
+      }
+    }
+  }
+  static Future<void> facebookSignIn(BuildContext context, VoidCallback? onSuccess) async {
+
+    // bool hasNet = await InternetCheck.internetCheck(context);
+    // if (!hasNet) return;
+
+    bool loadingShown = false;
+
+    try {
+      await service.signInWithFacebook();
+
+      // الويب يكمل عبر اعادة التوجيه
+      if (kIsWeb) return;
+
+      final session = await service.waitForSession();
+      if (session == null || !context.mounted) return;
+
+      ShowLoading.progressLoading(context);
+      loadingShown = true;
+
+      try {
+        await repo.fetchAndSaveUser();
+        await CustomerSyncService.syncCustomerWithLaravel();
+      } catch (e) {
+        await Supabase.instance.client.auth.signOut();
+        throw Exception("Failed to fetch user data due to weak internet");
+      }
+
+      if (context.mounted) {
+        context.read<LoginCubit>().setLoggedIn();
+        Navigator.pop(context);
+        Navigator.pop(context);
+
+        if (onSuccess != null) {
+          onSuccess();
+        }
+
+        AppToasts.showSuccessToast(context, tr("login_success"));
+      }
+
+    } catch (e) {
+      print("Facebook login error: $e"); // سبب الفشل
+      if (context.mounted) {
+        if (loadingShown) Navigator.pop(context);
+        AppToasts.showErrorToast(context, tr("facebook_login_failed"));
       }
     }
   }

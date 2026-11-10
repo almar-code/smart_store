@@ -214,8 +214,8 @@ class SignUpLogics {
 
   static Future<void> updateUserPhone(BuildContext context, String phoneNumber,) async {
 
-    bool hasNet = await InternetCheck.internetCheck(context);
-    if (!hasNet) return;
+    // bool hasNet = await InternetCheck.internetCheck(context);
+    // if (!hasNet) return;
     try {
       ShowLoading.progressLoading(context);
 
