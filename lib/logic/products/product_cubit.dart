@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/local/search_local.dart';
 import 'product_event_bus.dart';
@@ -106,6 +107,7 @@ class ProductCubit extends Cubit<ProductState> {
     int? adsId,
     bool isFavorite = false,
     String? visualImagePath, // 🌟 المتجر الجديد للصورة الممررة للبحث البصري
+    Uint8List? visualImageBytes, // صورة البحث بعد التحويل
   }) async {
     categoryID = categoryId;
     if (isRefresh) {
@@ -131,10 +133,10 @@ class ProductCubit extends Cubit<ProductState> {
       // 🌟 التحقق: إذا كانت هناك صورة للبحث البصري، نستدعي دالة البحث البصري، وإلا نستدعي الدالة العادية
       final Map<String, dynamic> result;
 
-      if (visualImagePath != null && visualImagePath.isNotEmpty) {
-        // الـ repository تُرجع Map جاهزة مباشرة
+      if (visualImageBytes != null || (visualImagePath != null && visualImagePath.isNotEmpty)) {
         result = await repository.getVisualSearchProducts(
-          imagePathOrUrl: visualImagePath,
+          imagePathOrUrl: visualImagePath ?? '',
+          imageBytes: visualImageBytes,
           page: currentPage,
           seed: currentSeed,
         );

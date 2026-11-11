@@ -9,6 +9,7 @@ import '../../../core/theme/bloc/theme_event.dart';
 import '../../../core/widgets/app_messages.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/icons/app_icon.dart';
+import '../../../core/widgets/icons/notification_icon.dart';
 import '../../../core/widgets/icons/theme_icon.dart';
 import '../../../core/widgets/internet_check.dart';
 import '../../../core/widgets/network_service.dart';
@@ -49,6 +50,7 @@ class ProfileScreen extends StatelessWidget {
             titleSpacing: 5,
             title: UserProfile(),
             actions: [
+              const NotificationIcon(),
               ThemeIcon(),
               InkWell(
                 onTap:() => _showLogoutDialog(context),

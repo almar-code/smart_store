@@ -7,12 +7,14 @@ import 'package:hive_flutter/adapters.dart';
 import 'package:smart_store/logic/countries_cubit/countries_cubit.dart';
 import 'package:smart_store/views/screens/sign/sign_up_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'core/utils/local_notification_helper.dart';
 import 'logic/ads/ads_cubit.dart';
 import 'logic/cart/cart_cubit.dart';
 import 'logic/favorites/favorites_cubit.dart';
 import 'logic/live_try_on/live_try_on_cubit.dart';
 import 'logic/login/login_cubit.dart';
 import 'logic/login/login_cubit_web.dart';
+import 'logic/notifications/notification_cubit.dart';
 import 'logic/productcomment/product_comment_cubit.dart';
 import 'logic/orders/order_cubit.dart';
 import 'logic/payments/payment_cubit.dart';
@@ -47,6 +49,7 @@ void main() async {
     anonKey: supaBaseKey, // المفتاح من صورتك الأخيرة
   );
   await di.init();
+  await LocalNotificationHelper.initApp();
   Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
   if (!kIsWeb) {
     Stripe.urlScheme = 'flutterstripe';
@@ -110,6 +113,7 @@ void main() async {
             create: (_) => di.sl<SearchCubit>(),
           ),
           BlocProvider(create: (_) => LiveTryOnCubit()), //  التجربة الحية
+          BlocProvider(lazy: false, create: (_) => di.sl<NotificationCubit>()..fetch()..startAutoRefresh()),
         ],
 
 

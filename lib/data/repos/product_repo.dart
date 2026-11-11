@@ -1,4 +1,6 @@
 // data/repositories/product_repository.dart
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import '../models/product_model.dart';
 import '../services/product_service.dart';
@@ -83,13 +85,14 @@ class ProductRepo {
   }
   Future<Map<String, dynamic>> getVisualSearchProducts({
     required String imagePathOrUrl,
+    Uint8List? imageBytes,
     required int page,
     int? seed,
   }) async {
     try {
-      // 1. استدعاء دالة الـ Service التي أنشأناها بالأعلى
       final Response response = await apiService.getVisualSearchProducts(
         imagePathOrUrl: imagePathOrUrl,
+        imageBytes: imageBytes,
         page: page,
         seed: seed,
       );

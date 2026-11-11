@@ -9,6 +9,7 @@ import '../../data/repos/country_repo.dart';
 import 'package:smart_store/data/services/favorite_service.dart';
 import '../../data/repos/cart_repo.dart';
 import '../../data/repos/favorite_repo.dart';
+import '../../data/repos/notification_repo.dart';
 import '../../data/repos/order_repo.dart';
 import '../../data/repos/payment_repo.dart';
 import '../../data/repos/product_comment_repository.dart';
@@ -21,6 +22,7 @@ import '../../data/services/AdService.dart';
 import '../../data/services/cart_service.dart';
 import '../../data/services/category_service.dart';
 import '../../data/repos/category_repo.dart';
+import '../../data/services/notification_service.dart';
 import '../../data/services/product_comment_service.dart';
 import '../../data/services/order_service.dart';
 import '../../data/services/payment_service.dart';
@@ -32,6 +34,7 @@ import '../../data/services/video_service.dart';
 import '../../logic/ads/ads_cubit.dart';
 import '../../logic/cart/cart_cubit.dart';
 import '../../logic/favorites/favorites_cubit.dart';
+import '../../logic/notifications/notification_cubit.dart';
 import '../../logic/productcomment/product_comment_cubit.dart';
 import '../../logic/orders/order_cubit.dart';
 import '../../logic/payments/payment_cubit.dart';
@@ -97,6 +100,10 @@ Future<void> init() async {
   sl.registerLazySingleton(() => TryOnService());
   sl.registerLazySingleton(() => TryOnRepo(sl<TryOnService>()));
   sl.registerFactory(() => TryOnCubit(sl<TryOnRepo>()));
+  // Notifications
+  sl.registerLazySingleton(() => NotificationApiService());
+  sl.registerLazySingleton(() => NotificationRepo(sl()));
+  sl.registerFactory(() => NotificationCubit(sl()));
 
   // ==================== 📏 تسجيل خدمة ومستودع وكيوبت التنبؤ بالمقاس ====================
   sl.registerLazySingleton(() => SizePredictionService());

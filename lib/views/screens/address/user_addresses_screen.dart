@@ -8,7 +8,8 @@ import '../../widgets/address/address_list.dart';
 import 'add_address_screen.dart';
 
 class UsrAddress extends StatelessWidget {
-  const UsrAddress({super.key});
+  final bool screenOnly;
+  const UsrAddress({super.key, this.screenOnly = true});
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +35,7 @@ class UsrAddress extends StatelessWidget {
             fontSize: isDesktop ? 18 : 15,
             spacing: ' ',
           ),
-          actions: const [ArrowBack()],
+          actions: [if (screenOnly) const ArrowBack()],
         ),
         body: Padding(
           padding: EdgeInsets.symmetric(

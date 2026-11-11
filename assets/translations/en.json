@@ -413,4 +413,23 @@
 
 
 
+  "try_on_error_full_body_required": "Please upload a full-body photo",
+  "first notifications": "My",
+  "second notifications": "Notifications",
+  "Notifications": "Notifications",
+  "notifications": "Notifications",
+  "notifications_subtitle": "Stay updated with your latest alerts and offers",
+  "no_notifications": "No notifications yet",
+  "notifications_error": "Couldn't load notifications",
+  "pull_to_refresh": "Pull down to refresh",
+  "unread_notifications": "You have {count} unread notifications",
+  "menu_browse": "Browse",
+  "menu_account": "My Account",
+  "guest": "Guest",
+  "smart assistant": "Smart Assistant",
+  "visual_search_title": "Search by image",
+  "visual_search_subtitle": "Take a photo or choose an abaya image and we'll show you similar products",
+  "take_photo": "Take photo",
+  "choose_from_gallery": "Choose from gallery",
+  "image_convert_error": "Couldn't read the image, try another one"
 }

@@ -12,6 +12,7 @@ import '../../data/local/user_local.dart';
 import '../../data/repos/auth_repo.dart';
 import '../../data/services/auth_service.dart';
 import '../navigation/navigation_cubit.dart';
+import '../notifications/notification_cubit.dart';
 import 'login_cubit.dart';
 
 class ProfileLogic {
@@ -65,6 +66,7 @@ class ProfileLogic {
       ShowLoading.progressLoading(context);
 
       await repo.logout();
+      context.read<NotificationCubit>().clear();
 
       context.read<LoginCubit>().setLoggedOut();
 

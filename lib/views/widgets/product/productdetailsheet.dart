@@ -119,7 +119,7 @@ Widget buildProductDetailSheet(BuildContext context, ProductModel product) {
 
           // 🌟 معرض الصور يستمع الآن ديناميكياً للون المختار
           Padding(
-            padding: const EdgeInsets.only(left: 20.0),
+            padding: const EdgeInsets.symmetric(horizontal: 12),
             child: ProductImageSlider(images: imgPaths.isNotEmpty ? imgPaths : [product.pImage ?? '']),
           ),
 

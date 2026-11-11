@@ -24,7 +24,10 @@ import 'cart/cart_screen.dart';
 import 'new/new_screen.dart';
 import 'profile/profile_screen.dart';
 import 'reels/reels_screen.dart';
-
+import 'address/user_addresses_screen.dart';
+import 'notifications/notifications_screen.dart';
+import 'orders/orders_screen.dart';
+import 'smart chat screen/smart_chat_screen.dart';
 class MainWrapperScreen extends StatelessWidget {
   MainWrapperScreen({super.key});
 
@@ -40,6 +43,11 @@ class MainWrapperScreen extends StatelessWidget {
       const CartScreen(),
       const ProfileScreen(),
       const FavoritesScreen(),
+      // صفحات القائمة الجانبية
+      const NotificationsScreen(screenOnly: false), // 6
+      const OrdersScreen(screenOnly: false),        // 7
+      UsrAddress(screenOnly: false),                // 8
+      const SmartChatScreen(screenOnly: false),     // 9
     ];
     final List<bool> extendBodyPages = [
       true,  // Reels
@@ -48,6 +56,10 @@ class MainWrapperScreen extends StatelessWidget {
       false, // Cart
       true, // Profile
       true, // Favorites
+      false, // Notifications
+      false, // Orders
+      false, // Addresses
+      false, // Chat
     ];
     return BlocProvider(
       create: (context) => NavigationCubit(),
@@ -116,7 +128,7 @@ class MainWrapperScreen extends StatelessWidget {
                     currentIndex: currentIndex,
                     onTap: (index) => handleNavigation(index, context), // استخدام الدالة الجديدة
                   ),
-                  floatingActionButton: (currentIndex == 3 || currentIndex == 0 ||currentIndex == 4  ) ? null : Column(
+                  floatingActionButton: (const [3, 9].contains(currentIndex) ) ? null : Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     spacing: 10,
@@ -172,7 +184,8 @@ void handleNavigation(int index, BuildContext context) async {
   // bool hasNet = await InternetCheck.internetCheck(context);
   // if (!hasNet) return;
 
-  if (index == 4) {
+  // صفحات تحتاج تسجيل دخول
+  if (const [16, 17, 18].contains(index)) {
     final session = Supabase.instance.client.auth.currentSession;
 
     // الـ state هنا هو نفسه الـ bool (إما true أو false)

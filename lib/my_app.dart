@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
+import 'core/utils/local_notification_helper.dart';
 import 'logic/login/login_cubit_web.dart';
 import 'logic/navigation/navigation_cubit.dart';
 import 'views/screens/main_wrapper_screen.dart';
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
     return BlocBuilder<ThemeBloc, ThemeState>(
         builder: (context, state) {
           return MaterialApp(
+              navigatorKey: navigatorKey,
             // key: ValueKey(state.isDark),
             scrollBehavior: const MaterialScrollBehavior().copyWith(
               dragDevices: {
