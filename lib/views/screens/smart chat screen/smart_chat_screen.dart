@@ -21,7 +21,8 @@ import '../../../logic/chat/chat_state.dart';
 import '../product/products_screen.dart';
 
 class SmartChatScreen extends StatelessWidget {
-  const SmartChatScreen({super.key});
+  final bool screenOnly;
+  const SmartChatScreen({super.key, this.screenOnly = true});
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +63,7 @@ class SmartChatScreen extends StatelessWidget {
               ),
             ],
           ),
-          actions: const [ArrowBack(), SizedBox(width: 6)],
+          actions: [if (screenOnly) const ArrowBack(), const SizedBox(width: 6)],
         ),
         body: BlocBuilder<ChatCubit, ChatState>(
           builder: (context, state) {

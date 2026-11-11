@@ -87,4 +87,9 @@ class ApiEndpoints {
   // ==================== روابط إحصائيات المنتج ====================
   static String recordProductView(int productId) => '$_baseUrl/api/products/$productId/view';
   static String recordProductShare(int productId) => '$_baseUrl/api/products/$productId/share';
+  // ==================== روابط الإشعارات ====================
+  static String get notifications => '$_baseUrl/api/notifications';
+  static String get readAllNotifications => '$_baseUrl/api/notifications/read-all';
+  static String readNotification(int id) => '$_baseUrl/api/notifications/$id/read';
+  static String deleteNotification(int id) => '$_baseUrl/api/notifications/$id';
 }

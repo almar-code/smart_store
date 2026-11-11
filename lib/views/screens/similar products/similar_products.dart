@@ -80,8 +80,9 @@ class _ScanningEffectWidgetState extends State<_ScanningEffectWidget>
 }
 class SimilarProducts extends StatelessWidget {
   final String imagePath; // الصورة المرسلة (سواء من المعرض أو رابط المنتج)
+  final Uint8List? imageBytes; // الصورة بعد التحويل للارسال
 
-  const SimilarProducts({super.key, required this.imagePath});
+  const SimilarProducts({super.key, required this.imagePath, this.imageBytes});
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +92,7 @@ class SimilarProducts extends StatelessWidget {
       create: (context) => ProductCubit(repository: di.sl<ProductRepo>())
         ..fetchProducts(
           isRefresh: true,
+          visualImageBytes: imageBytes,
           visualImagePath: imagePath, // 🌟 تمرير الصورة هنا للبحث البصري
         ),
       child: SafeArea(

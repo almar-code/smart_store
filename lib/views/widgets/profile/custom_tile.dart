@@ -7,17 +7,20 @@ class CustomTile extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
   final String? subtitle; // أضفت حقل فرعي اختياري لزيادة المرونة
+  final Color? iconColor;
 
   const CustomTile({
     super.key,
     required this.icon,
     required this.title,
     required this.onTap,
+    this.iconColor,
     this.subtitle,
   });
 
   @override
   Widget build(BuildContext context) {
+    final color = iconColor ?? AppColors.primary;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
       child: InkWell(
@@ -44,12 +47,12 @@ class CustomTile extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
-                  color: AppColors.primary.withOpacity(0.08),
+                  color: color.withOpacity(0.08),
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Icon(
                   icon,
-                  color: AppColors.primary,
+                  color: color,
                   size: 16,
                 ),
               ),
@@ -92,7 +95,7 @@ class CustomTile extends StatelessWidget {
                 child: Icon(
                   Icons.arrow_forward_ios_rounded,
                   size: 11,
-                  color: AppColors.primary,
+                  color: color,
                 ),
               ),
             ],

@@ -1,13 +1,17 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 import 'package:smart_store/views/screens/cart/cart_screen.dart';
 import 'package:smart_store/views/screens/favorites/favorites_screen.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/buttons/cancel_button.dart';
+import '../../../logic/notifications/notification_cubit.dart';
+import '../../../logic/notifications/notification_state.dart';
 import '../../screens/address/user_addresses_screen.dart';
 import '../../screens/help center screen/help_center_screen.dart';
+import '../../screens/notifications/notifications_screen.dart';
 import '../../screens/orders/orders_screen.dart';
 import 'custom_tile.dart';
 
@@ -22,7 +26,19 @@ class ProfileList extends StatelessWidget {
       children: [
         CustomTile(icon: CupertinoIcons.list_bullet_below_rectangle, title: "order management".tr(), onTap:  ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => OrdersScreen()))),
         CustomTile(icon: CupertinoIcons.cart, title: "shopping cart".tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => CartScreen(screenOnly: true,)))),
-        CustomTile(icon: CupertinoIcons.heart, title: "favorites".tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen()))),
+        BlocBuilder<NotificationCubit, NotificationState>(
+          buildWhen: (a, b) => a.unreadCount != b.unreadCount,
+          builder: (context, state) => CustomTile(
+            icon: CupertinoIcons.bell,
+            title: "notifications".tr(),
+            // أحمر عند وجود غير مقروء
+            subtitle: state.unreadCount > 0
+                ? "unread_notifications".tr(namedArgs: {'count': '${state.unreadCount}'})
+                : null,
+            iconColor: state.unreadCount > 0 ? AppColors.redColor : null,
+            onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen())),
+          ),
+        ),        CustomTile(icon: CupertinoIcons.heart, title: "favorites".tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen()))),
         CustomTile(icon: CupertinoIcons.chat_bubble_2, title: "messages".tr(), onTap: () {}),
         CustomTile(icon: CupertinoIcons.person_crop_circle, title: "my size".tr(), onTap: () {}),
         CustomTile(
