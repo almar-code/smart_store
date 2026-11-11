@@ -18,7 +18,9 @@ import '../../../logic/orders/order_state.dart';
 import '../../widgets/flash/flash_screen.dart';
 
 class OrdersScreen extends StatefulWidget {
-  const OrdersScreen({super.key});
+  final bool screenOnly;
+  final int? openOrderId; // الطلب القادم من الاشعار
+  const OrdersScreen({super.key, this.screenOnly = true,this.openOrderId});
 
   @override
   State<OrdersScreen> createState() => _OrdersScreenState();
@@ -30,12 +32,14 @@ class _OrdersScreenState extends State<OrdersScreen> {
   @override
   void initState() {
     super.initState();
+    _activeTag = widget.openOrderId?.toString();
     context.read<OrderCubit>().fetchOrders(1);//رقم العميل
   }
 
   void _toggleExpand(String tag) {
     setState(() {
       _activeTag = (_activeTag == tag) ? null : tag;
+
     });
   }
 
@@ -81,7 +85,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
             spacing: (context.locale.languageCode == 'ar') ? '' : ' ',
           ),
           actions: [
-            ArrowBack(),
+            if (widget.screenOnly) ArrowBack(),
             SizedBox(width: 10),
           ],
         ),
@@ -132,8 +136,12 @@ class _OrdersScreenState extends State<OrdersScreen> {
                           child: Text(tr('no_orders_found'), style: TextStyle(color: AppColors.textSecondary)),
                         );
                       }
+                      final orders = [
+                        ...state.orders.where((o) => o.orderId == widget.openOrderId),
+                        ...state.orders.where((o) => o.orderId != widget.openOrderId),
+                      ];
                       return Column(
-                        children: state.orders.map((order) {
+                        children: orders.map((order) {
                           final config = _getOrderStatusConfig(order.status);
                           final tag = order.orderId.toString();
                           return Padding(
