@@ -17,8 +17,6 @@ import '../../widgets/product/all_products.dart';
 class FavoritesScreen extends StatelessWidget {
   final bool screenOnly;
   const FavoritesScreen({super.key,this.screenOnly =false });
-
-  get currentCustomerId => null;
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;

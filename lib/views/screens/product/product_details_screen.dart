@@ -46,7 +46,7 @@ class ProductDetailsScreen extends StatefulWidget {
 
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   late bool _localIsExpanded;
-
+  Future<int?> _customerId() => UserLocal().getCustomerId();
   @override
   void initState() {
     super.initState();
@@ -55,10 +55,9 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
   // تسجيل مشاهدة المنتج في الخلفية بدون انتظار حتى لا تتأخر الشاشة
   Future<void> _recordView() async {
-    final customerId = await UserLocal().getCustomerIdOrNull();
     di.sl<ProductRepo>().recordProductView(
       productId: widget.product.pId,
-      customerId: customerId,
+      customerId:  await _customerId(),
     );
   }
 
@@ -138,8 +137,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   }
 
   Widget _buildMobileLayout(BuildContext context,ProductModel product) {
-    var box = Hive.box('user_info_box');
-    var customer_id = (box.isEmpty) ? '' :  box.get('customer_id');
 
 
     return Column(
@@ -164,7 +161,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           child: _buildProductInfo(),
         ),
          ProductReviewsSection(
-          currentCustomerId: customer_id,
           productId: product.pId,
         ),
         const TitleBar(title: "product like"),
@@ -221,7 +217,6 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           child: Column(
             children: [
                ProductReviewsSection(
-                currentCustomerId: customer_id,
                 productId: product.pId,
               ),
                TitleBar(title: "product like"),

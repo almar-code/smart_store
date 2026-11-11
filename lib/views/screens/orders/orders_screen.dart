@@ -33,7 +33,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
   void initState() {
     super.initState();
     _activeTag = widget.openOrderId?.toString();
-    context.read<OrderCubit>().fetchOrders(1);//رقم العميل
+    context.read<OrderCubit>().fetchOrders();//رقم العميل
   }
 
   void _toggleExpand(String tag) {

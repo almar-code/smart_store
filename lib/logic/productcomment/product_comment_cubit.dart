@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../data/local/user_local.dart';
 import '../../data/models/product_comment_model.dart';
 import '../../data/repos/product_comment_repository.dart';
 import 'product_comment_state.dart';
@@ -11,7 +12,7 @@ enum CommentSubmitResult {
 }
 class ProductCommentCubit extends Cubit<ProductCommentState> {
   final ProductCommentRepository repo;
-
+  Future<int?> _customerId() => UserLocal().getCustomerId();
   ProductCommentCubit({required ProductCommentRepository repository})
       : repo = repository,
         super(ProductCommentInitial());
@@ -29,7 +30,6 @@ class ProductCommentCubit extends Cubit<ProductCommentState> {
   }
 
   Future<CommentSubmitResult> sendComment({
-      required String customerId,
       required int productId,
       required String commentText,
       required double stars,
@@ -47,7 +47,7 @@ class ProductCommentCubit extends Cubit<ProductCommentState> {
       // إظهار التعليق مباشرةً في الواجهة، قبل التصنيف.
       final tempComment = ProductCommentModel(
       commentId: -999,
-      customerId: customerId,
+      customerId:  await _customerId(),
       productId: productId,
       commentAr: commentText,
       commentEn: commentText,
@@ -87,7 +87,7 @@ class ProductCommentCubit extends Cubit<ProductCommentState> {
       // الخطوة الثالثة: التعليق مقبول مبدئيًا،
       // لذلك نرسله إلى Laravel للحفظ.
       final updatedComments = await repo.addComment(
-          customerId: customerId,
+          customerId:  await _customerId(),
           productId: productId,
           commentAr: commentText,
           commentEn: commentText,
@@ -109,9 +109,9 @@ class ProductCommentCubit extends Cubit<ProductCommentState> {
         }
       }
 
-  void removeComment(int commentId, String customerId) async {
+  void removeComment(int commentId) async {
     try {
-      final updatedComments = await repo.deleteComment(commentId, customerId);
+      final updatedComments = await repo.deleteComment(commentId,  await _customerId());
       emit(ProductCommentLoaded(updatedComments));
     } catch (e) {
       emit(ProductCommentError(e.toString()));

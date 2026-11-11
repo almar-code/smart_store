@@ -41,7 +41,7 @@ class ProductService {
   }
   // 🌟 دالة تفعيل أو إلغاء المفضلة بضغط زر واحدة (Toggle)
   Future<Response> toggleFavoriteRaw({
-    required int customerId,
+    required int? customerId,
     required int productId,
   }) async {
     try {

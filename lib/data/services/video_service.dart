@@ -37,13 +37,13 @@ class VideoService {
     return response.data['data'];
   }
 
-  Future<Map<String, dynamic>> addComment(int videoId, int customerId, String text) async {
+  Future<Map<String, dynamic>> addComment(int videoId, int? customerId, String text) async {
     final response = await dio.post(
       ApiEndpoints.addComment(videoId),
       data: {'customer_id': customerId, 'comment_text': text},
     );
 
-    // 👈 التعديل هنا: نقوم بإرجاع response.data مباشرة لأن السيرفر يرسل الكائن بدون تغليفه بـ 'data'
+    //  التعديل هنا: نقوم بإرجاع response.data مباشرة لأن السيرفر يرسل الكائن بدون تغليفه بـ 'data'
     return response.data as Map<String, dynamic>;
   }
 }

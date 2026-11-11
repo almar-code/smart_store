@@ -39,7 +39,7 @@ class ProductRepo {
   }
   // 🌟 دالة تفعيل أو إلغاء المفضلة وإرجاع الحالة الجديدة للمنتج
   Future<bool> toggleProductFavorite({
-    required int customerId,
+    required int? customerId,
     required int productId,
   }) async {
     try {

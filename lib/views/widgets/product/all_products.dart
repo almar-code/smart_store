@@ -232,7 +232,6 @@ class AllProducts extends StatelessWidget {
                                   onTap: () {
                                     // 🚀 استدعاء الدالة من الـ Cubit مباشرة ليقوم هو بكل السحر في الخلفية
                                     context.read<ProductCubit>().toggleProductFavorite(
-                                      customerId: 1,
                                       product: item,
                                       isInsideFavoritesScreen: isInsideFavoritesScreen
                                     );

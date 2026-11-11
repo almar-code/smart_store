@@ -1,6 +1,6 @@
 class ProductCommentModel {
   final int commentId;
-  final String customerId;
+  final int? customerId;
   final int productId;
   final String commentAr;
   final String commentEn;
@@ -32,7 +32,7 @@ class ProductCommentModel {
         (json['comment_id'] ?? json['id'] ?? 0).toString(),
       ),
       customerId:
-        (json['customer_id'] ?? 0).toString(),
+        (json['customer_id']),
       productId: int.parse(
         (json['p_id'] ?? json['product_id'] ?? 0).toString(),
       ),

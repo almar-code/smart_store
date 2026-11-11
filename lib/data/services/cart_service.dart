@@ -1,15 +1,16 @@
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import '../../core/constants/app_endpoints.dart';
+import '../local/user_local.dart';
 
 class CartApiService {
   final Dio _dio = Dio();
-  final box = Hive.box('user_info_box');
+  Future<int?> _customerId() => UserLocal().getCustomerId();
 
   // 1. جلب محتويات السلة لعميل معين
   Future<Response> getCartRaw() async {
     try {
-      final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
+      final customerId =  await _customerId();
       final response = await _dio.get(
         ApiEndpoints.getCart,
         queryParameters: {'customer_id': customerId},
@@ -28,7 +29,7 @@ class CartApiService {
     int? sizeId,
   }) async {
     try {
-      final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
+      final customerId =  await _customerId();
       final response = await _dio.post(
         ApiEndpoints.addToCart,
         data: {

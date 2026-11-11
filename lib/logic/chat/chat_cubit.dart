@@ -8,7 +8,6 @@ import 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
   final ChatRepository _repository = ChatRepository();
-  final String _chatId = "omar_session_2026"; // معرف الجلسة الخاص بك
 
   final List<ChatMessage> _messages = [
     ChatMessage(
@@ -105,7 +104,6 @@ class ChatCubit extends Cubit<ChatState> {
 
     try {
       final Map<String, dynamic> responseMap = await _repository.getBotReply(
-        chatId: _chatId,
         message: userText,
         image: imageToSend,
         imageName: imageNameToSend,

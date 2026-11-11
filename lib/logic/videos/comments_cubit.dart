@@ -1,4 +1,5 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../data/local/user_local.dart';
 import '../../data/models/comment_model.dart';
 import '../../data/models/video_model.dart';
 import '../../data/repos/video_repo.dart';
@@ -24,7 +25,7 @@ class CommentsError extends CommentsState {
 // --- CommentsCubit ---
 class CommentsCubit extends Cubit<CommentsState> {
   final VideoRepo repository;
-
+  Future<int?> _customerId() => UserLocal().getCustomerId();
   CommentsCubit(this.repository) : super(CommentsInitial());
 
   // تخزين مؤقت للقائمة الحالية للتحكم بها محلياً وسريعاً
@@ -42,7 +43,6 @@ class CommentsCubit extends Cubit<CommentsState> {
   }
   void sendComment(
       VideoModel video,
-      int customerId,
       String text,
       ) async {
 
@@ -84,7 +84,7 @@ class CommentsCubit extends Cubit<CommentsState> {
       final serverComment =
       await repository.postComment(
         video.videoId,
-        customerId,
+        await _customerId(),
         text,
       );
 

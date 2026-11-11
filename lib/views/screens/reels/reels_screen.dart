@@ -845,11 +845,7 @@ void showCommentsBottomSheet(
 
                             // إرسال التعليق
                             commentsCubit.sendComment(
-
                               video,
-
-                              1,
-
                               commentText,
                             );
 

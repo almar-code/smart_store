@@ -33,7 +33,7 @@ class VideoRepo {
     return data.map<CommentModel>((json) => CommentModel.fromJson(json)).toList();
   }
 
-  Future<CommentModel> postComment(int videoId, int customerId, String text) async {
+  Future<CommentModel> postComment(int videoId, int? customerId, String text) async {
     final data = await service.addComment(videoId, customerId, text);
     return CommentModel.fromJson(data);
   }

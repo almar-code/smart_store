@@ -7,7 +7,7 @@ import '../../core/constants/app_endpoints.dart';
 class FavoriteService {
   final Dio dio = Dio();
 
-  Future<Response> getFavoriteCountRaw({required int customerId}) async {
+  Future<Response> getFavoriteCountRaw({required int? customerId}) async {
     try {
       final response = await dio.get(
         ApiEndpoints.favoriteCount??"",
@@ -27,7 +27,7 @@ class FavoriteService {
   }
   // 🌟 دالة تفعيل أو إلغاء المفضلة بضغط زر واحدة (Toggle)
   Future<Response> toggleFavoriteRaw({
-    required int customerId,
+    required int? customerId,
     required int productId,
   }) async {
     try {

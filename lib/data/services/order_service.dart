@@ -6,7 +6,7 @@ class OrderService {
   final Dio dio = Dio();
 
 
-  Future<List<OrderModel>> getOrders(int customerId) async {
+  Future<List<OrderModel>> getOrders(int? customerId) async {
     final response = await dio.get(ApiEndpoints.getOrders(customerId));
     if (response.data['success'] == true) {
       List data = response.data['data'];

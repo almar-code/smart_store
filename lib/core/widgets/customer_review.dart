@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 import 'package:smart_store/core/widgets/titleBar.dart';// مسار الـ State
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../../data/local/user_local.dart';
 import '../../logic/login/login_cubit.dart';
 import '../../logic/productcomment/product_comment_cubit.dart';
 import '../../logic/productcomment/product_comment_state.dart';
@@ -17,12 +18,9 @@ import 'image_helper.dart';
 
 class ProductReviewsSection extends StatelessWidget {
   final int productId;
-  final String currentCustomerId;
-
   const ProductReviewsSection({
     super.key,
     required this.productId,
-    required this.currentCustomerId,
   });
 
   @override
@@ -31,7 +29,6 @@ class ProductReviewsSection extends StatelessWidget {
       create: (_) => di.sl<ProductCommentCubit>()..loadComments(productId),
       child: _ProductReviewsView(
         productId: productId,
-        currentCustomerId: currentCustomerId,
       ),
     );
   }
@@ -39,11 +36,9 @@ class ProductReviewsSection extends StatelessWidget {
 
 class _ProductReviewsView extends StatefulWidget {
   final int productId;
-  final String currentCustomerId;
 
   const _ProductReviewsView({
     required this.productId,
-    required this.currentCustomerId,
   });
 
   @override
@@ -99,7 +94,6 @@ class _ProductReviewsViewState extends State<_ProductReviewsView> {
         .read<ProductCommentCubit>()
         .sendComment(
       customerName: userName,
-      customerId: widget.currentCustomerId,
       productId: widget.productId,
       commentText: commentText,
       stars: 5.0,
@@ -186,11 +180,11 @@ class _ProductReviewsViewState extends State<_ProductReviewsView> {
                         scrollDirection: Axis.horizontal,
                         padding: const EdgeInsets.symmetric(horizontal: 12),
                         itemCount: state.comments.length,
-                        itemBuilder: (context, index) {
+                        itemBuilder: (context, index){
                           final review = state.comments[index];
                           final customerName = review.customerName ?? "مستخدم";
                           final avatarUrl = review.customerImage ?? "";
-                          final isMyComment = review.customerId == widget.currentCustomerId;
+                          final isMyComment = review.customerId == UserLocal().getCustomerId();
                           var box = Hive.box('user_info_box');
                           String imag = (box.isEmpty) ? '' :  box.get('image');
 
@@ -293,7 +287,6 @@ class _ProductReviewsViewState extends State<_ProductReviewsView> {
                                             onPressed: () {
                                               context.read<ProductCommentCubit>().removeComment(
                                                 review.commentId,
-                                                widget.currentCustomerId,
                                               );
                                             },
                                           ),

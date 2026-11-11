@@ -1,37 +1,34 @@
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import '../../core/constants/app_endpoints.dart';
+import '../local/user_local.dart';
 
 class PaymentService {
   final Dio dio = Dio();
-  final box = Hive.box('user_info_box');
-
+  Future<int?> _customerId() => UserLocal().getCustomerId();
   Future<List<dynamic>> getPaymentMethods() async {
-    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
 
     final response = await dio.get(
       ApiEndpoints.getPaymentMethods,
-      queryParameters: {'customer_id': customerId},
+      queryParameters: {'customer_id':  await _customerId()},
       options: Options(headers: {'Accept': 'application/json'}),
     );
     return response.data['data'] ?? [];
   }
 
   Future<Map<String, dynamic>> setupCard() async {
-    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
     final response = await dio.post(
       ApiEndpoints.setupCard,
-      data: {'customer_id': customerId},
+      data: {'customer_id':  await _customerId()},
       options: Options(headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}),
     );
     return response.data;
   }
 
   Future<Map<String, dynamic>> syncCard({ required String setupIntentId}) async {
-    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
     final response = await dio.post(
       ApiEndpoints.syncCard,
-      data: {'customer_id': customerId, 'setup_intent_id': setupIntentId},
+      data: {'customer_id':  await _customerId(), 'setup_intent_id': setupIntentId},
       options: Options(headers: {'Content-Type': 'application/json'}),
     );
     return response.data;
@@ -41,12 +38,11 @@ class PaymentService {
     required int? addressId,
     required int customerPaymentMethodId,
   }) async {
-    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
 
     final response = await dio.post(
       ApiEndpoints.startCheckout,
       data: {
-        'customer_id': customerId,
+        'customer_id':  await _customerId(),
         'address_id': addressId,
         'customer_payment_method_id': customerPaymentMethodId,
       },
@@ -70,11 +66,10 @@ class PaymentService {
     String? transactionReference,
     String? bankName,
   }) async {
-    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
     final response = await dio.post(
       ApiEndpoints.createManualCheckout,
       data: {
-        'customer_id': customerId,
+        'customer_id':  await _customerId(),
         'address_id': addressId,
         'payment_type': paymentType,
         if (storePaymentAccountId != null) 'store_payment_account_id': storePaymentAccountId,
@@ -86,11 +81,10 @@ class PaymentService {
     return response.data['data'];
   }
   Future<Map<String, dynamic>> deletePaymentMethod(int paymentMethodId) async {
-    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
 
     final response = await dio.delete(
       ApiEndpoints.deletePaymentMethod(paymentMethodId),
-      data: {'customer_id': customerId},
+      data: {'customer_id':  await _customerId()},
       options: Options(headers: {'Content-Type': 'application/json', 'Accept': 'application/json'}),
     );
     return response.data;

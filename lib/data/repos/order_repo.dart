@@ -6,7 +6,7 @@ class OrderRepo {
 
   OrderRepo(this.service);
 
-  Future<List<OrderModel>> getOrders(int customerId) async {
+  Future<List<OrderModel>> getOrders(int? customerId) async {
     return await service.getOrders(customerId);
   }
 

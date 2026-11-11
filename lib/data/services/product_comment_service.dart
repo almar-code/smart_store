@@ -96,7 +96,7 @@ class ProductCommentService {
 
   // إضافة تعليق وإرجاع القائمة المحدثة
   Future<List<ProductCommentModel>> addComment({
-    required String customerId,
+    required int? customerId,
     required int productId,
     required String commentAr,
     required String commentEn,
@@ -126,7 +126,7 @@ class ProductCommentService {
   }
 
   // حذف التعليق وإرجاع القائمة المحدثة
-  Future<List<ProductCommentModel>> deleteComment(int commentId, String customerId) async {
+  Future<List<ProductCommentModel>> deleteComment(int commentId, int? customerId) async {
     final response = await http.delete(
       Uri.parse(ApiEndpoints.deleteProductComment(commentId)),
       headers: {'Content-Type': 'application/json'},

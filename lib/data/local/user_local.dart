@@ -22,23 +22,15 @@ class UserLocal {
       Map<String,dynamic>.from(box.toMap()),
     );
   }
-  Future<int> getCustomerId() async {
-    final box = Hive.box('user_info_box');
-    final customerId = (box.isEmpty) ? '' :  box.get('customer_id');
-    return customerId;
+  Future<int?> getCustomerId() async {
+    var box = Hive.box('user_info_box');
+    var customerID = (box.isEmpty) ? '' :  box.get('customer_id');
+    return int.tryParse(customerID.toString());
   }
   Future<void> clearUser() async {
 
     final box = await Hive.openBox(boxName);
     await box.clear();
 
-  }
-  /// يرجع رقم العميل الحقيقي، أو null إذا لم يكن مسجلاً
-  /// (بدون القيمة الوهمية 1 حتى لا تُدمج مشاهدات كل الزوار في عميل واحد)
-  Future<int?> getCustomerIdOrNull() async {
-    final box = await Hive.openBox(boxName);
-    final value = box.get('customer_id');
-    if (value == null) return null;
-    return int.tryParse(value.toString());
   }
 }

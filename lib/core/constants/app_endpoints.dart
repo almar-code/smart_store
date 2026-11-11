@@ -66,7 +66,7 @@ class ApiEndpoints {
   static String get getStorePaymentAccounts => '$_baseUrl/api/store-payment-accounts';
   static String get createManualCheckout => '$_baseUrl/api/manual-payment/checkout';
   // ====================  روابط الطلبات (Order Endpoints) ====================
-  static String getOrders(int customerId) => '$_baseUrl/api/orders/$customerId';
+  static String getOrders(int? customerId) => '$_baseUrl/api/orders/$customerId';
   static String cancelOrder(int orderId) => '$_baseUrl/api/orders/cancel/$orderId';
 //  الرابط الجديد المضاف الخاص بجلب وطباعة فاتورة الطلب بصيغة PDF من لارافيل
   static String orderInvoice(int orderId) => '$_baseUrl/api/orders/$orderId/invoice';

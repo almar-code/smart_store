@@ -3,11 +3,12 @@ import 'dart:typed_data';
 import 'package:dio/dio.dart';
 
 import '../../core/constants/app_endpoints.dart';
+import '../local/user_local.dart';
 
 class ChatService {
   final Dio _dio = Dio();
+  Future<int?> _customerId() => UserLocal().getCustomerId();
   Future<Map<String, dynamic>> sendPrompt({
-    required String chatId,
     required String message,
     Uint8List? image,
     String? imageName,
@@ -17,7 +18,7 @@ class ChatService {
 
       if (image != null) {
         requestData = FormData.fromMap({
-          'chat_id': chatId,
+          'chat_id':  await _customerId(),
           'message': message,
           'image': MultipartFile.fromBytes(
             image,
@@ -26,7 +27,7 @@ class ChatService {
         });
       } else {
         requestData = {
-          'chat_id': chatId,
+          'chat_id':  await _customerId(),
           'message': message,
         };
       }

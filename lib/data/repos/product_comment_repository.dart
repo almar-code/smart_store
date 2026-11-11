@@ -15,7 +15,7 @@ class ProductCommentRepository {
   }
 
   Future<List<ProductCommentModel>> addComment({
-    required String customerId,
+    required int? customerId,
     required int productId,
     required String commentAr,
     required String commentEn,
@@ -34,7 +34,7 @@ class ProductCommentRepository {
     );
   }
 
-  Future<List<ProductCommentModel>> deleteComment(int commentId, String customerId) async {
+  Future<List<ProductCommentModel>> deleteComment(int commentId, int? customerId) async {
     return await apiService.deleteComment(commentId, customerId);
   }
 }

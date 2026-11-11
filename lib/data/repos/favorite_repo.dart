@@ -9,7 +9,7 @@ class FavoriteRepo {
 
   FavoriteRepo({required this.apiService});
 
-  Future<int> getFavoriteCount({required int customerId}) async {
+  Future<int> getFavoriteCount({required int? customerId}) async {
     try {
       final Response response = await apiService.getFavoriteCountRaw(
         customerId: customerId,
@@ -29,13 +29,12 @@ class FavoriteRepo {
         throw Exception("Server Error: ${response.statusCode}");
       }
     } catch (e) {
-      print("sssssssssssssssssssssssssssssssssssss");
 
       throw Exception("Repository Error: $e");
     }
   }
   Future<bool> toggleProductFavorite({
-    required int customerId,
+    required int? customerId,
     required int productId,
   }) async {
     try {

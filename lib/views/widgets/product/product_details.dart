@@ -437,7 +437,6 @@ class _ProductActionActionsState extends State<ProductActionActions> {
 
               // إرسال الأوامر للـ Cubit ليقوم بالمزامنة مع الـ Event Bus والسيرفر
               context.read<ProductCubit>().toggleProductFavorite(
-                customerId: 1,
                 product: widget.product,
               );
             },
