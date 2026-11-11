@@ -1,4 +1,6 @@
 // data/services/product_api_service.dart
+import 'dart:typed_data';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
@@ -79,6 +81,7 @@ class ProductService {
   }
   Future<Response> getVisualSearchProducts({
     required String imagePathOrUrl,
+    Uint8List? imageBytes,
     required int page,
     int? seed,
   }) async {
@@ -88,17 +91,19 @@ class ProductService {
         if (seed != null) 'seed': seed,
       });
 
-      if (imagePathOrUrl.startsWith('http')|| imagePathOrUrl.startsWith('blob:')) {
-        // إرسال رابط الصورة
-        formData.fields.add(MapEntry('image_url', imagePathOrUrl));
-      } else {
-        // إرسال ملف الصورة محلياً من الجهاز
+      if (imageBytes != null) {
+        // صورة من الكاميرا أو المعرض بعد التحويل
         formData.files.add(MapEntry(
           'image',
-          await MultipartFile.fromFile(
-            imagePathOrUrl,
-            filename: imagePathOrUrl.split('/').last,
-          ),
+          MultipartFile.fromBytes(imageBytes, filename: 'search.jpg'),
+        ));
+      } else if (imagePathOrUrl.startsWith('http')) {
+        // رابط صورة منتج
+        formData.fields.add(MapEntry('image_url', imagePathOrUrl));
+      } else {
+        formData.files.add(MapEntry(
+          'image',
+          await MultipartFile.fromFile(imagePathOrUrl, filename: imagePathOrUrl.split('/').last),
         ));
       }
 

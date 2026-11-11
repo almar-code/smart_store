@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,110 +25,109 @@ class ProductImageSlider extends StatelessWidget {
   final List<String> images;
   const ProductImageSlider({super.key, required this.images});
 
+  static const double _height = 230;
+  static const double _gap = 10;
+  static const double _maxItemWidth = 150;
+
+  String _url(String path) =>
+      path.startsWith('http') ? path : ApiEndpoints.productImageUrl(path);
 
   @override
   Widget build(BuildContext context) {
-    final double width =  (MediaQuery.of(context).size.width * 0.31) / 3;
+    if (images.isEmpty) return const SizedBox.shrink();
 
-    final double height = 230;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // العرض المتاح من الأب وليس من الشاشة
+        final double maxWidth = constraints.maxWidth.isFinite
+            ? constraints.maxWidth
+            : MediaQuery.of(context).size.width;
 
-    if (images.isEmpty) {
-      return const SizedBox.shrink();
-    }
+        // ثلث المساحة بعد طرح 4 مسافات، بحد أقصى للشاشات الكبيرة
+        final double itemWidth =
+        ((maxWidth - _gap * 4) / 3).clamp(0.0, _maxItemWidth);
 
-    return SizedBox(
-      width:(MediaQuery.of(context).size.width * 0.32) ,
+        return SizedBox(
+          width: maxWidth,
+          height: _height,
+          child: images.length > 3
+              ? _buildScroll(itemWidth,context)
+              : _buildFixed(itemWidth),
+        );
+      },
+    );
+  }
+
+  // 1 إلى 3 صور: مسافات متساوية قبل وبين وبعد الصور
+  Widget _buildFixed(double itemWidth) {
+    return Stack(
+      children: [
+        // خلفية من أول صورة عند صورة أو صورتين
+        if (images.length <= 2) Positioned.fill(child: _background()),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: images
+              .map((path) => _imageCard(path, itemWidth))
+              .toList(),
+        ),
+      ],
+    );
+  }
+
+  // أكثر من 3 صور: تمرير أفقي مع ظهور جزء من الصورة التالية
+  Widget _buildScroll(double itemWidth,BuildContext context) {
+    return ListView.separated(
+      scrollDirection: Axis.horizontal,
+      padding: context.locale.languageCode == 'ar' ?EdgeInsets.only(left: _gap) : EdgeInsets.only(right: _gap),
+      itemCount: images.length,
+      separatorBuilder: (_, __) => const SizedBox(width: _gap),
+      itemBuilder: (context, index) =>
+          _imageCard(images[index], itemWidth * 0.9),
+    );
+  }
+
+  Widget _background() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8),
       child: Stack(
-
+        fit: StackFit.expand,
         children: [
-          // خلفية واحدة خلف شريط الصور بالكامل
-          if (images.length <= 2)
-            Positioned.fill(
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Stack(
-                  fit: StackFit.expand,
-                  children: [
-                    Image.network(
-                      images[0].startsWith('http')
-                          ? images[0]
-                          : ApiEndpoints.productImageUrl(images[0]),
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          color: Colors.transparent,
-                        );
-                      },
-                    ),
-                    Container(
-                      color: Colors.white.withValues(alpha: 0.40),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-
-          // الصور في المقدمة
-          LayoutBuilder(
-            builder: (context, constraints) {
-              return SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(
-                    minWidth: constraints.maxWidth,
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 10,
-                    children: images.map((path) {
-                      final String fullImageUrl = path.startsWith('http')
-                          ? path
-                          : ApiEndpoints.productImageUrl(path);
-
-                      return Container(
-                        width: width,
-                        height: height,
-                        decoration: BoxDecoration(
-                          color: Colors.transparent,
-                          border: Border.all(
-                            color: AppColors.borderColor,
-                            width: 1,
-                          ),
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: Image.network(
-                            fullImageUrl,
-                            fit: images.length < 3
-                                ? BoxFit.fill
-                                : BoxFit.cover,
-                            loadingBuilder: (context, child, loadingProgress) {
-                              if (loadingProgress == null) return child;
-                              return Center(child: ThreeDotsLoader());
-                            },
-                            errorBuilder: (context, error, stackTrace) {
-                              return Image.asset(
-                                'assets/images/image_placeholder.png',
-                                fit: BoxFit.fill,
-                              );
-                            },
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              );
-            },
-          )        ],
+          Image.network(
+            _url(images.first),
+            fit: BoxFit.cover,
+            errorBuilder: (_, __, ___) =>
+            const ColoredBox(color: Colors.transparent),
+          ),
+          Container(color: Colors.white.withValues(alpha: 0.40)),
+        ],
       ),
     );
   }
 
+  Widget _imageCard(String path, double width) {
+    return Container(
+      width: width,
+      height: _height,
+      decoration: BoxDecoration(
+        border: Border.all(color: AppColors.borderColor, width: 1),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(8),
+        child: Image.network(
+          _url(path),
+          fit: BoxFit.cover,
+          loadingBuilder: (context, child, progress) =>
+          progress == null ? child : Center(child: ThreeDotsLoader()),
+          errorBuilder: (_, __, ___) => Image.asset(
+            'assets/images/image_placeholder.png',
+            fit: BoxFit.cover,
+          ),
+        ),
+      ),
+    );
+  }
 }
-
 class ProductImageGallery extends StatelessWidget {
   final List<String> images;
   final int? videoID;
