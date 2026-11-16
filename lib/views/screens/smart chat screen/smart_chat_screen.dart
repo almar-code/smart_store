@@ -20,18 +20,47 @@ import '../../../logic/chat/chat_cubit.dart';
 import '../../../logic/chat/chat_state.dart';
 import '../product/products_screen.dart';
 
-class SmartChatScreen extends StatelessWidget {
+class SmartChatScreen extends StatefulWidget {
   final bool screenOnly;
   const SmartChatScreen({super.key, this.screenOnly = true});
 
   @override
-  Widget build(BuildContext context) {
+  State<SmartChatScreen> createState() => _SmartChatScreenState();
+}
+
+class _SmartChatScreenState extends State<SmartChatScreen> {
+  // متحكم خاص بكل شاشة
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    // الذهاب لآخر رسالة عند الدخول
+    _scrollToBottom(animate: false);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollToBottom({bool animate = true}) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<ChatCubit>().scrollToBottom();
+      if (!_scrollController.hasClients) return;
+      final max = _scrollController.position.maxScrollExtent;
+      animate
+          ? _scrollController.animateTo(max, duration: const Duration(milliseconds: 300), curve: Curves.easeOut)
+          : _scrollController.jumpTo(max);
     });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 900;
     bool isIpad = MediaQuery.of(context).size.width < 900 && MediaQuery.of(context).size.width > 450;
     int itemCount = isDesktop ? 4 : isIpad ? 3 : 2;
+
     return BlocProvider<ChatCubit>(
       create: (_) => ChatCubit(),
       child: Scaffold(
@@ -63,13 +92,15 @@ class SmartChatScreen extends StatelessWidget {
               ),
             ],
           ),
-          actions: [if (screenOnly) const ArrowBack(), const SizedBox(width: 6)],
+          actions: [if (widget.screenOnly) const ArrowBack(), const SizedBox(width: 6)],
         ),
-        body: BlocBuilder<ChatCubit, ChatState>(
+        body: BlocConsumer<ChatCubit, ChatState>(
+          // أي تغيير في المحادثة ينزل لآخر رسالة
+          listener: (context, state) => _scrollToBottom(),
           builder: (context, state) {
             final cubit = context.read<ChatCubit>();
 
-            // الحالات الافتراضية في حال البداية
+            // الحالات الافتراضية في البداية
             List<ChatMessage> messages = [];
             Uint8List? selectedImage;
             bool isLoading = false;
@@ -84,9 +115,9 @@ class SmartChatScreen extends StatelessWidget {
 
             return Stack(
               children: [
-                /// قائمة رسائل المحادثة
+                // قائمة رسائل المحادثة
                 ListView.builder(
-                  controller: cubit.scrollController,
+                  controller: _scrollController,
                   padding: const EdgeInsets.fromLTRB(16, 16, 16, 150),
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
@@ -119,11 +150,8 @@ class SmartChatScreen extends StatelessWidget {
                           padding: const EdgeInsets.symmetric(vertical: 6),
                           child: Directionality(
                             textDirection: ui.TextDirection.ltr,
-
                             child: Row(
-                              mainAxisAlignment: message.isMe
-                                  ? MainAxisAlignment.end
-                                  : MainAxisAlignment.start,
+                              mainAxisAlignment: message.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 if (!message.isMe) ...[
@@ -132,13 +160,9 @@ class SmartChatScreen extends StatelessWidget {
                                 ],
                                 ChatBubble(
                                   clipper: ChatBubbleClipper1(
-                                    type: message.isMe
-                                        ? BubbleType.sendBubble
-                                        : BubbleType.receiverBubble,
+                                    type: message.isMe ? BubbleType.sendBubble : BubbleType.receiverBubble,
                                   ),
-                                  alignment: message.isMe
-                                      ? Alignment.topRight
-                                      : Alignment.topLeft,
+                                  alignment: message.isMe ? Alignment.topRight : Alignment.topLeft,
                                   margin: const EdgeInsets.only(top: 4),
                                   backGroundColor: (message.isMe && !message.isImage)
                                       ? AppColors.primary
@@ -148,10 +172,11 @@ class SmartChatScreen extends StatelessWidget {
                                       maxWidth: MediaQuery.of(context).size.width * 0.7,
                                     ),
                                     child: Column(
-                                      crossAxisAlignment:Directionality.of(context) == ui.TextDirection.rtl ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                      crossAxisAlignment: Directionality.of(context) == ui.TextDirection.rtl
+                                          ? CrossAxisAlignment.end
+                                          : CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
-
                                         if (message.imagePath != null)
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(10),
@@ -162,24 +187,22 @@ class SmartChatScreen extends StatelessWidget {
                                             ),
                                           ),
 
-                                        if (message.text != null &&
-                                            message.text!.trim().isNotEmpty)
+                                        if (message.text != null && message.text!.trim().isNotEmpty)
                                           Container(
                                             constraints: BoxConstraints(
                                               maxWidth: message.imagePath != null ? 220 : 904,
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.only(
-                                                top: 10,
-                                              ),
+                                              padding: const EdgeInsets.only(top: 10),
                                               child: Column(
-                                                crossAxisAlignment: Directionality.of(context) == ui.TextDirection.rtl ? CrossAxisAlignment.end : CrossAxisAlignment.start,
+                                                crossAxisAlignment: Directionality.of(context) == ui.TextDirection.rtl
+                                                    ? CrossAxisAlignment.end
+                                                    : CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
                                                     message.text!,
                                                     textDirection: Directionality.of(context),
                                                     textAlign: TextAlign.start,
-
                                                     softWrap: true,
                                                     style: TextStyle(
                                                       color: AppColors.textColor,
@@ -187,36 +210,37 @@ class SmartChatScreen extends StatelessWidget {
                                                       height: 2,
                                                     ),
                                                   ),
-                                                  // أضف هذا الويدجت تحت عرض النص داخل محتوى فقاعة البوت (Receiver Bubble)
-                                                  if (message.similarProducts != null && message.similarProducts!.isNotEmpty)
+
+                                                  // منتجات مشابهة داخل رد المساعد
+                                                  if (message.similarProducts != null &&
+                                                      message.similarProducts!.isNotEmpty)
                                                     Padding(
                                                       padding: const EdgeInsets.only(top: 10),
                                                       child: SizedBox(
-                                                         width:904,
+                                                        width: 904,
                                                         child: MasonryGridView.count(
                                                           scrollDirection: Axis.vertical,
                                                           crossAxisCount: itemCount,
-                                                          mainAxisSpacing: 8, // مسافة بين العنصر والذي تحته كودك الأصلي
-                                                          crossAxisSpacing: 8, // مسافة بين العنصر والذي جنبه كودك الأصلي
+                                                          mainAxisSpacing: 8,
+                                                          crossAxisSpacing: 8,
                                                           shrinkWrap: true,
                                                           physics: const NeverScrollableScrollPhysics(),
-                                                          // منع التمرير الداخلي لكي تتمرر القائمة الرئيسية بسلاسة
                                                           itemCount: message.similarProducts!.length,
                                                           itemBuilder: (context, pIndex) {
                                                             final product = message.similarProducts![pIndex];
                                                             final int productId = int.parse(product['p_id'].toString());
                                                             final String imageName = product['p_image'].toString();
-                                                            final String productName = product['p_name']?.toString() ?? ''; // قراءة اسم المنتج الجديد
-                                                            final String productNameEn = product['p_name_en']?.toString() ?? ''; // قراءة اسم المنتج الجديد
+                                                            final String productName = product['p_name']?.toString() ?? '';
+                                                            final String productNameEn = product['p_name_en']?.toString() ?? '';
 
                                                             return InkWell(
-                                                              onTap: (){
+                                                              onTap: () {
                                                                 Navigator.push(
                                                                   context,
                                                                   MaterialPageRoute(
                                                                     builder: (context) => ProductScreens(
                                                                       productID: productId,
-                                                                      subCategoryID:null,
+                                                                      subCategoryID: null,
                                                                       categoryID: null,
                                                                     ),
                                                                   ),
@@ -229,23 +253,22 @@ class SmartChatScreen extends StatelessWidget {
                                                                   border: Border.all(color: Colors.grey.shade300),
                                                                 ),
                                                                 child: Column(
-                                                                  crossAxisAlignment:   (context.locale.languageCode == 'en') ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+                                                                  crossAxisAlignment: (context.locale.languageCode == 'en')
+                                                                      ? CrossAxisAlignment.start
+                                                                      : CrossAxisAlignment.end,
                                                                   children: [
-                                                                    // استخدام ClipRRect مع Image.network بدون قيد ارتفاع صارم لكي يأخذ الحجم الحقيقي للصورة
                                                                     ClipRRect(
                                                                       borderRadius: const BorderRadius.vertical(top: Radius.circular(10)),
                                                                       child: Image.network(
                                                                         ApiEndpoints.productImageUrl(imageName),
                                                                         fit: BoxFit.cover,
-                                                                        width: 220, // عرض البطاقة الثابت
+                                                                        width: 220,
                                                                         loadingBuilder: (context, child, loadingProgress) {
-                                                                          if (loadingProgress == null) {
-                                                                            return child;
-                                                                          }
+                                                                          if (loadingProgress == null) return child;
                                                                           return Container(
                                                                             color: AppColors.background,
-                                                                            width:220,
-                                                                            height: 250, // ارتفاع مؤقت أثناء التحميل فقط
+                                                                            width: 220,
+                                                                            height: 250,
                                                                             child: Center(child: ThreeDotsLoader()),
                                                                           );
                                                                         },
@@ -262,7 +285,7 @@ class SmartChatScreen extends StatelessWidget {
                                                                     Padding(
                                                                       padding: const EdgeInsets.all(6.0),
                                                                       child: Text(
-                                                                        (context.locale.languageCode == 'en')? productNameEn ?? '' : productName ?? '',
+                                                                        (context.locale.languageCode == 'en') ? productNameEn : productName,
                                                                         maxLines: 1,
                                                                         overflow: TextOverflow.ellipsis,
                                                                         style: TextStyle(
@@ -280,12 +303,10 @@ class SmartChatScreen extends StatelessWidget {
                                                         ),
                                                       ),
                                                     ),
-
                                                 ],
                                               ),
                                             ),
                                           ),
-
                                       ],
                                     ),
                                   ),
@@ -293,8 +314,7 @@ class SmartChatScreen extends StatelessWidget {
                                 if (message.isMe) ...[
                                   const SizedBox(width: 8),
                                   const CircleImage(
-                                    imagePath:
-                                    "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
+                                    imagePath: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
                                     radius: 11,
                                   ),
                                 ],
@@ -307,7 +327,7 @@ class SmartChatScreen extends StatelessWidget {
                   },
                 ),
 
-                /// مؤشر اللودينج أثناء معالجة الطلب
+                // مؤشر التحميل أثناء معالجة الطلب
                 if (isLoading)
                   Positioned(
                     bottom: 120,
@@ -324,14 +344,14 @@ class SmartChatScreen extends StatelessWidget {
                               color: AppColors.backgroundSecondary,
                               borderRadius: BorderRadius.circular(20),
                             ),
-                            child: ThreeDotsLoader(isSmall: true,),
+                            child: ThreeDotsLoader(isSmall: true),
                           ),
                         ],
                       ),
                     ),
                   ),
 
-                /// الحقل العائم
+                // الحقل العائم
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -383,7 +403,7 @@ class SmartChatScreen extends StatelessWidget {
                     ClipRRect(
                       borderRadius: BorderRadius.circular(14),
                       child: Image.memory(
-                        selectedImage as Uint8List,
+                        selectedImage,
                         height: 120,
                         width: 120,
                         fit: BoxFit.cover,
@@ -400,11 +420,7 @@ class SmartChatScreen extends StatelessWidget {
                             color: AppColors.backgroundSecondary,
                             shape: BoxShape.circle,
                           ),
-                          child: Icon(
-                            Icons.close,
-                            color: AppColors.iconColor,
-                            size: 16,
-                          ),
+                          child: Icon(Icons.close, color: AppColors.iconColor, size: 16),
                         ),
                       ),
                     ),
@@ -439,10 +455,7 @@ class SmartChatScreen extends StatelessWidget {
                               child: TextField(
                                 controller: cubit.messageController,
                                 maxLines: null,
-                                style: TextStyle(
-                                  color: AppColors.textColor,
-                                  fontSize: 14,
-                                ),
+                                style: TextStyle(color: AppColors.textColor, fontSize: 14),
                                 decoration: InputDecoration(
                                   hintText: "اسال Almar...",
                                   hintStyle: TextStyle(
@@ -450,10 +463,7 @@ class SmartChatScreen extends StatelessWidget {
                                     fontSize: 13,
                                   ),
                                   border: InputBorder.none,
-                                  contentPadding: const EdgeInsets.symmetric(
-                                    vertical: 10,
-                                    horizontal: 4,
-                                  ),
+                                  contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
                                 ),
                               ),
                             ),
@@ -493,10 +503,7 @@ class SmartChatScreen extends StatelessWidget {
                               transitionBuilder: (Widget child, Animation<double> animation) {
                                 return ScaleTransition(
                                   scale: animation,
-                                  child: RotationTransition(
-                                    turns: animation,
-                                    child: child,
-                                  ),
+                                  child: RotationTransition(turns: animation, child: child),
                                 );
                               },
                               child: isTyping || selectedImage != null
@@ -504,10 +511,7 @@ class SmartChatScreen extends StatelessWidget {
                                 "assets/images/paper-plane-tilt.svg",
                                 width: 17,
                                 key: const ValueKey('send_active'),
-                                colorFilter: const ColorFilter.mode(
-                                  Colors.white,
-                                  BlendMode.srcIn,
-                                ),
+                                colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
                               )
                                   : Icon(
                                 Icons.smart_toy_outlined,
