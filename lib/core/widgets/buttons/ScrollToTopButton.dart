@@ -51,6 +51,7 @@ class _ScrollToTopButtonState extends State<ScrollToTopButton> {
       scale: _isVisible ? 1.0 : 0.0,
       duration: const Duration(milliseconds: 300),
       child: FloatingActionButton(
+        heroTag: null, // منع تعارض الازرار العائمة
         mini: true,
         backgroundColor: AppColors.buttonColor.withOpacity(0.6),
         onPressed: () {

@@ -1,4 +1,5 @@
 import 'dart:async';
+import '../../core/utils/search_query_parser.dart';
 import '../../core/utils/search_service.dart';
 import '../../data/local/search_local.dart';
 import '../../data/models/product_model.dart';
@@ -72,9 +73,12 @@ class SearchCubit extends ProductCubit {
 
   // 3. تنفيذ البحث الشامل (يبحث في كل تفاصيل المنتج بدقة فائقة)
   Future<void> performGlobalSearch(String query) async {
-    final cleanQuery = query.trim().toLowerCase();
+    // فهم جملة البحث قبل البحث
+    final parsed = SearchQueryParser.parse(query);
+    final cleanQuery = parsed.text;
+    final isNumeric = double.tryParse(cleanQuery) != null;
 
-    if (cleanQuery.isEmpty) {
+    if (query.trim().isEmpty) {
       hasSearched = false;
       searchResults = [];
       allProducts = [];
@@ -89,6 +93,13 @@ class SearchCubit extends ProductCubit {
     await SearchLocal.saveSearchQuery(query.trim());
 
     searchResults = allUnfilteredProducts.where((p) {
+      // فلتر السعر بعد الخصم
+      if (parsed.hasPriceRange) {
+        final price = p.pPrice - (p.discount?.discountPerce ?? 0);
+        if (parsed.minPrice != null && price < parsed.minPrice!) return false;
+        if (parsed.maxPrice != null && price > parsed.maxPrice!) return false;
+        if (cleanQuery.isEmpty) return true;
+      }
       // أ) الاسم والوصف (عربي وإنجليزي)
       bool matchName = SearchService.isFuzzyMatch(p.pName, cleanQuery) ||
           (p.pNameEn != null && SearchService.isFuzzyMatch(p.pNameEn!, cleanQuery));
@@ -113,8 +124,10 @@ class SearchCubit extends ProductCubit {
           (c.colorCode?.toLowerCase().contains(cleanQuery) ?? false));
 
       // هـ) المقاسات
-      bool matchSize = p.sizes.any((s) => SearchService.isFuzzyMatch(s.sizeName, cleanQuery));
-
+      // الارقام تطابق تماما
+      bool matchSize = p.sizes.any((s) => isNumeric
+          ? s.sizeName.trim() == cleanQuery
+          : SearchService.isFuzzyMatch(s.sizeName, cleanQuery));
       // و) الخصومات
       bool matchDiscount = p.discount != null &&
           (p.discount!.discountPerce.toString().contains(cleanQuery) ||
@@ -124,14 +137,32 @@ class SearchCubit extends ProductCubit {
       bool matchAds = p.generalAdvertisements.any((ad) => SearchService.isFuzzyMatch(ad.adsName, cleanQuery));
 
       // البحث يشمل كل الحقول بدون استثناء
-      return matchName || matchDesc || matchPrice || matchSubCat || matchCat || matchColor || matchSize || matchDiscount || matchAds;
-    }).toList();
+      // البحث حسب نوع الكلمة
+      switch (parsed.field) {
+        case SearchField.size:
+          return matchSize;
+        case SearchField.color:
+          return matchColor;
+        case SearchField.price:
+          return matchPrice;
+        case SearchField.any:
+          return matchName || matchDesc || matchPrice || matchSubCat || matchCat || matchColor || matchSize || matchDiscount || matchAds;
+      }    }).toList();
 
     // تحديث القائمة الموروثة لكي تعرضها واجهة AllProducts فوراً
     allProducts = List.from(searchResults);
     emit(ProductLoaded(products: List.from(searchResults), hasMore: false));
   }
+  // البحث يحدّث نتائجه فقط، ولا يبث قائمة فارغة عند تغيير المفضلة
+  @override
+  void toggleFavoriteLocally(ProductModel product) {
+    if (isClosed || !hasSearched) return;
 
+    for (final p in searchResults) {
+      if (p.pId == product.pId) p.isFavorite = product.isFavorite;
+    }
+    emit(ProductLoaded(products: List.from(searchResults), hasMore: false));
+  }
   @override
   Future<void> close() {
     _searchDebounce?.cancel();
