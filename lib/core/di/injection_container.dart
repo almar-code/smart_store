@@ -1,6 +1,8 @@
 import 'package:get_it/get_it.dart';
 import 'package:smart_store/data/services/favorite_service.dart';
+import '../../data/local/user_local.dart';
 import '../../data/repos/AdRepo.dart';
+import '../../data/repos/auth_repo.dart';
 import '../../data/repos/cart_repo.dart';
 import '../../data/repos/favorite_repo.dart';
 import 'package:smart_store/data/services/country_api_service.dart';
@@ -19,6 +21,7 @@ import '../../data/repos/try_on_repo.dart';
 import '../../data/repos/user_address_repo.dart';
 import '../../data/repos/video_repo.dart';
 import '../../data/services/AdService.dart';
+import '../../data/services/auth_service.dart';
 import '../../data/services/cart_service.dart';
 import '../../data/services/category_service.dart';
 import '../../data/repos/category_repo.dart';
@@ -31,6 +34,7 @@ import '../../data/services/subcategory_service.dart';
 import '../../data/services/try_on_service.dart';
 import '../../data/services/user_address_service.dart';
 import '../../data/services/video_service.dart';
+import '../../logic/account/account_cubit.dart';
 import '../../logic/ads/ads_cubit.dart';
 import '../../logic/cart/cart_cubit.dart';
 import '../../logic/favorites/favorites_cubit.dart';
@@ -109,4 +113,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SizePredictionService());
   sl.registerLazySingleton(() => SizePredictionRepo(sl<SizePredictionService>()));
   sl.registerFactory(() => SizePredictionCubit(sl<SizePredictionRepo>()));
+
+  sl.registerLazySingleton(() => AuthRepo(service: AuthService(), local: UserLocal()));
+  sl.registerFactory(() => AccountCubit(sl<AuthRepo>()));
 }

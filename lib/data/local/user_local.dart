@@ -33,4 +33,16 @@ class UserLocal {
     await box.clear();
 
   }
+
+  // تحديث الاسم فقط
+  Future<void> updateName(String name) async {
+    final box = await Hive.openBox(boxName);
+    await box.put('name', name);
+  }
+  // تحديث الصورة فقط
+  Future<void> updateImage(String image) async {
+    final box = await Hive.openBox(boxName);
+    await box.put('image', image);
+  }
+
 }

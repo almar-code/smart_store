@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../core/widgets/app_messages.dart';
+import '../../core/widgets/internet_check.dart';
+import '../../core/widgets/network_service.dart';
 import '../../core/widgets/show_loading.dart';
 import '../../data/local/user_local.dart';
 import '../../data/repos/auth_repo.dart';
@@ -19,18 +21,18 @@ class ProfileLogic {
 
   static final repo = AuthRepo(service: AuthService(), local: UserLocal());
 
-  static Future<void> updateAvatar(BuildContext context,) async {
+  static Future<bool> updateAvatar(BuildContext context, {ImageSource source = ImageSource.gallery}) async {
 
     final picker = ImagePicker();
 
     try {
 
       final pickedFile = await picker.pickImage(
-        source: ImageSource.gallery,
+        source: source,
         imageQuality: 50,
       );
 
-      if (pickedFile == null) return;
+      if (pickedFile == null) return false;
 
       ShowLoading.progressLoading(context);
 
@@ -48,6 +50,7 @@ class ProfileLogic {
 
         AppToasts.showSuccessToast(context, tr('avatar_updated_success'));
       }
+      return true;
 
     } catch(e) {
 
@@ -57,7 +60,65 @@ class ProfileLogic {
 
         AppToasts.showErrorToast(context, tr('avatar_update_failed'));
       }
+      return false;
     }
+  }
+
+  // تنفيذ عملية مع فحص النت والتحميل والرسائل، ترجع true عند النجاح
+  static Future<bool> _run(
+      BuildContext context, {
+        required Future<void> Function() action,
+        required String successKey,
+        required String errorKey,
+      }) async {
+    bool connected = await NetworkService.hasInternet();
+    if (!connected) {
+      if (context.mounted) InternetCheck.internetCheck(context);
+      return false;
+    }
+
+    if (!context.mounted) return false;
+    ShowLoading.progressLoading(context);
+
+    try {
+      await action();
+
+      if (context.mounted) {
+        // تحديث بيانات المستخدم في باقي الصفحات
+        context.read<LoginCubit>().setLoggedOut();
+        context.read<LoginCubit>().setLoggedIn();
+        Navigator.pop(context);
+        AppToasts.showSuccessToast(context, tr(successKey));
+      }
+      return true;
+    } catch (e) {
+      if (context.mounted) {
+        Navigator.pop(context);
+        AppToasts.showErrorToast(context, tr(errorKey));
+      }
+      return false;
+    }
+  }
+
+  // تعديل الاسم
+  static Future<bool> updateName(BuildContext context, String name) {
+    return _run(
+      context,
+      action: () => repo.updateUserName(name.trim()),
+      successKey: 'name_updated_success',
+      errorKey: 'name_update_failed',
+    );
+  }
+
+
+  // حذف الصورة الشخصية
+  static Future<bool> deleteAvatar(BuildContext context) {
+    return _run(
+      context,
+      action: () => repo.deleteUserAvatar(),
+      successKey: 'avatar_deleted_success',
+      errorKey: 'avatar_delete_failed',
+    );
   }
 
   static Future<void> logoutUser(BuildContext context,BuildContext dialogContext) async {
@@ -72,7 +133,6 @@ class ProfileLogic {
 
       if (context.mounted) {
         navCubit.updateIndex(2);
-
         Navigator.pop(context);
         Navigator.pop(dialogContext);
 

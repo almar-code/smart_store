@@ -7,12 +7,15 @@ import 'package:smart_store/views/screens/cart/cart_screen.dart';
 import 'package:smart_store/views/screens/favorites/favorites_screen.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/buttons/cancel_button.dart';
+import '../../../logic/login/login_cubit.dart';
+import '../../../logic/navigation/navigation_cubit.dart';
 import '../../../logic/notifications/notification_cubit.dart';
 import '../../../logic/notifications/notification_state.dart';
 import '../../screens/address/user_addresses_screen.dart';
 import '../../screens/help center screen/help_center_screen.dart';
 import '../../screens/notifications/notifications_screen.dart';
 import '../../screens/orders/orders_screen.dart';
+import '../../screens/profile/account_management_screen.dart';
 import '../../screens/sizefinder/size_finder_screen.dart';
 import '../size_finder/size_finder_widgets.dart';
 import 'custom_tile.dart';
@@ -26,6 +29,25 @@ class ProfileList extends StatelessWidget {
     return ListView(
       padding:  EdgeInsets.symmetric(vertical: isDesktop ? 15 : 6 ),
       children: [
+        // إدارة الملف الشخصي — تظهر فقط للمستخدم المسجّل
+        BlocBuilder<LoginCubit, bool>(
+          builder: (context, isLoggedIn) => isLoggedIn
+              ? CustomTile(
+            icon: CupertinoIcons.person_crop_circle,
+            title: "account_management".tr(),
+            onTap: () {
+        // تمرير NavigationCubit حق التبويبات للصفحة
+        final navCubit = context.read<NavigationCubit>();
+    Navigator.of(context).push(MaterialPageRoute(
+      builder: (_) => BlocProvider.value(
+        value: navCubit,
+        child: const AccountManagementScreen(),
+      ),
+    ));
+  },
+          )
+              : const SizedBox.shrink(),
+        ),
         CustomTile(icon: CupertinoIcons.list_bullet_below_rectangle, title: "order management".tr(), onTap:  ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => OrdersScreen()))),
         CustomTile(icon: CupertinoIcons.cart, title: "shopping cart".tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => CartScreen(screenOnly: true,)))),
         BlocBuilder<NotificationCubit, NotificationState>(
@@ -90,7 +112,7 @@ class ProfileList extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 25),
-          
+
                 // العنوان
                 Text(
                   "application language".tr(),
@@ -102,7 +124,7 @@ class ProfileList extends StatelessWidget {
                   style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
                 ),
                 const SizedBox(height: 25),
-          
+
                 // خيار اللغة العربية
                 _buildLanguageTile(
                   context,
@@ -115,9 +137,9 @@ class ProfileList extends StatelessWidget {
                     Navigator.pop(context);
                   },
                 ),
-          
+
                 const SizedBox(height: 12),
-          
+
                 // خيار اللغة الإنجليزية
                 _buildLanguageTile(
                   context,
@@ -130,9 +152,9 @@ class ProfileList extends StatelessWidget {
                     Navigator.pop(context);
                   },
                 ),
-          
+
                 const SizedBox(height: 25),
-          
+
                 // زر الإلغاء الأنيق
                 CancelButton(onPressed: () => Navigator.pop(context)),
                 const SizedBox(height: 10),
@@ -228,7 +250,7 @@ class CurrencyPickerSheet extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 25),
-      
+
             Text(
               tr("Select Currency"),
               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
@@ -239,7 +261,7 @@ class CurrencyPickerSheet extends StatelessWidget {
               style: TextStyle(fontSize: 14, color: AppColors.textSecondary),
             ),
             const SizedBox(height: 25),
-      
+
             // عرض العملات باستخدام الـ Tile الموحد
             ...currencies.map((currency) => Padding(
               padding: const EdgeInsets.only(bottom: 12),
@@ -255,9 +277,9 @@ class CurrencyPickerSheet extends StatelessWidget {
                 },
               ),
             )).toList(),
-      
+
             const SizedBox(height: 20),
-      
+
             // زر الإلغاء الموحد
             CancelButton(onPressed: () => Navigator.pop(context)),
             const SizedBox(height: 10),

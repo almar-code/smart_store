@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
 import 'package:smart_store/core/widgets/show_loading.dart';
@@ -26,7 +27,7 @@ import 'package:easy_localization/easy_localization.dart';
 
 
 class ProfileScreen extends StatelessWidget {
- const  ProfileScreen({super.key});
+  const  ProfileScreen({super.key});
 
 
   @override
@@ -34,196 +35,230 @@ class ProfileScreen extends StatelessWidget {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
     context.locale;
     return  BlocBuilder<LoginCubit, bool>(
-      builder: (context, state){
+        builder: (context, state){
 
-        final box = Hive.box('user_info_box');
+          final box = Hive.box('user_info_box');
 
-        String? phone = box.get('phone');
+          String? phone = box.get('phone');
 
-        bool hasNoPhone = (phone == null || phone.isEmpty);
-      return Scaffold(
-          backgroundColor: AppColors.background,
-          appBar: AppBar(
-            elevation: 0,
-            scrolledUnderElevation: 0,
+          bool hasNoPhone = (phone == null || phone.isEmpty);
+          return Scaffold(
             backgroundColor: AppColors.background,
-            titleSpacing: 5,
-            title: UserProfile(),
-            actions: [
-              const NotificationIcon(),
-              ThemeIcon(),
-              InkWell(
-                onTap:() => _showLogoutDialog(context),
-                  child: AppIcon(icon: CupertinoIcons.person_crop_circle_badge_xmark)),
-              SizedBox(width: 10),
-            ],
-          ),
-          body: Padding(
-            padding: EdgeInsets.symmetric(
-              horizontal: isDesktop ? MediaQuery.of(context).size.width * 0.2 : 7,
-              vertical: 20,
-            ),
-            child: Column(
-              children: [
-                if(hasNoPhone && state ) ...[
-                    AddPhoneNumber(),
-                 ],
-                Expanded(child: ProfileList()),
+            appBar: AppBar(
+              elevation: 0,
+              scrolledUnderElevation: 0,
+              backgroundColor: AppColors.background,
+              titleSpacing: 5,
+              title: UserProfile(),
+              actions: [
+                const NotificationIcon(),
+                ThemeIcon(),
+                InkWell(
+                    onTap:() => showLogoutDialog(context),
+                    child: AppIcon(icon: CupertinoIcons.person_crop_circle_badge_xmark)),
+                SizedBox(width: 10),
               ],
             ),
-          ),
-        );
-      }
+            body: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: isDesktop ? MediaQuery.of(context).size.width * 0.2 : 7,
+                vertical: 20,
+              ),
+              child: Column(
+                children: [
+                  if(hasNoPhone && state ) ...[
+                    AddPhoneNumber(),
+                  ],
+                  Expanded(child: ProfileList()),
+                ],
+              ),
+            ),
+          );
+        }
     );
   }
 
 }
 
-void _showLogoutDialog(BuildContext context) async{
+/// نافذة تأكيد تسجيل الخروج — عامة لإعادة استخدامها في صفحة إدارة الحساب
+Future<void> showLogoutDialog(BuildContext context) async {
   bool isDesktop = MediaQuery.of(context).size.width > 800;
 
   bool connected = await NetworkService.hasInternet();
   if (!connected) {
     InternetCheck.internetCheck(context);
+    return;
+  }
 
-  }else{
+  final red = AppColors.redColor;
 
-    showDialog(
+  await showDialog(
     context: context,
     barrierDismissible: true,
+    barrierColor: Colors.black.withValues(alpha: .45),
     builder: (dialogContext) {
       return Dialog(
         backgroundColor: Colors.transparent,
-        child: Container(
-          width: isDesktop ? 400 : 300,
-          padding: const EdgeInsets.all(14),
-          decoration: BoxDecoration(
-            color: AppColors.ContainerColor,
-            borderRadius: BorderRadius.circular(32),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(.15),
-                blurRadius: 40,
-                offset: const Offset(0, 15),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              /// ICON
-              Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xffEAF7F1),
-                  border: Border.all(
-                    color: const Color(0xffD9F0E5),
-                    width: 12,
-                  ),
+        insetPadding: const EdgeInsets.symmetric(horizontal: 24),
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: isDesktop ? 420 : 340),
+          child: Container(
+            clipBehavior: Clip.antiAlias,
+            decoration: BoxDecoration(
+              color: AppColors.ContainerColor,
+              borderRadius: BorderRadius.circular(28),
+              border: Border.all(color: AppColors.borderSecondary.withValues(alpha: .15)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: .18),
+                  blurRadius: 40,
+                  offset: const Offset(0, 18),
                 ),
-                child: Icon(
-                  Icons.logout_rounded,
-                  color: AppColors.primary,
-                  size: 35,
-                ),
-              ),
-
-              const SizedBox(height: 13),
-
-              /// TITLE
-              Text(
-                tr("logout"),
-                style: TextStyle(
-                  fontSize: 25,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textColor,
-                ),
-              ),
-
-              const SizedBox(height: 6),
-
-              Text(
-                tr("logout_confirmation"),
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: AppColors.textColor,
-                ),
-              ),
-
-              const SizedBox(height: 12),
-
-              /// INFO BOX
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: AppColors.darkGreen,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Row(
-                  children: [
-                    Container(
-                      width: 52,
-                      height: 52,
-                      decoration: BoxDecoration(
-                        color: const Color(0xffE5F8EE),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Icon(
-                        Icons.shield_outlined,
-                        color: AppColors.primary,
-                      ),
+              ],
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // الجزء العلوي بخلفية متدرجة خفيفة
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.fromLTRB(20, isDesktop ? 30 : 26, 20, isDesktop ? 22 : 18),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
+                      colors: [red.withValues(alpha: .10), red.withValues(alpha: 0)],
                     ),
-                    const SizedBox(width: 10),
-                    Expanded(
-                      child: Text(
-                        tr("logout_info"),
+                  ),
+                  child: Column(
+                    children: [
+                      // الأيقونة بحلقتين
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: red.withValues(alpha: .08),
+                        ),
+                        child: Container(
+                          width: isDesktop ? 72 : 64,
+                          height: isDesktop ? 72 : 64,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: red.withValues(alpha: .14),
+                          ),
+                          child: Icon(Icons.logout_rounded, color: red, size: isDesktop ? 32 : 28),
+                        ),
+                      ),
+                      SizedBox(height: isDesktop ? 18 : 14),
+                      Text(
+                        tr("logout"),
                         style: TextStyle(
-                          height: 1.4,
-                          fontSize: 10,
+                          fontSize: isDesktop ? 22 : 20,
+                          fontWeight: FontWeight.bold,
                           color: AppColors.textColor,
                         ),
                       ),
-                    ),
-                  ],
+                      const SizedBox(height: 8),
+                      Text(
+                        tr("logout_confirmation"),
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: isDesktop ? 14.5 : 13.5,
+                          height: 1.5,
+                          color: AppColors.textSecondary,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
 
-              const SizedBox(height: 15),
+                Padding(
+                  padding: EdgeInsets.fromLTRB(isDesktop ? 22 : 18, 0, isDesktop ? 22 : 18, isDesktop ? 22 : 18),
+                  child: Column(
+                    children: [
+                      // صندوق المعلومة
+                      Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: AppColors.primary.withValues(alpha: .06),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: AppColors.primary.withValues(alpha: .18)),
+                        ),
+                        child: Row(
+                          children: [
+                            Container(
+                              width: 38,
+                              height: 38,
+                              decoration: BoxDecoration(
+                                color: AppColors.primary.withValues(alpha: .12),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Icon(Icons.shield_outlined, color: AppColors.primary, size: 20),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: Text(
+                                tr("logout_info"),
+                                style: TextStyle(
+                                  height: 1.45,
+                                  fontSize: isDesktop ? 12.5 : 11.5,
+                                  color: AppColors.textColor,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
 
-              Row(
-                children: [
-                  Expanded(
-                    child: AppButton(
-                      borderRadius: 15,
-                      label: tr("cancel"),
-                      onTap: () {
-                        Navigator.pop(dialogContext);
-                      },
-                    ),
+                      SizedBox(height: isDesktop ? 20 : 16),
+
+                      // الأزرار
+                      Row(
+                        children: [
+                          Expanded(
+                            child: SizedBox(
+                              height: isDesktop ? 50 : 46,
+                              child: AppButton(
+                                borderRadius: 15,
+                                label: tr("cancel"),
+                                color: AppColors.background,
+                                textColor: AppColors.textColor,
+                                borderColor: AppColors.borderSecondary.withValues(alpha: .4),
+                                onTap: () => Navigator.pop(dialogContext),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: SizedBox(
+                              height: isDesktop ? 50 : 46,
+                              child: AppButton(
+                                borderRadius: 15,
+                                label: tr("logout_action"),
+                                icon: Icons.logout_rounded,
+                                iconSize: 16,
+                                color: red,
+                                borderColor: red,
+                                onTap: () async {
+                                  await ProfileLogic.logoutUser(context, dialogContext);
+                                },
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-
-                  const SizedBox(width: 11),
-
-                  Expanded(
-                    child: AppButton(
-                      borderRadius: 15,
-                      label: tr("logout_action"),
-                      icon: Icons.logout_rounded,
-                      onTap: () async {
-                       await ProfileLogic.logoutUser(context,dialogContext);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                ),
+              ],
+            ),
           ),
-        ),
+        )
+        // حركة ظهور
+            .animate()
+            .fadeIn(duration: 220.ms)
+            .scale(begin: const Offset(.92, .92), curve: Curves.easeOutBack, duration: 320.ms),
       );
     },
   );
-  }
 }

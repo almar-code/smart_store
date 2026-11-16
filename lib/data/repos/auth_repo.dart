@@ -52,4 +52,19 @@ class AuthRepo {
       user.id,
     );
   }
+  // تعديل الاسم في Supabase ثم محلياً
+  Future<void> updateUserName(String name) async {
+    final user = service.currentUser;
+    if (user == null) return;
+    await service.updateUserName(user.id, name);
+    await local.updateName(name);
+  }
+
+  // حذف الصورة من Supabase ثم محلياً
+  Future<void> deleteUserAvatar() async {
+    final user = service.currentUser;
+    if (user == null) return;
+    await service.removeAvatar(user.id);
+    await local.updateImage('');
+  }
 }
