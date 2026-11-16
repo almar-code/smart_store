@@ -368,7 +368,9 @@ class _ModernSideRailState extends State<ModernSideRail> {
     return AnimatedContainer(
       duration: _duration,
       curve: _curve,
-      width: isExpanded ? 30 : 18,
+      // العرض يتسع حسب الرقم
+      constraints: BoxConstraints(minWidth: isExpanded ? 30 : 18),
+      padding: const EdgeInsets.symmetric(horizontal: 4),
       height: isExpanded ? 20 : 16,
       alignment: Alignment.center,
       decoration: BoxDecoration(

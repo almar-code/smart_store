@@ -225,26 +225,17 @@ class _SelectPaymentMethodPageState extends State<SelectPaymentMethodPage> {
                                     ? AppColors.textSecondary
                                     : AppColors.primary,
                               ),
-                              Builder(
-                                builder: (context) {
-                                  if (selectedAddress == null) {
-                                    return Text(
-                                      tr('address_not_selected'),
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey,
-                                      ),
-                                    );
-                                  }
-
-                                  return Text(
-                                    addressText,
-                                    style: TextStyle(
-                                      fontSize: 12,
-                                      color: AppColors.textSecondary,
-                                    ),
-                                  );
-                                },
+                              // النص يأخذ المساحة المتبقية فقط
+                              Flexible(
+                                child: Text(
+                                  selectedAddress == null ? tr('address_not_selected') : addressText,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: selectedAddress == null ? Colors.grey : AppColors.textSecondary,
+                                  ),
+                                ),
                               ),
                             ],
                           ),
@@ -852,10 +843,18 @@ class _SelectPaymentMethodPageState extends State<SelectPaymentMethodPage> {
   Widget _detailRow(String l, String v) => Padding(
     padding: const EdgeInsets.symmetric(vertical: 4),
     child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(l, style: TextStyle(color: AppColors.textSecondary)),
-        Text(v, style: const TextStyle(fontWeight: FontWeight.bold))
+        const SizedBox(width: 12),
+        // القيمة تنزل لسطر ثاني اذا طالت
+        Expanded(
+          child: Text(
+            v,
+            textAlign: TextAlign.end,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          ),
+        ),
       ],
     ),
   );

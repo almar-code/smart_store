@@ -4,6 +4,7 @@ import '../../data/models/product_model.dart';
 import '../../logic/products/product_cubit.dart';
 import '../../logic/products/product_event_bus.dart';
 import '../constants/app_colors.dart';
+import '../utils/badge_count.dart';
 class FavoriteCount extends StatelessWidget {
   final double fontSize;
   final Color? color;
@@ -19,7 +20,7 @@ class FavoriteCount extends StatelessWidget {
         final int currentCount = ProductEventBus.favoriteCount;
 
         return Text(
-          '${currentCount != 0 ? currentCount : "" }',
+          currentCount != 0 ? badgeCount(currentCount) : '',
           style: TextStyle(
               color: color ?? AppColors.primary,
               fontSize: fontSize,

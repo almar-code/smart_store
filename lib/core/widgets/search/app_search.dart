@@ -71,8 +71,10 @@ class App_Search extends StatelessWidget {
                       builder: (_) => const SearchScreen(),
                     ),
                   );
-                },                style: TextStyle(
+                },
+                style: TextStyle(
                   fontSize: 13,
+                  height: 1.2,
                   color: AppColors.textColor,
                   fontWeight: FontWeight.w500,
                 ),
@@ -81,9 +83,14 @@ class App_Search extends StatelessWidget {
                   hintStyle: TextStyle(
                     color: AppColors.textColor.withOpacity(0.4),
                     fontSize: 13,
+                    height: 1.2,
                   ),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: isDesktop ? 14 : 13),
+                  enabledBorder: InputBorder.none,
+                  focusedBorder: InputBorder.none,
+                  // بدون padding عمودي ليتوسط النص في اي ارتفاع
+                  isCollapsed: true,
+                  contentPadding: EdgeInsets.zero,
                 ),
               ),
             ),

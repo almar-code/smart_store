@@ -11,6 +11,7 @@ import '../../logic/productcomment/product_comment_cubit.dart';
 import '../../logic/productcomment/product_comment_state.dart';
 import '../../views/widgets/flash/flash_screen.dart';
 import '../../views/widgets/login/login.dart';
+import '../../views/widgets/product/product_reviews_sheet.dart';
 import '../di/injection_container.dart' as di;
 import 'app_messages.dart';
 import 'circleImage/circle_image.dart';
@@ -131,7 +132,21 @@ class _ProductReviewsViewState extends State<_ProductReviewsView> {
 
     return Column(
       children: [
-        const TitleBar(title: "Customer Review"),
+        TitleBar(
+          title: "Customer Review",
+          viewMoreShow: InkWell(
+            // نفس التعليقات المحملة في الصفحة
+            onTap: () => ProductReviewsSheet.show(
+              context,
+              productId: widget.productId,
+              cubit: context.read<ProductCommentCubit>(),
+            ),
+            child: Text(
+              tr('view_more'),
+              style: TextStyle(color: AppColors.primary, fontSize: 12, fontWeight: FontWeight.w600),
+            ),
+          ),
+        ),
         Container(
           padding: const EdgeInsets.symmetric(vertical: 16),
           decoration: BoxDecoration(
@@ -184,7 +199,8 @@ class _ProductReviewsViewState extends State<_ProductReviewsView> {
                           final review = state.comments[index];
                           final customerName = review.customerName ?? "مستخدم";
                           final avatarUrl = review.customerImage ?? "";
-                          final isMyComment = review.customerId == UserLocal().getCustomerId();
+                          final myId = int.tryParse('${Hive.box('user_info_box').get('customer_id') ?? ''}');
+                          final isMyComment = myId != null && review.customerId == myId;
                           var box = Hive.box('user_info_box');
                           String imag = (box.isEmpty) ? '' :  box.get('image');
 

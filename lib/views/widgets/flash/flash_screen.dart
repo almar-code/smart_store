@@ -36,7 +36,7 @@ class FlashProducts extends StatelessWidget {
     int itemCount = isDesktop ? 5 : isIpad ? 4 : 2;
 
     // مصفوفة تحتوي على أطوال مختلفة لمحاكاة الأطوال المتفاوتة للكروت في الـ Masonry
-    final List<double> randomHeights = [400, 520, 390, 520, 400, 390];
+    final List<double> randomHeights = [280, 330, 300, 330, 310, 290];
 
     return Shimmer.fromColors(
       baseColor: AppColors.baseColor,
@@ -434,13 +434,13 @@ class VideoLoadingShimmer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Color(0xFF2A2A2A),
-      highlightColor: Color(0xFF3A3A3A) ,
+      baseColor: AppColors.baseColor,
+      highlightColor: AppColors.highlightColor,
       period: const Duration(milliseconds: 1200),
       child: Container(
         width: double.infinity,
         height: double.infinity,
-        color:  Color(0xFF2A2A2A),
+        color:  AppColors.backgroundSecondary,
       ),
     );
   }

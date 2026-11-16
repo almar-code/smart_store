@@ -1,13 +1,15 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/local/user_local.dart';
 import '../../data/models/comment_model.dart';
 import '../../data/models/video_model.dart';
 import '../../data/repos/video_repo.dart';
 
-// --- CommentsState ---
+// ===================== CommentsState =====================
 abstract class CommentsState {}
 
 class CommentsInitial extends CommentsState {}
+
 class CommentsLoading extends CommentsState {}
 
 class CommentsLoaded extends CommentsState {
@@ -22,102 +24,79 @@ class CommentsError extends CommentsState {
   CommentsError(this.message);
 }
 
-// --- CommentsCubit ---
+// ===================== CommentsCubit =====================
 class CommentsCubit extends Cubit<CommentsState> {
   final VideoRepo repository;
-  Future<int?> _customerId() => UserLocal().getCustomerId();
+
   CommentsCubit(this.repository) : super(CommentsInitial());
 
-  // تخزين مؤقت للقائمة الحالية للتحكم بها محلياً وسريعاً
+  // نسخة محلية للتحديث السريع
   List<CommentModel> _currentComments = [];
 
-  void loadComments(int videoId) async {
+  Future<void> loadComments(int videoId) async {
     emit(CommentsLoading());
     try {
-      final comments = await repository.fetchComments(videoId);
-      _currentComments = comments;
-      emit(CommentsLoaded(comments: _currentComments, commentsCount: _currentComments.length));
-    } catch (e) {
-      emit(CommentsError("فشل تحميل التعليقات"));
+      _currentComments = await repository.fetchComments(videoId);
+      emit(CommentsLoaded(
+        comments: List.from(_currentComments),
+        commentsCount: _currentComments.length,
+      ));
+    } catch (_) {
+      emit(CommentsError(tr('comments_error')));
     }
   }
-  void sendComment(
-      VideoModel video,
-      String text,
-      ) async {
 
-    final tempId =
-        DateTime.now().millisecondsSinceEpoch;
+  // ترجع false اذا لم يسجل الدخول
+  Future<bool> sendComment(VideoModel video, String text) async {
+    final customerId = await UserLocal().getCustomerId();
+    if (customerId == null) return false;
 
-    final temporaryComment = CommentModel(
+    final user = await UserLocal().getUser();
+    final tempId = DateTime.now().millisecondsSinceEpoch;
 
+    // التعليق المؤقت بالاسم والصورة من Hive
+    final temp = CommentModel(
       id: tempId,
-
       commentText: text,
-
-      customerName: "omar",
-
-      customerImage: null,
-
+      customerName: user?.name ?? '',
+      customerImage: user?.image,
       videoId: video.videoId,
-
-      createdAt: DateTime.now().toString(),
-
+      createdAt: DateTime.now().toIso8601String(),
       isSending: true,
     );
 
-    // إضافة فورية
-    _currentComments.insert(0, temporaryComment);
-
-    // زيادة العداد فوراً
+    _currentComments.insert(0, temp);
     video.commentsCount++;
-
-    emit(
-      CommentsLoaded(
-        comments: List.from(_currentComments),
-        commentsCount: video.commentsCount,
-      ),
-    );
+    _emitLoaded(video);
 
     try {
+      final server = await repository.postComment(video.videoId, customerId, text);
+      final i = _currentComments.indexWhere((e) => e.id == tempId);
 
-      final serverComment =
-      await repository.postComment(
-        video.videoId,
-        await _customerId(),
-        text,
-      );
-
-      _currentComments.removeWhere(
-            (e) => e.id == tempId,
-      );
-
-// إضافة الحقيقي مكانه
-      _currentComments.insert(0, serverComment);
-
-      emit(
-        CommentsLoaded(
-          comments: List.from(_currentComments),
-          commentsCount: video.commentsCount,
-        ),
-      );
-
-    } catch (e) {
-
-      print("ERROR SEND COMMENT => $e");
-
-      _currentComments.removeWhere(
-            (e) => e.id == tempId,
-      );
-
+      // نحتفظ باسم وصورة Hive اذا رجعت فارغة من السيرفر
+      if (i != -1) {
+        _currentComments[i] = CommentModel(
+          id: server.id,
+          commentText: server.commentText,
+          customerName: server.customerName.isNotEmpty ? server.customerName : temp.customerName,
+          customerImage: (server.customerImage ?? '').isNotEmpty ? server.customerImage : temp.customerImage,
+          videoId: server.videoId,
+          createdAt: server.createdAt,
+        );
+      }
+    } catch (_) {
+      _currentComments.removeWhere((e) => e.id == tempId);
       video.commentsCount--;
-
-      emit(
-        CommentsLoaded(
-          comments: List.from(_currentComments),
-          commentsCount: video.commentsCount,
-        ),
-      );
     }
+
+    _emitLoaded(video);
+    return true;
+  }
+
+  void _emitLoaded(VideoModel video) {
+    emit(CommentsLoaded(
+      comments: List.from(_currentComments),
+      commentsCount: video.commentsCount,
+    ));
   }
 }

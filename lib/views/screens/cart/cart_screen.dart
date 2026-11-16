@@ -9,6 +9,7 @@ import 'package:smart_store/logic/cart/cart_state.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_endpoints.dart';
 import '../../../core/constants/app_shadow.dart';
+import '../../../core/utils/badge_count.dart';
 import '../../../core/widgets/app_messages.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/app_title.dart';
@@ -313,7 +314,7 @@ class CartScreen extends StatelessWidget {
 
                                               const SizedBox(width: 10),
                                                Text(
-                                                "${item.quantity}",
+                                                 badgeCount(item.quantity),
                                                 style: TextStyle(
                                                     fontWeight: FontWeight.bold),
                                               ),
@@ -451,7 +452,7 @@ class CartScreen extends StatelessWidget {
                             shape: BoxShape.circle,
                           ),
                           child:  Text(
-                           '${context.watch<CartCubit>().itemCount}',
+                            badgeCount(context.watch<CartCubit>().itemCount),
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 11,

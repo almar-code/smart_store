@@ -27,9 +27,7 @@ class NotificationCubit extends Cubit<NotificationState> {
     _timer?.cancel();
     return super.close();
   }
-  // Future<int?> _customerId() => UserLocal().getCustomerIdOrNull();
-  int? _customerId() => 1;
-
+  Future<int?> _customerId() => UserLocal().getCustomerId();
   // silent: تحديث بدون إظهار التحميل
   Future<void> fetch({bool silent = false}) async {
     final id = await _customerId();
