@@ -409,11 +409,7 @@
   "size_needs_human": "We recommend confirming your size with customer service — tap here to chat",
   "size_not_available": "Size {size} isn't available for this product right now",
   "size_apply": "Choose size {size}",
-  "size_recalculate": "Edit my details"
-
-
-
-  "try_on_error_full_body_required": "Please upload a full-body photo",
+  "size_recalculate": "Edit my details",
   "first notifications": "My",
   "second notifications": "Notifications",
   "Notifications": "Notifications",
@@ -431,5 +427,26 @@
   "visual_search_subtitle": "Take a photo or choose an abaya image and we'll show you similar products",
   "take_photo": "Take photo",
   "choose_from_gallery": "Choose from gallery",
-  "image_convert_error": "Couldn't read the image, try another one"
+  "account_management": "Manage profile",
+  "account_management_subtitle": "Name, photo, phone and sign out",
+  "account_title_manage": "Manage",
+  "account_title_profile": "Profile",
+  "account_guest_subtitle": "Sign in to manage your profile",
+  "account_personal_info": "Personal information",
+  "account_session_section": "Session",
+  "account_not_set": "Not added",
+  "account_email_locked": "Email can't be changed",
+  "account_email_copied": "Email copied",
+  "account_logout_hint": "Sign out of your account on this device",
+  "account_edit_name": "Edit name",
+  "account_edit_name_hint": "This name appears on your orders and invoices",
+  "account_name_max_error": "Name is too long (40 characters max)",
+  "name_updated_success": "Name updated successfully",
+  "name_update_failed": "Couldn't update your name, please try again",
+  "account_photo_options": "Profile photo",
+  "account_change_photo": "Change photo",
+  "account_delete_photo": "Delete photo",
+  "account_delete_photo_confirm": "Are you sure you want to delete your profile photo?",
+  "avatar_deleted_success": "Photo deleted successfully",
+  "avatar_delete_failed": "Couldn't delete the photo, please try again"
 }
