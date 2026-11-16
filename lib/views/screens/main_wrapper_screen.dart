@@ -157,34 +157,6 @@ class MainWrapperScreen extends StatelessWidget {
   }
 }
 
-// void handleNavigation(int index, BuildContext context,) async{
-//   bool connected = await NetworkService.hasInternet();
-//   if (!connected) {
-//     AppToasts.showErrorToast(
-//       context,
-//       tr("no_internet"),
-//     );
-//     return;
-//
-//   }else{
-//   if (index == 4) {
-//     final session = Supabase.instance.client.auth.currentSession;
-//     final isLoggedIn = session != null;
-//
-//     Login login = Login();
-//
-//     if (isLoggedIn) {
-//       context.read<NavigationCubit>().updateIndex(index);
-//     }
-//
-//     else {
-//       login.loginDialog(context);
-//     }
-//
-//   } else {
-//     context.read<NavigationCubit>().updateIndex(index);
-//   }
-//   }
 void handleNavigation(int index, BuildContext context) async {
 
   // فحص الإنترنت باستخدام الكلاس حقك
@@ -192,7 +164,7 @@ void handleNavigation(int index, BuildContext context) async {
   // if (!hasNet) return;
 
   // صفحات تحتاج تسجيل دخول
-  if (const [16, 17, 18].contains(index)) {
+  if (const [4].contains(index)) {
     final session = Supabase.instance.client.auth.currentSession;
 
     // الـ state هنا هو نفسه الـ bool (إما true أو false)

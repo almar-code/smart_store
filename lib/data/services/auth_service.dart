@@ -226,4 +226,35 @@ class AuthService {
       return null;
     }
   }
+
+  Future<void> updateUserName(String userId, String userName) async {
+    await _supabase
+        .from('profiles')
+        .update({'user_name': userName})
+        .eq('id', userId);
+  }
+  // حذف الصورة من التخزين وتفريغ الرابط
+  Future<void> removeAvatar(String userId) async {
+    final data = await _supabase
+        .from('profiles')
+        .select('avatar_url')
+        .eq('id', userId)
+        .maybeSingle();
+
+    final url = data?['avatar_url']?.toString() ?? '';
+    if (url.isNotEmpty) {
+      try {
+        final fileName = Uri.parse(url).pathSegments.last;
+        await _supabase.storage.from('avatars').remove([fileName]);
+      } catch (_) {
+        // فشل حذف الملف لا يمنع تفريغ الرابط
+      }
+    }
+
+    await _supabase
+        .from('profiles')
+        .update({'avatar_url': null})
+        .eq('id', userId);
+  }
+
 }

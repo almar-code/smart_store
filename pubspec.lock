@@ -913,6 +913,10 @@ packages:
     dependency: transitive
     description:
       name: geocoding_android
+      sha256: c4f49a08f1761a3d078f35969b20f50445ff023b861c00316ac01554f0786942
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.0.2"
       sha256: "17e88a69bb0e1ae44597d70df2d2fbdb2f503672cf665421a16ab56ab97e4ead"
       url: "https://pub.dev"
     source: hosted
@@ -954,6 +958,16 @@ packages:
     description:
       name: geolocator_apple
       sha256: a1e177f3081089724f2095856aeb96eb8d7d1c59e425aed8dd4de7aa2c11ab66
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.4.3"
+  geolocator_linux:
+    dependency: transitive
+    description:
+      name: geolocator_linux
+      sha256: d64112a205931926f4363bb6bd48f14cb38e7326833041d170615586cd143797
+      url: "https://pub.dev"
+    source: hosted
       url: "https://pub.dev"
     source: hosted
     version: "2.4.3"
@@ -1261,6 +1275,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.20.3"
+
   jni:
     dependency: transitive
     description:
@@ -2267,5 +2282,7 @@ packages:
     source: hosted
     version: "2.1.0"
 sdks:
+  dart: ">=3.11.0-0 <4.0.0"
+  flutter: ">=3.38.0"
   dart: ">=3.13.0 <4.0.0"
   flutter: ">=3.47.0"

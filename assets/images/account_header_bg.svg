@@ -1,0 +1,102 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 260" width="800" height="260">
+  <defs>
+    <!-- خلفية البطاقة -->
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#074A3D"/>
+      <stop offset="0.55" stop-color="#0B6E58"/>
+      <stop offset="1" stop-color="#05A57A"/>
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.45" r="0.45">
+      <stop offset="0" stop-color="#3FF2C0" stop-opacity="0.35"/>
+      <stop offset="1" stop-color="#3FF2C0" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="wave1" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#2FE0B0" stop-opacity="0.55"/>
+      <stop offset="1" stop-color="#25F5FC" stop-opacity="0.15"/>
+    </linearGradient>
+    <linearGradient id="wave2" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.02"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#E9CF8E" stop-opacity="0"/>
+      <stop offset="0.4" stop-color="#E9CF8E" stop-opacity="0.9"/>
+      <stop offset="1" stop-color="#E9CF8E" stop-opacity="0"/>
+    </linearGradient>
+    <!-- الشنطة -->
+    <linearGradient id="bagFront" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#14A07F"/>
+      <stop offset="1" stop-color="#0A5E4C"/>
+    </linearGradient>
+    <linearGradient id="bagSide" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#06473A"/>
+      <stop offset="1" stop-color="#0A5C4A"/>
+    </linearGradient>
+    <linearGradient id="ribbon" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#5FF0C9"/>
+      <stop offset="1" stop-color="#0FB98E"/>
+    </linearGradient>
+    <linearGradient id="abaya" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FFFFFF" stop-opacity="0.95"/>
+      <stop offset="1" stop-color="#DFFBF2" stop-opacity="0.75"/>
+    </linearGradient>
+    <clipPath id="card">
+      <rect width="800" height="260" rx="36"/>
+    </clipPath>
+  </defs>
+
+  <g clip-path="url(#card)">
+    <rect width="800" height="260" fill="url(#bg)"/>
+    <rect width="800" height="260" fill="url(#glow)"/>
+
+    <!-- دوائر خفيفة -->
+    <circle cx="690" cy="-30" r="150" fill="#FFFFFF" opacity="0.05"/>
+    <circle cx="420" cy="300" r="120" fill="#FFFFFF" opacity="0.04"/>
+
+    <!-- الموجات السفلية -->
+    <path d="M0 200 C 140 150, 260 250, 420 215 S 680 170, 800 205 L 800 260 L 0 260 Z" fill="url(#wave2)"/>
+    <path d="M0 225 C 160 185, 300 262, 470 232 S 700 200, 800 228 L 800 260 L 0 260 Z" fill="url(#wave1)" opacity="0.7"/>
+    <path d="M60 238 C 220 200, 360 262, 520 236 S 720 214, 800 226" fill="none" stroke="url(#gold)" stroke-width="2"/>
+
+    <!-- الشريط خلف الشنطة -->
+    <path d="M-10 175 C 40 150, 90 205, 150 182 S 250 140, 300 172" fill="none" stroke="url(#ribbon)" stroke-width="16" stroke-linecap="round" opacity="0.55"/>
+
+    <!-- الشنطة: الجانب -->
+    <path d="M205 84 L 238 96 L 236 222 L 203 232 Z" fill="url(#bagSide)"/>
+    <!-- الشنطة: الواجهة -->
+    <path d="M92 84 L 205 84 L 203 232 L 86 232 Z" fill="url(#bagFront)"/>
+    <path d="M92 84 L 205 84 L 205 96 L 92 96 Z" fill="#FFFFFF" opacity="0.08"/>
+    <!-- المقابض -->
+    <path d="M118 90 C 118 40, 178 40, 178 90" fill="none" stroke="#0B3F34" stroke-width="7" stroke-linecap="round"/>
+    <path d="M118 90 C 118 44, 178 44, 178 90" fill="none" stroke="#2FD7A8" stroke-width="2.5" stroke-linecap="round" opacity="0.7"/>
+    <circle cx="118" cy="92" r="4" fill="#E9CF8E"/>
+    <circle cx="178" cy="92" r="4" fill="#E9CF8E"/>
+
+    <!-- العباية على الشنطة -->
+    <g transform="translate(146 104)">
+      <!-- الحجاب حتى الكتفين -->
+      <path d="M0 0 C -11 0, -15 9, -15 18 C -15 26, -19 32, -27 40 C -20 44, 20 44, 27 40 C 19 32, 15 26, 15 18 C 15 9, 11 0, 0 0 Z" fill="url(#abaya)"/>
+      <!-- الوجه -->
+      <ellipse cx="0" cy="17" rx="7" ry="9" fill="#0A5E4C" opacity="0.18"/>
+      <!-- جسم العباية مع الأكمام -->
+      <path d="M-26 40 C -34 52, -40 70, -44 86 L -38 88 C -42 100, -46 110, -50 122 L 50 122 C 46 110, 42 100, 38 88 L 44 86 C 40 70, 34 52, 26 40 C 14 46, -14 46, -26 40 Z" fill="url(#abaya)"/>
+      <!-- فتحة العباية والثنيات -->
+      <path d="M0 46 L 0 122" stroke="#0A5E4C" stroke-width="1.4" opacity="0.22"/>
+      <path d="M-14 50 C -18 80, -24 100, -28 120" fill="none" stroke="#0A5E4C" stroke-width="1.4" opacity="0.2"/>
+      <path d="M14 50 C 18 80, 24 100, 28 120" fill="none" stroke="#0A5E4C" stroke-width="1.4" opacity="0.2"/>
+      <!-- حزام ذهبي -->
+      <path d="M-30 70 C -10 75, 10 75, 30 70" fill="none" stroke="#E9CF8E" stroke-width="2" opacity="0.8"/>
+    </g>
+
+    <!-- الشريط أمام الشنطة -->
+    <path d="M40 232 C 90 200, 150 250, 215 215 S 300 190, 340 205" fill="none" stroke="url(#ribbon)" stroke-width="12" stroke-linecap="round" opacity="0.85"/>
+
+    <!-- نجوم لامعة -->
+    <g fill="#F4E3B5">
+      <path d="M60 60 l4 12 l12 4 l-12 4 l-4 12 l-4 -12 l-12 -4 l12 -4 Z" opacity="0.9"/>
+      <path d="M268 50 l3 9 l9 3 l-9 3 l-3 9 l-3 -9 l-9 -3 l9 -3 Z" opacity="0.85"/>
+      <path d="M300 120 l2 6 l6 2 l-6 2 l-2 6 l-2 -6 l-6 -2 l6 -2 Z" opacity="0.6"/>
+      <path d="M470 38 l2 6 l6 2 l-6 2 l-2 6 l-2 -6 l-6 -2 l6 -2 Z" opacity="0.45"/>
+    </g>
+  </g>
+</svg>
