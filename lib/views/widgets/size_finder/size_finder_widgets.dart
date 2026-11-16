@@ -85,7 +85,7 @@ class SizeSectionCard extends StatelessWidget {
   }
 }
 
-// ==================== 🔘 أزرار اختيار (Chips) ====================
+// ====================  أزرار اختيار (Chips) ====================
 /// options: القيمة المرسلة للسيرفر -> مفتاح الترجمة
 class SizeChoiceChips extends StatelessWidget {
   final Map<String, String> options;
@@ -327,7 +327,7 @@ class SizeAlterationCard extends StatelessWidget {
   }
 }
 
-// ==================== 📐 مواصفات المقاس ====================
+// ====================  مواصفات المقاس ====================
 class SizeSpecsCard extends StatelessWidget {
   final SizeSpecsModel specs;
   final int abayaSize;
@@ -367,7 +367,7 @@ class SizeSpecsCard extends StatelessWidget {
   }
 }
 
-// ==================== 💡 ملاحظة ====================
+// ====================  ملاحظة ====================
 class SizeNoteTile extends StatelessWidget {
   final String text;
   final IconData icon;
@@ -399,7 +399,7 @@ class SizeNoteTile extends StatelessWidget {
   }
 }
 
-// ==================== 🔗 زر "اعرفي مقاسك" في صفحة المنتج ====================
+// ====================  زر "اعرفي مقاسك" في صفحة المنتج ====================
 /// يُوضع في خانة viewMoreShow داخل TitleBar الخاص بالمقاسات.
 /// بعد معرفة المقاس، يتم اختياره تلقائياً في DialogSizeCubit إن كان متوفراً.
 class FindMySizeButton extends StatelessWidget {
@@ -410,7 +410,7 @@ class FindMySizeButton extends StatelessWidget {
   Widget build(BuildContext context) {
     if (sizes.isEmpty) return const SizedBox.shrink(); // منتج بدون مقاسات
     return InkWell(
-      borderRadius: BorderRadius.circular(20),
+      borderRadius: BorderRadius.circular(7),
       onTap: () async {
         final String? picked = await Navigator.of(context).push<String>(
           MaterialPageRoute(builder: (_) => SizeFinderScreen(productSizes: sizes)),
@@ -423,7 +423,7 @@ class FindMySizeButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
         decoration: BoxDecoration(
           color: AppColors.primary.withOpacity(0.08),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(7),
           border: Border.all(color: AppColors.primary.withOpacity(0.3)),
         ),
         child: Row(

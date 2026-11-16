@@ -211,27 +211,17 @@ Widget buildProductDetailSheet(BuildContext context, ProductModel product) {
                   ProductColorSelector(colors: product.colors),
 
                   const SizedBox(height: 7),
-
-                  TitleBar(title: 'size'.tr(), isDecoration: false),
-
-
-                  const SizedBox(height: 7),
-                  FindMySizeButton(sizes: product.sizes), // 📏 زر اعرفي مقاسك
-
-
                       TitleBar(
                         title: 'size'.tr(),
                         isDecoration: false,
                       ),
-
-
-
                   const SizedBox(height: 5),
-
                   Padding(
                     padding: const EdgeInsets.only(bottom: 10),
                     child: ProductSizeSelector(sizes: product.sizes), // 🌟 تمرير مصفوفة المقاسات الحقيقية
                   ),
+                  const SizedBox(height: 3),
+                  FindMySizeButton(sizes: product.sizes), // 📏 زر اعرفي مقاسك
                 ],
               ),
             ),

@@ -21,6 +21,7 @@ import '../../../logic/products/product_cubit.dart';
 import '../../../logic/size/size_cubit.dart';
 import '../../../logic/videos/video_cubit.dart';
 import '../../screens/favorites/favorites_screen.dart';
+import '../../screens/reels/reels_player_screen.dart';
 
 
 class ProductImageSlider extends StatelessWidget {
@@ -194,22 +195,14 @@ class ProductImageGallery extends StatelessWidget {
                         child: AppIcon(
                           icon: Icons.video_library_outlined,
                           color: AppColors.primary,
-                          onPressed: () {
-                            int? selectedVideoId = videoID;
-                            if(selectedVideoId != null){
-                              context.read<VideoCubit>().reorderVideosToMakeTargetFirst(selectedVideoId);
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => const SafeArea(
-                                    child: ReelScreen(
-                                      pageIndex: 2,
-                                      isProductDetails: true,
-                                    ),
-                                  ),
-                                ),
-                              );
-                            }
-
+                          onPressed: () async {
+                            if (videoID == null) return;
+                            // الريل المختار أولا ثم باقي الريلز
+                            final videos = await context.read<VideoCubit>().videosStartingWith(videoID!);
+                            if (!context.mounted || videos.isEmpty) return;
+                            Navigator.of(context).push(
+                              MaterialPageRoute(builder: (_) => ReelsPlayerScreen(videos: videos)),
+                            );
                           },
                         ),
                       ) : SizedBox()
