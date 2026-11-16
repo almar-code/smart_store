@@ -12,6 +12,7 @@ import '../../core/widgets/app_messages.dart';
 import '../../core/widgets/buttons/smart_floating_button.dart';
 import '../../core/widgets/internet_check.dart';
 import '../../core/widgets/network_service.dart';
+import '../../core/widgets/no_internet_overlay.dart';
 import '../../logic/login/login_cubit.dart';
 import '../widgets/drawer/drawer.dart';
 import '../widgets/floatingActionButton/cartFloatingButton.dart';
@@ -61,91 +62,97 @@ class MainWrapperScreen extends StatelessWidget {
       false, // Addresses
       false, // Chat
     ];
-    return BlocProvider(
-      create: (context) => NavigationCubit(),
-      child: BlocBuilder<NavigationCubit, int>(
-        builder: (context, currentIndex) {
-          return BlocBuilder<ThemeBloc, ThemeState>(
-  builder: (context, state) {
-    return LayoutBuilder(
-      key: ValueKey(state.isDark),
-            builder: (context, constraints) {
-              bool isDesktop = constraints.maxWidth > 800;
-              return SafeArea(
-                child: Scaffold(
-                  extendBody: extendBodyPages[currentIndex],
-                  key: context.read<NavigationCubit>().scaffoldKey,
+    return Stack(
+      fit: StackFit.expand,
+      children: [
+        BlocProvider(
+          create: (context) => NavigationCubit(),
+          child: BlocBuilder<NavigationCubit, int>(
+            builder: (context, currentIndex) {
+              return BlocBuilder<ThemeBloc, ThemeState>(
+          builder: (context, state) {
+        return LayoutBuilder(
+          key: ValueKey(state.isDark),
+                builder: (context, constraints) {
+                  bool isDesktop = constraints.maxWidth > 800;
+                  return SafeArea(
+                    child: Scaffold(
+                      extendBody: extendBodyPages[currentIndex],
+                      key: context.read<NavigationCubit>().scaffoldKey,
 
-                  // الدراور يظهر فقط في الموبايل
-                  drawer: isDesktop ? null : const AppDrawer(),
+                      // الدراور يظهر فقط في الموبايل
+                      drawer: isDesktop ? null : const AppDrawer(),
 
 
-                  // backgroundColor: AppColors.background,
-                  body: Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    decoration:  BoxDecoration(
-                      // التدرج اللوني من الأعلى للأسفل كما في الصورة
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          AppColors.gradientTop,    // سيأخذ 0xFF1C1C1E في الليل و 0xFFFFFFFF في النهار
-                          AppColors.gradientBottom, // سيأخذ 0xFF000000 في الليل و 0xFFE8EAF0 في النهار
+                      // backgroundColor: AppColors.background,
+                      body: Container(
+                        width: double.infinity,
+                        height: double.infinity,
+                        decoration:  BoxDecoration(
+                          // التدرج اللوني من الأعلى للأسفل كما في الصورة
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [
+                              AppColors.gradientTop,    // سيأخذ 0xFF1C1C1E في الليل و 0xFFFFFFFF في النهار
+                              AppColors.gradientBottom, // سيأخذ 0xFF000000 في الليل و 0xFFE8EAF0 في النهار
+                            ],
+                          ),
+                        ),
+                        child:Row(
+                        children: [
+
+                          if (isDesktop)
+                            ModernSideRail(
+                              currentIndex: currentIndex,
+                              onTap: (index) => handleNavigation(index, context), // استخدام الدالة الجديدة
+                            ),
+
+                          Expanded(
+                            child: Column(
+                              children: [
+
+                                // 5. محتوى الصفحات (Home, Reels, etc.)
+                                Expanded(
+                                  child: IndexedStack(
+                                    index: currentIndex,
+                                    children: screens,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
                       ),
-                    ),
-                    child:Row(
-                    children: [
-
-                      if (isDesktop)
-                        ModernSideRail(
-                          currentIndex: currentIndex,
-                          onTap: (index) => handleNavigation(index, context), // استخدام الدالة الجديدة
-                        ),
-
-                      Expanded(
-                        child: Column(
-                          children: [
-
-                            // 5. محتوى الصفحات (Home, Reels, etc.)
-                            Expanded(
-                              child: IndexedStack(
-                                index: currentIndex,
-                                children: screens,
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
-                    ],
-                  ),
-                  ),
 
-                  bottomNavigationBar: isDesktop
-                      ? const SizedBox()
-                      : ModernBottomNavBar(
-                    currentIndex: currentIndex,
-                    onTap: (index) => handleNavigation(index, context), // استخدام الدالة الجديدة
-                  ),
-                  floatingActionButton: (const [3, 9].contains(currentIndex) ) ? null : Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    spacing: 10,
-                    children: [
-                      SmartFloatingButton(),
-                       CartFloatingButton()
-                    ],
-                  ) ,
+                      bottomNavigationBar: isDesktop
+                          ? const SizedBox()
+                          : ModernBottomNavBar(
+                        currentIndex: currentIndex,
+                        onTap: (index) => handleNavigation(index, context), // استخدام الدالة الجديدة
+                      ),
+                      floatingActionButton: (const [0,3, 9].contains(currentIndex) ) ? null : Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        spacing: 10,
+                        children: [
+                          SmartFloatingButton(),
+                           CartFloatingButton()
+                        ],
+                      ) ,
 
-                ),
+                    ),
+                  );
+                },
               );
+          },
+        );
             },
-          );
-  },
-);
-        },
-      ),
+          ),
+        ),
+        const NoInternetOverlay(),
+      ],
     );
   }
 }

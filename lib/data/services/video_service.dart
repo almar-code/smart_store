@@ -1,37 +1,43 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
-
 import '../../core/constants/app_endpoints.dart';
 
 class VideoService {
   final Dio dio = Dio();
 
-  // 1. جلب الفيديوهات
-  Future<List<dynamic>> getVideos() async {
-    final response = await dio.get(ApiEndpoints.getAllVideos);
-    return response.data['data'];
-  }
-
-  // 2. تحديث الإعجاب
-  Future<Response> toggleLike(int videoId, String action) async {
-    return await dio.post(
-      ApiEndpoints.toggleLike(videoId),
-      data: {'action': action},
+  // دفعة من الريلز
+  Future<Map<String, dynamic>> getVideos({
+    required int page,
+    required int seed,
+    int perPage = 6,
+  }) async {
+    final response = await dio.get(
+      ApiEndpoints.getAllVideos,
+      queryParameters: {'page': page, 'per_page': perPage, 'seed': seed},
     );
+    return Map<String, dynamic>.from(response.data);
   }
 
-  // 3. زيادة المشاركة
-  Future<Response> incrementShare(int videoId) async {
-    return await dio.post(ApiEndpoints.incrementShare(videoId));
+  Future<Map<String, dynamic>> getVideo(int videoId) async {
+    final response = await dio.get(ApiEndpoints.getVideo(videoId));
+    return Map<String, dynamic>.from(response.data['data']);
   }
 
-  // 4. زيادة الحفظ
-  Future<Response> toggleSave(int videoId) async {
-    return await dio.post(ApiEndpoints.toggleSave(videoId));
+  Future<void> toggleLike(int videoId, String action) async {
+    await dio.post(ApiEndpoints.toggleLike(videoId), data: {'action': action});
   }
 
+  Future<void> incrementShare(int videoId) async {
+    await dio.post(ApiEndpoints.incrementShare(videoId));
+  }
 
-  // أضف هذه الدوال داخل كلاس VideoService الحالي:
+  Future<void> toggleSave(int videoId, String action) async {
+    await dio.post(ApiEndpoints.toggleSave(videoId), data: {'action': action});
+  }
+
+  Future<void> addView(int videoId) async {
+    await dio.post(ApiEndpoints.addView(videoId));
+  }
+
   Future<List<dynamic>> getComments(int videoId) async {
     final response = await dio.get(ApiEndpoints.getComments(videoId));
     return response.data['data'];
@@ -42,8 +48,6 @@ class VideoService {
       ApiEndpoints.addComment(videoId),
       data: {'customer_id': customerId, 'comment_text': text},
     );
-
-    //  التعديل هنا: نقوم بإرجاع response.data مباشرة لأن السيرفر يرسل الكائن بدون تغليفه بـ 'data'
     return response.data as Map<String, dynamic>;
   }
 }

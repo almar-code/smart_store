@@ -8,6 +8,7 @@ import 'package:smart_store/core/widgets/scroll_wrapper.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_shadow.dart';
 import '../../../core/di/injection_container.dart' as di;
+import '../../../core/widgets/buttons/ScrollToTopButton.dart' show ScrollToTopButton;
 import '../../../core/widgets/customer_review.dart';
 import '../../../core/widgets/icons/app_icon.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
@@ -47,11 +48,22 @@ class ProductDetailsScreen extends StatefulWidget {
 class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
   late bool _localIsExpanded;
   Future<int?> _customerId() => UserLocal().getCustomerId();
+  final ScrollController _scrollController = ScrollController();
+  int _refreshKey = 0;
   @override
   void initState() {
     super.initState();
     _localIsExpanded = widget.isExpanded;
     _recordView();
+  }
+  // اعادة تحميل المنتجات المشابهة والآراء
+  Future<void> _refresh(BuildContext ctx) async {
+    setState(() => _refreshKey++);
+    await ctx.read<ProductCubit>().fetchProducts(
+      subCatId: widget.product.subCatId,
+      similarProductId: widget.product.pId,
+      isRefresh: true,
+    );
   }
   // تسجيل مشاهدة المنتج في الخلفية بدون انتظار حتى لا تتأخر الشاشة
   Future<void> _recordView() async {
@@ -60,7 +72,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
       customerId:  await _customerId(),
     );
   }
-
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
@@ -111,14 +127,11 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                 similarProductId:widget.product.pId,
                 isRefresh: true,
               ),
-  child: Padding(
+           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
-            child: isDesktop
-                ? _buildDesktopLayout(context,widget.product)
-                : ScrollWrapper(
-              bottom: 15,
-              child: _buildMobileLayout(context,widget.product),
-            ),
+             child: isDesktop
+                 ? _buildDesktopLayout(context, widget.product)
+                 : _buildMobileLayout(context, widget.product),
           ),
 ),
           floatingActionButton: const Column(
@@ -136,52 +149,62 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
     );
   }
 
-  Widget _buildMobileLayout(BuildContext context,ProductModel product) {
-
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      spacing: 10,
+  Widget _buildMobileLayout(BuildContext context, ProductModel product) {
+    return Stack(
       children: [
-        SizedBox(
-          height: 400,
-          child: BlocBuilder<DialogProductCubit, ColorModel>(
-            builder: (context, selectedColor) {
-              final imgPaths = selectedColor.images.map((img) => img.imgUrl).toList();
-              return ProductImageGallery(
-                images: imgPaths.isNotEmpty ? imgPaths : [widget.product.pImage ?? ''],
-                videoID: widget.product.videoID,
-              );
-            },
-          ),
+        Builder(
+          builder: (innerContext) {
+            return RefreshIndicator(
+              color: AppColors.primary,
+              backgroundColor: AppColors.backgroundSecondary,
+              onRefresh: () => _refresh(innerContext),
+              child: CustomScrollView(
+                controller: _scrollController,
+                physics: const AlwaysScrollableScrollPhysics(),
+                slivers: [
+                  // المعرض يختفي تدريجيا مع التمرير
+                  SliverPersistentHeader(
+                    delegate: _GalleryHeaderDelegate(product: product),
+                  ),
+                  SliverPadding(
+                    padding: const EdgeInsets.only(top: 10, bottom: 20),
+                    sliver: SliverToBoxAdapter(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 10,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 10),
+                            child: _buildProductInfo(),
+                          ),
+                          ProductReviewsSection(productId: product.pId),
+                          const TitleBar(title: "product like"),
+                          AllProducts(
+                            onProductTap: (p) => Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: p)),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            );
+          }
         ),
 
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: _buildProductInfo(),
+        // زر الرجوع للأعلى
+        PositionedDirectional(
+          bottom: 15,
+          start: 10,
+          child: ScrollToTopButton(scrollController: _scrollController),
         ),
-         ProductReviewsSection(
-          productId: product.pId,
-        ),
-        const TitleBar(title: "product like"),
-        AllProducts(
-                onProductTap: (product) {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          ProductDetailsScreen(product: product,),
-                    ),
-                  );
-                },
-              ),
       ],
     );
   }
-
   Widget _buildDesktopLayout(BuildContext context,ProductModel product) {
-    var box = Hive.box('user_info_box');
-    var customer_id = (box.isEmpty) ? '' :  box.get('customer_id');
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -222,19 +245,28 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                TitleBar(title: "product like"),
               SizedBox(height: 12,),
               Expanded(
-                child: ScrollWrapper(
-                  bottom: 15,
-                  child: AllProducts(
-                    onProductTap: (product) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              ProductDetailsScreen(product: product,),
+                child: Builder(
+                  builder: (innerContext) {
+                    return RefreshIndicator(
+                      color: AppColors.primary,
+                      backgroundColor: AppColors.backgroundSecondary,
+                      onRefresh: () => _refresh(innerContext),
+                      child: ScrollWrapper(
+                        bottom: 15,
+                        child: AllProducts(
+                          onProductTap: (product) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    ProductDetailsScreen(product: product,),
+                              ),
+                            );
+                          },
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  }
                 ),
               ),
             ],
@@ -328,7 +360,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
         // 🌟 استخدام الوجت المطور للألوان المرتبط بالكوبيت والسيرفر
         ProductColorSelector(colors: widget.product.colors),
 
-        const SizedBox(height: 7),
+        const SizedBox(height: 1),
         TitleBar(title: 'size'.tr(), isDecoration: false),
 
         // 🌟 استخدام الوجت المطور للمقاسات المرتبط بكوبيت المقاسات والسيرفر
@@ -336,26 +368,54 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
           padding: const EdgeInsets.only(bottom: 10),
           child: ProductSizeSelector(sizes: widget.product.sizes),
         ),
-        // 🌟 استخدام الوجت المطور للألوان المرتبط بالكوبيت والسيرفر
-        ProductColorSelector(colors: widget.product.colors),
-
-        const SizedBox(height: 7),
         FindMySizeButton(sizes: widget.product.sizes),
-
-
-            TitleBar(
-              title: 'size'.tr(),
-              isDecoration: false,
-            ),
-
-
-        // 🌟 استخدام الوجت المطور للمقاسات المرتبط بكوبيت المقاسات والسيرفر
-        Padding(
-          padding: const EdgeInsets.only(bottom: 10),
-          child: ProductSizeSelector(sizes: widget.product.sizes),
-        ),
       ],
     );
   }
 
+}
+// رأس المعرض المتقلص
+class _GalleryHeaderDelegate extends SliverPersistentHeaderDelegate {
+  final ProductModel product;
+
+  _GalleryHeaderDelegate({required this.product});
+
+  @override
+  double get maxExtent => 400;
+
+  @override
+  double get minExtent => 0;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    // نسبة التقلص من 0 الى 1
+    final t = (shrinkOffset / maxExtent).clamp(0.0, 1.0);
+
+    return ClipRect(
+      child: OverflowBox(
+        alignment: Alignment.bottomCenter,
+        minHeight: maxExtent,
+        maxHeight: maxExtent,
+        child: Opacity(
+          opacity: 1 - t,
+          child: Transform.scale(
+            scale: 1 - 0.15 * t,
+            alignment: Alignment.bottomCenter,
+            child: BlocBuilder<DialogProductCubit, ColorModel>(
+              builder: (context, selectedColor) {
+                final imgPaths = selectedColor.images.map((img) => img.imgUrl).toList();
+                return ProductImageGallery(
+                  images: imgPaths.isNotEmpty ? imgPaths : [product.pImage ?? ''],
+                  videoID: product.videoID,
+                );
+              },
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant _GalleryHeaderDelegate old) => old.product != product;
 }

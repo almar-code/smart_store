@@ -10,6 +10,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/utils/local_notification_helper.dart';
 import 'logic/ads/ads_cubit.dart';
 import 'logic/cart/cart_cubit.dart';
+import 'logic/connection/connection_cubit.dart';
 import 'logic/favorites/favorites_cubit.dart';
 import 'logic/live_try_on/live_try_on_cubit.dart';
 import 'logic/login/login_cubit.dart';
@@ -43,6 +44,7 @@ void main() async {
   await Hive.initFlutter();
   await Hive.openBox('search_history_box');
   await Hive.openBox('user_info_box');
+  await Hive.openBox('reels_box');
   final String supaBaseKey = dotenv.env['supaBase_AnonKey'] ?? '';
   await Supabase.initialize(
     url: 'https://vwhumdnzaljjpuwvtdbo.supabase.co',
@@ -114,6 +116,8 @@ void main() async {
           ),
           BlocProvider(create: (_) => LiveTryOnCubit()), //  التجربة الحية
           BlocProvider(lazy: false, create: (_) => di.sl<NotificationCubit>()..fetch()..startAutoRefresh()),
+          // فحص الإنترنت عند فتح التطبيق
+          BlocProvider(lazy: false, create: (_) => ConnectionCubit()..check()),
         ],
 
 

@@ -23,6 +23,7 @@ class _ScrollWrapperState extends State<ScrollWrapper> {
     return Stack(
       children: [
         SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
           controller: _scrollController,
           child: widget.child,
         ),

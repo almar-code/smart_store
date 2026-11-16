@@ -25,6 +25,8 @@ class UserLocal {
   Future<int?> getCustomerId() async {
     var box = Hive.box('user_info_box');
     var customerID = (box.isEmpty) ? '' :  box.get('customer_id');
+    print('66666666666666666666666666666customerID: $customerID');
+    // var customerID = 1;
     return int.tryParse(customerID.toString());
   }
   Future<void> clearUser() async {

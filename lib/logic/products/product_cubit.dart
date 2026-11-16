@@ -157,6 +157,7 @@ class ProductCubit extends Cubit<ProductState> {
   }
   void toggleFavoriteLocally(ProductModel product) {
     // 1. نقوم بتحديث القائمة بشكل آمن عبر الـ map وتحويلها إلى القائمة الجديدة
+    if (isClosed) return;
     allProducts = allProducts.map((p) {
       if (p.pId == product.pId) {
         // نعكس قيمة الـ isFavorite للمنتج المستهدف
@@ -165,5 +166,11 @@ class ProductCubit extends Cubit<ProductState> {
       return p; // يجب إرجاع العنصر في كل الحالات
     }).toList(); // تحويلها إلى List لتنفيذ العملية فوراً
     emit(ProductLoaded(products: List.from(allProducts), hasMore: false));
+  }
+  // إيقاف الاستماع عند إغلاق الشاشة
+  @override
+  Future<void> close() {
+    _subscription?.cancel();
+    return super.close();
   }
 }

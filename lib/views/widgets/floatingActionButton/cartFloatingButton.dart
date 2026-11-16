@@ -14,7 +14,7 @@ class CartFloatingButton extends StatelessWidget {
       width: 50,
       height: 50,
       child: FloatingActionButton(
-
+        heroTag: null, // منع تعارض الازرار العائمة
         onPressed: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => CartScreen(screenOnly: true,))),
         splashColor: Colors.transparent,
         hoverElevation: 4,

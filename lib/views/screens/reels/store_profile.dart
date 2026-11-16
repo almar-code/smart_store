@@ -1,231 +1,278 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:share_plus/share_plus.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/utils/compact_count.dart';
 import '../../../core/widgets/app_logo.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/circleImage/circle_image.dart';
+import '../../../core/widgets/circularProgress.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
+import '../../../logic/videos/video_cubit.dart';
+import '../../../logic/videos/video_state.dart';
+import '../../widgets/reels/reel_grid_tile.dart';
+import '../../widgets/reels/reel_item.dart';
+import 'reels_player_screen.dart';
+import 'saved_reels_screen.dart';
+
 class StoreProfile extends StatelessWidget {
-  final bool isAppBar ;
-  const StoreProfile({super.key ,this.isAppBar = false});
+  final bool isAppBar;
+  const StoreProfile({super.key, this.isAppBar = false});
+
   @override
   Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.of(context).size.width > 800;
+    final isDesktop = MediaQuery.of(context).size.width > 800;
+
     return DefaultTabController(
       length: 2,
-      child: SafeArea(
-        child: Scaffold(
+      child: Scaffold(
+        backgroundColor: AppColors.background,
+        appBar: isAppBar
+            ? AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: AppColors.background,
-          appBar: isAppBar ? AppBar(
-            automaticallyImplyLeading: false,
-            backgroundColor: AppColors.background,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-            titleSpacing:10,
-            leading: null,
-            title:  Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Logo(height: isDesktop ? 30 : 27,width: isDesktop ? 30 : 27),
-                const SizedBox(width: 6),
-                AppTitle(fontSize:  isDesktop ? 20 : 17,),
-              ],
-            ),
-            actions: [
-              ArrowBack()
-        
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          titleSpacing: 10,
+          title: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Logo(height: isDesktop ? 30 : 27, width: isDesktop ? 30 : 27),
+              const SizedBox(width: 6),
+              AppTitle(fontSize: isDesktop ? 20 : 17),
             ],
-          ) : null,
-          body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      children: [
-        
-                        /// صورة
-                        CircleImage(
-                          imagePath: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
-                          radius: 30,
-                        ),
-        
-                        const SizedBox(width: 20),
-        
-                        /// Stats
-                        Expanded(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            spacing: 15,
-                            children: const [
-                              _StatItem("12", "Posts"),
-                              _StatItem("5.4K", "Followers"),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 15),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 10,
-                      children: [
-                         Text(
-                          "Nice Store",
-                          style: TextStyle(color: AppColors.textColor),
-                        ),
-                        Text(
-                          "Take care of the minute details",
-                          style: TextStyle(color: AppColors.textSecondary,fontSize: 12),
-                        ),
-                      ],
-                    ),
-                  ),
-        
-                  const SizedBox(height: 15),
-        
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Row(
-                      spacing: 10,
-                      children: [
-                        Expanded(child: _buildButton("Follow")),
-                        Expanded(child: _buildButton("Messaging")),
-                        Expanded(child: _buildButton("Share")),
-                      ],
-                    ),
-                  ),
-        
-                  const SizedBox(height: 10),
-        
-                   TabBar(
-                    labelColor:  AppColors.primary.withOpacity(0.4),
-                     indicatorColor: AppColors.primary,
-                    tabs: [
-                      Tab(icon: Icon(Icons.grid_on)),
-                      Tab(icon: Icon(Icons.video_library)),
-                    ],
-                  ),
-        
-                  /// 📸 Content
-                  Expanded(
-                    child: TabBarView(
-                      children: [
-                        _ReelsGrid(),
-                        _ReelsGrid(),
-                      ],
-                    ),
-                  ),
+          ),
+          actions: const [ArrowBack(), SizedBox(width: 10)],
+        )
+            : null,
+        body: SafeArea(
+          child: BlocBuilder<VideoCubit, VideoState>(
+            builder: (context, state) {
+              return NestedScrollView(
+                headerSliverBuilder: (context, _) => [
+                  SliverToBoxAdapter(child: _Header(data: state is VideoLoaded ? state : null)),
+                  SliverPersistentHeader(pinned: true, delegate: _TabsDelegate()),
                 ],
-              ),
-            ),
+                body: TabBarView(
+                  children: [
+                    _AllReelsGrid(state: state),
+                    const SavedReelsGrid(),
+                  ],
+                ),
+              );
+            },
           ),
         ),
       ),
     );
   }
-
-  static Widget _buildButton(String text) {
-    return Container(
-      height: 35,
-      alignment: Alignment.center,
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.borderColor),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        text,
-        style: TextStyle(color: AppColors.textColor),
-      ),
-    );
-  }
 }
 
-class _StatItem extends StatelessWidget {
-  final String count;
-  final String label;
-
-  const _StatItem(this.count, this.label);
+class _Header extends StatelessWidget {
+  final VideoLoaded? data;
+  const _Header({this.data});
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          count,
-          style: TextStyle(
-              color: AppColors.textColor, fontWeight: FontWeight.bold),
-        ),
-        Text(
-          label,
-          style:  TextStyle(color: AppColors.textSecondary),
-        ),
-      ],
-    );
-  }
-}
-
-class _ReelsGrid extends StatelessWidget {
-  final List<String> reels = List.generate(
-    9,
-        (index) => "assets/images/${index}.jpg",
-  );
-
-  @override
-  Widget build(BuildContext context) {
-    bool isDesktop = MediaQuery.of(context).size.width > 1000;
-    bool isIpad = MediaQuery.of(context).size.width < 1000 &&  MediaQuery.of(context).size.width > 450;
-    int itemCount = isDesktop ? 7 : isIpad ? 4 : 3;
-    return MasonryGridView.count(
-      padding: const EdgeInsets.all(2),
-      crossAxisCount: itemCount,
-      mainAxisSpacing: 5,
-      crossAxisSpacing: 5,
-      itemCount: reels.length,
-      itemBuilder: (context, index) {
-        return ClipRRect(
-          borderRadius: BorderRadius.circular(4),
-          child: Stack(
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 10),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-
-              Image.asset(
-                reels[index],
-                fit: BoxFit.cover,
-                width: double.infinity,
+              // صورة بإطار متدرج
+              Container(
+                padding: const EdgeInsets.all(3),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: LinearGradient(colors: [AppColors.primary, AppColors.primary.withOpacity(0.35)]),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(2),
+                  decoration: BoxDecoration(shape: BoxShape.circle, color: AppColors.background),
+                  child: CircleImage(imagePath: storeLogo, radius: 36),
+                ),
               ),
-              PositionedDirectional(
-                bottom: 6,
-                start: 6,
+              const SizedBox(width: 16),
+              Expanded(
                 child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                     Icon(
-                      CupertinoIcons.eye_slash,
-                      color: AppColors.iconColor,
-                      size: 14,
-                    ),
-                    const SizedBox(width: 4),
-                    Text(
-                      "${(index + 1) * 120}", // 👈 رقم وهمي
-                      style:  TextStyle(
-                        color: AppColors.textColor,
-                        fontSize: 11,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
+                    _Stat(compactCount(data?.total ?? 0), tr('reels_count')),
+                    _Stat(compactCount(data?.totalViews ?? 0), tr('views')),
+                    _Stat(compactCount(data?.totalLikes ?? 0), tr('likes')),
                   ],
                 ),
               ),
             ],
           ),
-        );
+          const SizedBox(height: 12),
+          Row(
+            children: [
+              Text('Nice Store', style: TextStyle(color: AppColors.textColor, fontWeight: FontWeight.bold, fontSize: 16)),
+              const SizedBox(width: 4),
+              Icon(Icons.verified, color: AppColors.primary, size: 16),
+            ],
+          ),
+          const SizedBox(height: 4),
+          Text(tr('store_bio'), style: TextStyle(color: AppColors.textSecondary, fontSize: 13, height: 1.4)),
+          const SizedBox(height: 14),
+          Row(
+            children: [
+              Expanded(
+                child: _ProfileButton(
+                  icon: CupertinoIcons.share,
+                  label: tr('share_store'),
+                  filled: true,
+                  onTap: () => Share.share('${tr('share_store_text')}\n${dotenv.env['STORE_APP_URL'] ?? ''}'),
+                ),
+              ),
+              const SizedBox(width: 10),
+              Expanded(
+                child: _ProfileButton(
+                  icon: CupertinoIcons.bookmark,
+                  label: tr('saved_reels'),
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(builder: (_) => const SavedReelsScreen()),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Stat extends StatelessWidget {
+  final String value;
+  final String label;
+  const _Stat(this.value, this.label);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Text(value, style: TextStyle(color: AppColors.textColor, fontWeight: FontWeight.bold, fontSize: 17)),
+        const SizedBox(height: 2),
+        Text(label, style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+      ],
+    );
+  }
+}
+
+class _ProfileButton extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback onTap;
+  final bool filled;
+
+  const _ProfileButton({required this.icon, required this.label, required this.onTap, this.filled = false});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: filled ? AppColors.primary : AppColors.backgroundSecondary,
+      borderRadius: BorderRadius.circular(10),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(10),
+        onTap: onTap,
+        child: SizedBox(
+          height: 38,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(icon, size: 16, color: filled ? Colors.white : AppColors.textColor),
+              const SizedBox(width: 6),
+              Text(
+                label,
+                style: TextStyle(
+                  color: filled ? Colors.white : AppColors.textColor,
+                  fontWeight: FontWeight.w600,
+                  fontSize: 13,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// شريط التبويبات يبقى ثابتا عند التمرير
+class _TabsDelegate extends SliverPersistentHeaderDelegate {
+  @override
+  double get minExtent => 48;
+
+  @override
+  double get maxExtent => 48;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: AppColors.background,
+      child: TabBar(
+        labelColor: AppColors.primary,
+        unselectedLabelColor: AppColors.iconColor,
+        indicatorColor: AppColors.primary,
+        dividerColor: AppColors.borderColor.withOpacity(0.4),
+        tabs: const [
+          Tab(icon: Icon(CupertinoIcons.play_rectangle)),
+          Tab(icon: Icon(CupertinoIcons.bookmark)),
+        ],
+      ),
+    );
+  }
+
+  @override
+  bool shouldRebuild(covariant SliverPersistentHeaderDelegate oldDelegate) => true;
+}
+
+class _AllReelsGrid extends StatelessWidget {
+  final VideoState state;
+  const _AllReelsGrid({required this.state});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = state;
+    if (s is VideoLoading || s is VideoInitial) return const Center(child: CircularProgress());
+    if (s is! VideoLoaded) {
+      return Center(child: Text(tr('no_reels'), style: TextStyle(color: AppColors.textSecondary)));
+    }
+
+    // تحميل الدفعة التالية عند الاقتراب من النهاية
+    return NotificationListener<ScrollNotification>(
+      onNotification: (n) {
+        if (n.metrics.extentAfter < 400) context.read<VideoCubit>().loadMore();
+        return false;
       },
+      child: LayoutBuilder(
+        builder: (context, box) {
+          final cols = (box.maxWidth / 170).floor().clamp(3, 6);
+          return GridView.builder(
+            padding: const EdgeInsets.all(8),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: cols,
+              mainAxisSpacing: 6,
+              crossAxisSpacing: 6,
+              childAspectRatio: 9 / 16,
+            ),
+            itemCount: s.videos.length,
+            itemBuilder: (_, i) => ReelGridTile(
+              video: s.videos[i],
+              onTap: () => Navigator.of(context).push(
+                MaterialPageRoute(builder: (_) => ReelsPlayerScreen(videos: s.videos, initialIndex: i)),
+              ),
+            ),
+          );
+        },
+      ),
     );
   }
 }

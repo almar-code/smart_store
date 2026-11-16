@@ -144,7 +144,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         ),
                       ),),
                     ),
-                    const SizedBox(height: 10),
+                    const SizedBox(height: 5),
 
                     // عرض الكلمات المخزنة محلياً في Wrap
                     Wrap(
@@ -164,7 +164,21 @@ class _SearchScreenState extends State<SearchScreen> {
                       }).toList(),
                     ),
                     const SizedBox(height: 20),
-
+                    // الاقتراحات بنفس شكل سجل البحث
+                    TitleBar(title: tr('search_suggestions')),
+                    const SizedBox(height: 10),
+                    Wrap(
+                      spacing: 8.0,
+                      runSpacing: 8.0,
+                      children: List.generate(10, (i) => tr('suggestion_${i + 1}')).map((item) {
+                        return InkWell(
+                          onTap: () => _selectQuery(cubit, item),
+                          borderRadius: BorderRadius.circular(8),
+                          child: _buildCategoryItem(item),
+                        );
+                      }).toList(),
+                    ),
+                    const SizedBox(height: 20),
                     // 3. إظهار TitleBar و AllProducts فقط بعد إتمام البحث
                     if (cubit.hasSearched) ...[
                       TitleBar(title: tr('SearchResults')),

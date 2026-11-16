@@ -111,6 +111,12 @@ dependencies:
   permission_handler: ^11.3.1 # إذن الكاميرا على الجوال
   flutter_local_notifications: ^19.4.0 # اشعارات الجوال
   workmanager: ^0.9.3
+  flutter_cache_manager: ^3.4.1 # كاش الفيديوهات
+
+
+# تثبيت نسخة متوافقة مع Kotlin 2.1 في المشروع
+dependency_overrides:
+  google_maps_flutter_android: 2.18.3
 
 dev_dependencies:
   flutter_test:

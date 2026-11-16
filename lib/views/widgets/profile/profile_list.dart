@@ -16,6 +16,7 @@ import '../../screens/help center screen/help_center_screen.dart';
 import '../../screens/notifications/notifications_screen.dart';
 import '../../screens/orders/orders_screen.dart';
 import '../../screens/profile/account_management_screen.dart';
+import '../../screens/reels/saved_reels_screen.dart';
 import '../../screens/sizefinder/size_finder_screen.dart';
 import '../size_finder/size_finder_widgets.dart';
 import 'custom_tile.dart';
@@ -62,7 +63,7 @@ class ProfileList extends StatelessWidget {
             iconColor: state.unreadCount > 0 ? AppColors.redColor : null,
             onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const NotificationsScreen())),
           ),
-        ),        CustomTile(icon: CupertinoIcons.heart, title: "favorites".tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen()))),
+        ),        CustomTile(icon: CupertinoIcons.heart, title: "favorites".tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen( screenOnly: true,)))),
         CustomTile(icon: CupertinoIcons.chat_bubble_2, title: "messages".tr(), onTap: () {}),
         CustomTile(icon: Icons.straighten_rounded, title: 'size'.tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) =>   SizeFinderScreen(),))),
         CustomTile(
@@ -79,7 +80,9 @@ class ProfileList extends StatelessWidget {
             builder: (context) => const CurrencyPickerSheet(),
           );
         },),
+        CustomTile(icon: CupertinoIcons.bookmark, title: "saved_reels".tr(), onTap: () => Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SavedReelsScreen()))),
         CustomTile(icon: CupertinoIcons.question_circle, title: "help center".tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => HelpCenterScreen()))),
+        SizedBox(height: isDesktop ? 10 :50,)
       ],
     );
   }

@@ -3,13 +3,14 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 class ApiEndpoints {
   // 1. جلب الرابط الأساسي من ملف الـ .env مع القيمة الافتراضية للمحاكي
   static String get _baseUrl => dotenv.env['API_BASE_URL'] ?? 'http://192.168.43.224:8000';
-
+  // فحص الاتصال (مسار جاهز في Laravel)
+  static String get healthCheck => '$_baseUrl/up';
   // ====================  روابط عناوين المستخدمين ====================
   static String get userAddresses => '$_baseUrl/api/user-addresses';
   // روابط ثابتة للفيديوهات
   static String get getAllVideos => '$_baseUrl/api/get-all-videos';
 // أضف هذا السطر داخل كلاس ApiEndpoints الموجود لديك
-  static String get n8nChatAgent => 'https://smartabayastore.app.n8n.cloud/webhook/abaya-customer-service';
+  static String get n8nChatAgent => 'https://smartstroe.app.n8n.cloud/webhook/abaya-customer-service';
   // ==================== روابط ملفات الصور (عبر /api/media لدعم CORS على الويب) ====================
   static String _media(String folder, String? image) =>
       '$_baseUrl/api/media/uploads/$folder/$image';
@@ -17,8 +18,9 @@ class ApiEndpoints {
   static String productImageUrl(String? image) => _media('products', image);
   static String subCategoryImageUrl(String? image) => _media('subcategory', image);
   static String adImageUrl(String imageName) => _media('Advertisement', imageName);
+  static String videoUrl(String file) => _media('videos', file);
 //   static String get n8nChatAgent => 'https://n8n-production-7bdd.up.railway.app/webhook/abaya-customer-service';
-  // ==================== 📏 رابط التنبؤ بمقاس العباية (n8n) ====================
+  // ====================  رابط التنبؤ بمقاس العباية (n8n) ====================
   static String get n8nSizePredictor => 'https://almar33.app.n8n.cloud/webhook/abaya-size';
   static const String classifyProductComment = 'https://almar33.app.n8n.cloud/webhook/comment';
   // روابط ديناميكية (تعتمد على معرف الفيديو videoId)
@@ -27,6 +29,8 @@ class ApiEndpoints {
   static String toggleSave(int videoId) => '$_baseUrl/api/videos/$videoId/save';
   static String getComments(int videoId) => '$_baseUrl/api/videos/$videoId/comments';
   static String addComment(int videoId) => '$_baseUrl/api/videos/comments/$videoId';
+  static String getVideo(int videoId) => '$_baseUrl/api/videos/$videoId';
+  static String addView(int videoId) => '$_baseUrl/api/videos/$videoId/view';
   // ==================== روابط المنتجات والأقسام الثابتة ====================
   static String get getSubCategories => '$_baseUrl/api/categories';
   static String get getProducts => '$_baseUrl/api/products';
@@ -72,7 +76,7 @@ class ApiEndpoints {
   static String orderInvoice(int orderId) => '$_baseUrl/api/orders/$orderId/invoice';
   static String get visualSearchProducts => '$_baseUrl/api/products/visual-search';
 
-  // ==================== 💬 روابط تعليقات المنتجات ====================
+  // ====================  روابط تعليقات المنتجات ====================
   // جلب تعليقات منتج معين (GET)
   static String getProductComments(int productId) => '$_baseUrl/api/products/$productId/comments';
 
