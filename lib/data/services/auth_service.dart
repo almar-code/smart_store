@@ -28,12 +28,12 @@ class AuthService {
     );
   }
 
+  // الرقم يضاف لاحقا من الحساب بعد التحقق
   Future<void> createProfile(
-      {required String userId, required String userName, required String phone,}) async {
+      {required String userId, required String userName,}) async {
     await _supabase.from('profiles').upsert({
       'id': userId,
       'user_name': userName,
-      'phone_number': phone,
     });
   }
 
@@ -151,11 +151,32 @@ class AuthService {
   }
 
 
-  Future<void> updatePhoneNumber(String userId, String phoneNumber) async {
-    await _supabase
-        .from('profiles')
-        .update({'phone_number': phoneNumber})
-        .eq('id', userId);
+  // Future<void> updatePhoneNumber(String userId, String phoneNumber) async {
+  //   await _supabase
+  //       .from('profiles')
+  //       .update({'phone_number': phoneNumber})
+  //       .eq('id', userId);
+  // }
+
+  // إرسال رمز التحقق للرقم عبر دالة Supabase
+  Future<Map<String, dynamic>> sendPhoneOtp(String phone, String lang) {
+    return _invokeFunction('send-phone-otp', {'phone': phone, 'lang': lang});
+  }
+
+  // التحقق من الرمز، والدالة تحفظ الرقم عند النجاح فقط
+  Future<Map<String, dynamic>> verifyPhoneOtp(String phone, String code) {
+    return _invokeFunction('verify-phone-otp', {'phone': phone, 'code': code});
+  }
+
+  Future<Map<String, dynamic>> _invokeFunction(String name, Map<String, dynamic> body) async {
+    try {
+      final res = await _supabase.functions.invoke(name, body: body);
+      return Map<String, dynamic>.from(res.data as Map);
+    } on FunctionException catch (e) {
+      final details = e.details;
+      if (details is Map) return Map<String, dynamic>.from(details);
+      return {'success': false, 'error': 'unexpected_error'};
+    }
   }
 
   Future<UserResponse> updatePassword(String newPassword) async {
@@ -167,6 +188,9 @@ class AuthService {
 
   Future<String> uploadAvatar(Uint8List imageBytes,
       String userId,) async {
+    // الرابط القديم قبل الرفع
+    final oldUrl = await _currentAvatarUrl(userId);
+
     final fileName =
         'avatar_${userId}_${DateTime
         .now()
@@ -189,6 +213,9 @@ class AuthService {
       'avatar_url': url,
     })
         .eq('id', userId);
+
+    // حذف الصورة القديمة بعد حفظ الجديدة
+    if (oldUrl != url) await _deleteAvatarFile(oldUrl);
 
     return url;
   }
@@ -235,26 +262,50 @@ class AuthService {
   }
   // حذف الصورة من التخزين وتفريغ الرابط
   Future<void> removeAvatar(String userId) async {
-    final data = await _supabase
-        .from('profiles')
-        .select('avatar_url')
-        .eq('id', userId)
-        .maybeSingle();
+    final url = await _currentAvatarUrl(userId);
 
-    final url = data?['avatar_url']?.toString() ?? '';
-    if (url.isNotEmpty) {
-      try {
-        final fileName = Uri.parse(url).pathSegments.last;
-        await _supabase.storage.from('avatars').remove([fileName]);
-      } catch (_) {
-        // فشل حذف الملف لا يمنع تفريغ الرابط
-      }
-    }
+    await _deleteAvatarFile(url);
 
     await _supabase
         .from('profiles')
         .update({'avatar_url': null})
         .eq('id', userId);
+  }
+
+  // رابط الصورة الحالي من الملف الشخصي
+  Future<String?> _currentAvatarUrl(String userId) async {
+    final data = await _supabase
+        .from('profiles')
+        .select('avatar_url')
+        .eq('id', userId)
+        .maybeSingle();
+    return data?['avatar_url']?.toString();
+  }
+
+  // مسار الملف داخل باكت الصور، فاضي إذا الرابط خارجي مثل صورة جوجل
+  String? _avatarPath(String? url) {
+    if (url == null || url.isEmpty) return null;
+    const marker = '/storage/v1/object/public/avatars/';
+    final index = url.indexOf(marker);
+    if (index == -1) return null;
+    return Uri.decodeComponent(url.substring(index + marker.length).split('?').first);
+  }
+
+  // حذف ملف الصورة من الباكت، ترجع true إذا انحذف فعلا
+  Future<bool> _deleteAvatarFile(String? url) async {
+    final path = _avatarPath(url);
+    if (path == null) return false;
+
+    try {
+      final removed = await _supabase.storage.from('avatars').remove([path]);
+      // قائمة فاضية تعني أن سياسات التخزين منعت الحذف
+      if (removed.isEmpty) debugPrint('Avatar not deleted, check storage policies: $path');
+      return removed.isNotEmpty;
+    } catch (e) {
+      // فشل حذف الملف لا يمنع باقي العملية
+      debugPrint('Avatar delete error: $e');
+      return false;
+    }
   }
 
 }
