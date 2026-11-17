@@ -343,7 +343,6 @@
   "visual_search_subtitle": "التقط صورة أو اختر صورة عباية وسنعرض لك المنتجات المشابهة",
   "take_photo": "التقاط صورة",
   "choose_from_gallery": "اختيار من المعرض",
-  "find_my_size": "اعرفي مقاسك",
   "size_finder_first": "مقاسك",
   "size_finder_second": "المثالي",
   "size_finder_subtitle": "أدخلي طولك وبعض المعلومات عن جسمك، ونقترح لك مقاس العباية الأنسب مع أي تعديل تحتاجه",
@@ -526,5 +525,18 @@
   "suggestion_7": "مقاس 60",
   "suggestion_8": "أقل من 100",
   "suggestion_9": "من 100 إلى 200",
-  "suggestion_10": "أكثر من 200"
+  "suggestion_10": "أكثر من 200",
+  "phone_otp_sent": "تم إرسال رمز التحقق إلى واتساب",
+  "phone_in_use": "هذا الرقم مستخدم في حساب آخر",
+  "otp_wait": "انتظر قليلاً قبل طلب رمز جديد",
+  "otp_limit": "تجاوزت الحد المسموح، حاول بعد ساعة",
+  "otp_expired": "انتهت صلاحية الرمز، اطلب رمزاً جديداً",
+  "otp_too_many_attempts": "محاولات خاطئة كثيرة، اطلب رمزاً جديداً",
+  "otp_not_found": "لا يوجد رمز لهذا الرقم، اطلب رمزاً جديداً",
+  "unauthorized": "يرجى تسجيل الدخول أولاً",
+  "phone_must_start_with": "رقم الجوال يجب أن يبدأ بـ {}",
+  "phone_length_for_country": "رقم الجوال يجب أن يكون {} أرقام",
+  "phone_invalid_for_country": "رقم الجوال غير صحيح لهذه الدولة",
+  "verify_phone_title": "تأكيد رقم الهاتف",
+  "change_number": "تغيير الرقم"
 }

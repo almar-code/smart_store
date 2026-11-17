@@ -529,5 +529,18 @@
   "suggestion_7": "Size 60",
   "suggestion_8": "Under 100",
   "suggestion_9": "Between 100 and 200",
-  "suggestion_10": "Over 200"
+  "suggestion_10": "Over 200",
+  "phone_otp_sent": "Verification code sent to WhatsApp",
+  "phone_in_use": "This number is already used by another account",
+  "otp_wait": "Please wait a moment before requesting a new code",
+  "otp_limit": "Limit reached, please try again in an hour",
+  "otp_expired": "The code has expired, request a new one",
+  "otp_too_many_attempts": "Too many wrong attempts, request a new code",
+  "otp_not_found": "No code found for this number, request a new one",
+  "unauthorized": "Please sign in first",
+  "phone_must_start_with": "Mobile number must start with {}",
+  "phone_length_for_country": "Mobile number must be {} digits",
+  "phone_invalid_for_country": "Invalid mobile number for this country",
+  "verify_phone_title": "Verify phone number",
+  "change_number": "Change number"
 }
