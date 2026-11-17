@@ -18,7 +18,13 @@ class LoginLogic {
   static final repo = AuthRepo(service: AuthService(), local: UserLocal(),);
   static final service = AuthService();
 
+  // رقم آخر محاولة دخول، أي محاولة أقدم منه تتجاهل نتيجتها
+  static int _attempt = 0;
+
   static Future<void> signIn(BuildContext context, String email, String password, VoidCallback? onSuccess) async {
+
+    // إلغاء انتظار فيسبوك المعلق إن وجد
+    _attempt++;
 
     InternetCheck.internetCheck(context);
 
@@ -54,6 +60,9 @@ class LoginLogic {
   }
 
   static Future<void> googleSignIn(BuildContext context, VoidCallback? onSuccess) async {
+
+    // إلغاء انتظار فيسبوك المعلق إن وجد
+    _attempt++;
 
     // bool hasNet = await InternetCheck.internetCheck(context);
     // if (!hasNet) return;
@@ -103,6 +112,8 @@ class LoginLogic {
     // if (!hasNet) return;
 
     bool loadingShown = false;
+    // رقم هذه المحاولة
+    final attempt = ++_attempt;
 
     try {
       await service.signInWithFacebook();
@@ -111,6 +122,9 @@ class LoginLogic {
       if (kIsWeb) return;
 
       final session = await service.waitForSession();
+
+      // المستخدم بدأ دخول آخر مثل جوجل، فهذه المحاولة انتهت
+      if (attempt != _attempt) return;
       if (session == null || !context.mounted) return;
 
       ShowLoading.progressLoading(context);

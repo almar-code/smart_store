@@ -77,8 +77,7 @@ class SignUpLogics {
 
         await service.createProfile(
           userId: response.user!.id,
-          userName: formData['user_name'],
-          phone: formData['phone_number'],
+          userName: (formData['user_name'] ?? '').toString(),
         );
 
         await repo.fetchAndSaveUser();
@@ -166,11 +165,11 @@ class SignUpLogics {
       );
 
       if (context.mounted) {
-
-
+        // التحميل مفتوح من فوق
         await completeRegistration(
           context,
           onSuccess,
+          loadingShown: true,
         );
       }
 
@@ -190,17 +189,24 @@ class SignUpLogics {
       }
     }
   }
-  static Future<void> completeRegistration(BuildContext context, VoidCallback? onSuccess,) async {
+  static Future<void> completeRegistration(
+      BuildContext context,
+      VoidCallback? onSuccess, {
+        bool loadingShown = false,
+      }) async {
+
+    // نعرض التحميل إذا ما كان معروض، حتى يكون عدد الإغلاقات ثابت
+    if (!loadingShown) ShowLoading.progressLoading(context);
 
     try {
       await repo.fetchAndSaveUser();
 
       if (context.mounted) {
         context.read<LoginCubit>().setLoggedIn();
-        Navigator.of(context, rootNavigator: true).pop();
+        Navigator.of(context, rootNavigator: true).pop(); // التحميل
 
-        Navigator.pop(context);
-        Navigator.pop(context);
+        Navigator.pop(context); // صفحة إنشاء الحساب
+        Navigator.pop(context); // نافذة تسجيل الدخول
 
         if (onSuccess != null) onSuccess();
 
@@ -208,39 +214,106 @@ class SignUpLogics {
       }
 
     } catch (e) {
+      // نغلق التحميل حتى لا يعلق المستخدم
+      if (context.mounted) Navigator.of(context, rootNavigator: true).pop();
       debugPrint("Error completing registration: $e");
     }
   }
+  // static Future<void> updateUserPhone(BuildContext context, String phoneNumber,) async {
+  //
+  //   // bool hasNet = await InternetCheck.internetCheck(context);
+  //   // if (!hasNet) return;
+  //   try {
+  //     ShowLoading.progressLoading(context);
+  //
+  //     final user = service.currentUser;
+  //     if (user == null) return;
+  //
+  //     await service.updatePhoneNumber(user.id, phoneNumber);
+  //
+  //     await repo.fetchAndSaveUser();
+  //
+  //     if (context.mounted) {
+  //       context.read<LoginCubit>().setLoggedOut();
+  //       Navigator.pop(context);
+  //       Navigator.pop(context);
+  //       context.read<LoginCubit>().setLoggedIn();
+  //     }
+  //
+  //     AppToasts.showSuccessToast(context,tr("phone_saved_success"),);
+  //     // await Hive.box('user_info_box').put('phone', phoneNumber);
+  //
+  //   } catch (e) {
+  //     Navigator.pop(context);
+  //
+  //     AppToasts.showErrorToast(context, tr("phone_save_failed"),
+  //     );
+  //   }
+  // }
 
-  static Future<void> updateUserPhone(BuildContext context, String phoneNumber,) async {
 
-    // bool hasNet = await InternetCheck.internetCheck(context);
-    // if (!hasNet) return;
+  // الرقم الذي أرسلنا له الرمز
+  static String pendingPhone = '';
+
+  // إرسال رمز التحقق للرقم، ترجع true عند النجاح
+  static Future<bool> sendPhoneCode(BuildContext context, String phone) async {
+    bool hasNet = await InternetCheck.internetCheck(context);
+    if (!hasNet || !context.mounted) return false;
+
+    ShowLoading.progressLoading(context);
+    final res = await service.sendPhoneOtp(phone, context.locale.languageCode);
+    if (!context.mounted) return false;
+    Navigator.of(context, rootNavigator: true).pop();
+
+    if (res['success'] != true) {
+      AppToasts.showErrorToast(context, tr(res['error'] ?? 'send_code_failed'));
+      return false;
+    }
+
+    pendingPhone = phone;
+    AppToasts.showSuccessToast(context, tr("phone_otp_sent"));
+    return true;
+  }
+
+  // إعادة الإرسال من زر OtpStep
+  static Future<void> handleResendPhoneCode(BuildContext context) async {
+    if (pendingPhone.isEmpty) return;
+    await sendPhoneCode(context, pendingPhone);
+  }
+
+  // التحقق من الرمز، يرمي خطأ إذا غلط حتى يمسح OtpStep الحقل
+  static Future<void> verifyPhoneCode(BuildContext context, String pin) async {
+    ShowLoading.progressLoading(context);
+    final res = await service.verifyPhoneOtp(pendingPhone, pin);
+    if (!context.mounted) return;
+
+    if (res['success'] != true) {
+      Navigator.of(context, rootNavigator: true).pop();
+      AppToasts.showErrorToast(context, tr(res['error'] ?? 'invalid_otp'));
+      throw Exception(res['error']);
+    }
+
+    // الرقم محفوظ من السيرفر، نحدث البيانات المحلية فقط
     try {
-      ShowLoading.progressLoading(context);
-
-      final user = service.currentUser;
-      if (user == null) return;
-
-      await service.updatePhoneNumber(user.id, phoneNumber);
-
       await repo.fetchAndSaveUser();
+      pendingPhone = '';
 
       if (context.mounted) {
-        context.read<LoginCubit>().setLoggedOut();
-        Navigator.pop(context);
-        Navigator.pop(context);
-        context.read<LoginCubit>().setLoggedIn();
+        // نأخذها قبل إغلاق النافذة
+        final loginCubit = context.read<LoginCubit>();
+        final navigator = Navigator.of(context, rootNavigator: true);
+
+        loginCubit.setLoggedOut();
+        navigator.pop(); // التحميل
+        navigator.pop(); // نافذة الرقم
+        loginCubit.setLoggedIn();
+        AppToasts.showSuccessToast(navigator.context, tr("phone_saved_success"));
       }
-
-      AppToasts.showSuccessToast(context,tr("phone_saved_success"),);
-      // await Hive.box('user_info_box').put('phone', phoneNumber);
-
     } catch (e) {
-      Navigator.pop(context);
-
-      AppToasts.showErrorToast(context, tr("phone_save_failed"),
-      );
+      if (context.mounted) {
+        Navigator.of(context, rootNavigator: true).pop();
+        AppToasts.showErrorToast(context, tr("phone_save_failed"));
+      }
     }
   }
 }

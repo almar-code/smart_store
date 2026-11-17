@@ -8,17 +8,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:pinput/pinput.dart';
-import 'package:smart_store/core/widgets/phone_number_field.dart';
-import 'package:smart_store/data/repos/country_repo.dart';
 import 'package:smart_store/logic/signup/sign_up_logics.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 import '../../../core/constants/app_colors.dart';
-import '../../../core/di/injection_container.dart' as di;
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/app_form_field.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
-import '../../../logic/countries_cubit/countries_cubit.dart';
 import '../../../logic/signup/sign_up_cubit.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
@@ -31,7 +27,7 @@ import '../../widgets/login/otp_step.dart';
 class SignUpScreen extends StatelessWidget {
   final VoidCallback? onSuccess;
 
-   SignUpScreen({super.key,this.onSuccess});
+  SignUpScreen({super.key,this.onSuccess});
 
   final _formKey = GlobalKey<FormBuilderState>();
 
@@ -42,14 +38,6 @@ class SignUpScreen extends StatelessWidget {
       final formData = Map<String, dynamic>.from(_formKey.currentState!.value);
 
       if (currentIndex == 1) {
-        final countriesCubit = context.read<CountriesCubit>();
-        final phone = (formData['phone_number'] ?? '').toString().trim();
-
-        if (countriesCubit.selectedCountry != null && phone.isNotEmpty) {
-          formData['phone_number'] =
-          '${countriesCubit.selectedCountry!.dialCode}$phone';
-        }
-
         await SignUpLogics.handleSignUp(formData, context);
 
       } else if (currentIndex <2 ){
@@ -65,7 +53,7 @@ class SignUpScreen extends StatelessWidget {
     OtpStep(
       email: savedEmail ?? "",
       onVerifyOtp: (context, pin) async {
-      await SignUpLogics.handleVerifyAndSave(pin,context);
+        await SignUpLogics.handleVerifyAndSave(pin,context);
       },
     ),
     AvatarStep(onSuccess: onSuccess ,),
@@ -75,10 +63,8 @@ class SignUpScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
 
-    return  BlocProvider(
-      create: (_) => CountriesCubit(di.sl<CountryRepo>())..loadCountries(context),
-      child: BlocBuilder<SignUpCubit,int>(
-          builder: (context, state) {
+    return BlocBuilder<SignUpCubit,int>(
+        builder: (context, state) {
           return Scaffold(
             backgroundColor: AppColors.background,
             appBar: AppBar(
@@ -157,10 +143,10 @@ class SignUpScreen extends StatelessWidget {
                                         ),
                                       ),
                                     ),
-                                    // Expanded(
-                                        // child: OutlinedButton(
-                                        //     onPressed: context.read<SignUpCubit>().previous,
-                                        //     child:  Text(tr("back")))),
+                                  // Expanded(
+                                  // child: OutlinedButton(
+                                  //     onPressed: context.read<SignUpCubit>().previous,
+                                  //     child:  Text(tr("back")))),
                                   if (state > 0) const SizedBox(width: 10),
                                   Expanded(
                                     child: SizedBox(
@@ -189,7 +175,6 @@ class SignUpScreen extends StatelessWidget {
             ),
           );
         }
-      ),
     );
   }
 }
@@ -198,32 +183,18 @@ class AccountStep extends StatelessWidget {
   const AccountStep({super.key});
   @override
   Widget build(BuildContext context) => Column(
-    spacing: 15,
+      spacing: 15,
       children: [
-    CustomFormField(
-      name: 'email',
-      label: tr('email_address'),
-      icon: Icons.email_outlined,
-      keyboardType: TextInputType.emailAddress,
-      validators: [FormBuilderValidators.required(errorText: tr("enter_email")),
-        FormBuilderValidators.email(checkNullOrEmpty: true,errorText:tr("email_invalid_error"))
-      ],
-    ),
-    CustomFormField(
-      name: 'password',
-      label: tr('password'),
-      icon: Icons.lock_outline,
-      isPasswordField: true,
-      validators: [FormBuilderValidators.required(errorText:tr("password_required_error")),
-        FormBuilderValidators.minLength(8, errorText: tr('min_length_6')),
-        FormBuilderValidators.match(
-          RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&_#^()\-+=]).+$'),
-          errorText: tr('password_strength_error'),
+        CustomFormField(
+          name: 'email',
+          label: tr('email_address'),
+          icon: Icons.email_outlined,
+          keyboardType: TextInputType.emailAddress,
+          validators: [FormBuilderValidators.required(errorText: tr("enter_email")),
+            FormBuilderValidators.email(checkNullOrEmpty: true,errorText:tr("email_invalid_error"))
+          ],
         ),
-
-      ],
-    ),
-  ]);
+      ]);
 }
 
 class UserDataStep extends StatelessWidget {
@@ -232,46 +203,33 @@ class UserDataStep extends StatelessWidget {
   Widget build(BuildContext context) => Column(
       spacing:15,
       children: [
-    CustomFormField(
-        name: 'user_name',
-        label: tr('full_name'),
-        icon: Icons.person_outline,
-        validators: [FormBuilderValidators.required(
-          errorText: tr("name_required_error"),
-        ),
-          FormBuilderValidators.minLength(
-            5,
-            errorText: tr("name_min_length_error"),
-          ),
-        ]),
-        Row(
-          spacing: 10,
-          children: [
-            Expanded(
-              child: PhoneNumberField(),
+        CustomFormField(
+            name: 'user_name',
+            label: tr('full_name'),
+            icon: Icons.person_outline,
+            validators: [FormBuilderValidators.required(
+              errorText: tr("name_required_error"),
             ),
-            Expanded(
-              flex: 2,
-              child: CustomFormField(
-                name: 'phone_number',
-                keyboardType: TextInputType.phone,
-                label: tr('phone_number'),
-                color: Colors.white.withOpacity(0.1),
-                labelColor: Colors.white38,
-                icon: Icons.phone,
-                inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validators: [
-                  FormBuilderValidators.required(
-                    errorText: tr("phone_required_error"),
-                  ),
-                ],
+              FormBuilderValidators.minLength(
+                5,
+                errorText: tr("name_min_length_error"),
               ),
+            ]),
+        CustomFormField(
+          name: 'password',
+          label: tr('password'),
+          icon: Icons.lock_outline,
+          isPasswordField: true,
+          validators: [FormBuilderValidators.required(errorText:tr("password_required_error")),
+            FormBuilderValidators.minLength(8, errorText: tr('min_length_6')),
+            FormBuilderValidators.match(
+              RegExp(r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*?&_#^()\-+=]).+$'),
+              errorText: tr('password_strength_error'),
             ),
+
           ],
         ),
-
-
-  ]);
+      ]);
 }
 
 
@@ -319,11 +277,11 @@ class _AvatarStepState extends State<AvatarStep> {
 
           Text(tr("add_user_image"), style:  TextStyle(
             fontSize:isDesktop ? 20 :15,
-              fontWeight: FontWeight.bold,
-            ),
+            fontWeight: FontWeight.bold,
+          ),
           ),
 
-           SizedBox(height:isDesktop? 80:90),
+          SizedBox(height:isDesktop? 80:90),
 
           GestureDetector(
             onTap: _pickImage,
@@ -346,7 +304,7 @@ class _AvatarStepState extends State<AvatarStep> {
 
               ElevatedButton(
                 onPressed: () async {
-                  await SignUpLogics.completeRegistration(context, widget.onSuccess,);
+                  await SignUpLogics.completeRegistration(context, widget.onSuccess);
                 },
                 child: Text(tr("later")),
               ),
