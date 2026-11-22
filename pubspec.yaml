@@ -113,6 +113,7 @@ dependencies:
   workmanager: ^0.9.3
   flutter_cache_manager: ^3.4.1 # كاش الفيديوهات
   phone_numbers_parser: ^9.0.19 # التحقق من الأرقام حسب الدولة
+  url_launcher: ^6.3.3 # فتح روابط الإعلانات الخارجية
 
 
 # تثبيت نسخة متوافقة مع Kotlin 2.1 في المشروع

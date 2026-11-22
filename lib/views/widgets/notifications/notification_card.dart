@@ -25,6 +25,8 @@ class NotificationCard extends StatelessWidget {
         return CupertinoIcons.cart;
       case 'order_status':
         return CupertinoIcons.cube_box;
+      case 'general_ad':
+        return CupertinoIcons.gift;
       default:
         return CupertinoIcons.bell;
     }
