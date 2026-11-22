@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart'; // 🌟 تم تفعيلها ل�
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:smart_store/core/widgets/buttons/refresh_button.dart';
 import 'package:smart_store/logic/search/search_cubit.dart';
+import 'package:smart_store/views/widgets/product/product_quick_sheets.dart';
 import 'package:smart_store/views/widgets/product/productdetailsheet.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_endpoints.dart';
@@ -191,234 +192,237 @@ class AllProducts extends StatelessWidget {
                                           child: _buildProductImage(item),
                                         ),
 
-                                        // ألوان المنتج ديناميكياً
-                                        Positioned(
-                                          top: 3,
-                                          right: 7,
-                                          child: Container(
-                                            padding:  EdgeInsets.symmetric(vertical: (item.colors.length > 1) ? 2 : 0, horizontal: 2),
-                                            decoration: BoxDecoration(
-                                              color: Colors.black.withOpacity(0.3),
-                                              borderRadius: BorderRadius.circular(10),
-                                            ),
-                                            child: Column(
-                                              spacing: (item.colors.length > 1) ? 5 : 2,
-                                              children: [
-                                                if(item.colors.length == 1)
-                                                  SizedBox(),
-                                                ...item.colors.take(3).map((color) {
-                                                  return CircleOfColor(
-                                                    code: color.colorCode ?? "#FFFFFF",
-                                                    width: isDesktop ? 14 : 12,
-                                                    height: isDesktop ? 14 : 12,
-                                                  );
-                                                }).toList(),
-                                                (item.colors.length <= 3)
-                                                    ? const SizedBox()
-                                                    : Text(
-                                                  "+${item.colors.length - 3}",
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: isDesktop ? 10 : 9,
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
+                                  // ألوان المنتج ديناميكياً
+                                  Positioned(
+                                    top: 3,
+                                    right: 7,
+                                    child: InkWell(
+                                      onTap: () {
+                                        ProductQuickSheets.colors(context, item);
+                                      },
+                                      child: Container(
+                                        padding:  EdgeInsets.symmetric(vertical: (item.colors.length > 1) ? 2 : 0, horizontal: 2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.3),
+                                          borderRadius: BorderRadius.circular(10),
                                         ),
-                                        // شارة الخصم تعتمد على منطق السيرفر والشاشة معاً
-                                        (hasDiscount)
-                                            ? Positioned(
-                                          top: 8,
-                                          left: 8,
-                                          child: Container(
-                                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                                            decoration: BoxDecoration(
-                                              color: AppColors.redColor.withOpacity(0.9),
-                                              borderRadius: BorderRadius.circular(8),
-                                            ),
-                                            child: Text(
-                                              "$discountPercent%",
+                                        child: Column(
+                                          spacing: (item.colors.length > 1) ? 5 : 2,
+                                          children: [
+                                            if(item.colors.length == 1)
+                                            SizedBox(),
+                                            ...item.colors.take(3).map((color) {
+                                              return CircleOfColor(
+                                                code: color.colorCode ?? "#FFFFFF",
+                                                width: isDesktop ? 14 : 12,
+                                                height: isDesktop ? 14 : 12,
+                                              );
+                                            }).toList(),
+                                            (item.colors.length <= 3)
+                                                ? const SizedBox()
+                                                : Text(
+                                              "+${item.colors.length - 3}",
                                               style: TextStyle(
                                                 color: Colors.white,
-                                                fontSize: isDesktop ? 11 : 9,
+                                                fontSize: isDesktop ? 10 : 9,
                                                 fontWeight: FontWeight.bold,
                                               ),
                                             ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  // شارة الخصم تعتمد على منطق السيرفر والشاشة معاً
+                                  (hasDiscount)
+                                      ? Positioned(
+                                    top: 8,
+                                    left: 8,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.redColor.withOpacity(0.9),
+                                        borderRadius: BorderRadius.circular(8),
+                                      ),
+                                      child: Text(
+                                        "$discountPercent%",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: isDesktop ? 11 : 9,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                      : const SizedBox(),
+                                  PositionedDirectional(
+                                    bottom: 6,
+                                    start: 6,
+                                    child: GestureDetector(
+                                      onLongPress: () =>Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true))),
+                                      onTap: () {
+                                        // 🚀 استدعاء الدالة من الـ Cubit مباشرة ليقوم هو بكل السحر في الخلفية
+                                        context.read<ProductCubit>().toggleProductFavorite(
+                                          product: item,
+                                          isInsideFavoritesScreen: isInsideFavoritesScreen
+                                        );
+                                        if(!isInsideFavoritesScreen){
+                                          item.isFavorite ? HeartOverlayNotifier.show(context) : HeartOverlayNotifier.show(context,isLike: false);
+                                        }
+                                      },
+                                      child: AnimatedContainer(
+                                        duration: const Duration(milliseconds: 200),
+                                        padding: const EdgeInsets.all(4),
+                                        decoration: BoxDecoration(
+                                          color: AppColors.backgroundSecondary,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: Icon(
+                                          item.isFavorite ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
+                                          color: item.isFavorite ? Colors.red : AppColors.iconColor,
+                                          size: 18,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  PositionedDirectional(
+                                    bottom: 6,
+                                    end: 6,
+                                    child:ShareButton(product: item,),
+                                  ),
+                                  PositionedDirectional(
+                                    bottom: 96, // فوق آخر أيقونة عندك، عدّل الرقم حسب ترتيب الأيقونات
+                                    start: 8,
+                                    child: WebDraggableImage(imageUrl: ApiEndpoints.productImageUrl(item.pImage)),
+                                  ),
+                                  PositionedDirectional(
+                                    bottom: 66,
+                                    start: 8,
+                                    child: ProductTryOnIcon(imageUrl: ApiEndpoints.productImageUrl(item.pImage)),
+                                  ),
+                                  PositionedDirectional(
+                                    bottom: 36,
+                                    start: 8,
+                                    child: ProductVisualSearchIcon(imageUrl: ApiEndpoints.productImageUrl(item.pImage) ,),
+                                  ),
+                                ],
+                              ),item.generalAdvertisements.isEmpty
+                                  ? const SizedBox.shrink()
+                                      : RotatingAdBanner(
+                                  advertisements: item.generalAdvertisements,
+                                  ),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: SizedBox(
+                                  width: double.infinity,
+                                  child: Text(
+                                    (context.locale.languageCode == 'en')
+                                        ? item.pNameEn ?? ''
+                                        : item.pName ?? '',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: AppColors.textColor,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // 💰 السعر من كودك الأصلي تماماً
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      spacing: 8,
+                                      children: [
+                                        Row(
+                                          spacing: 1,
+                                          children: [
+                                            Text(
+                                              newPrice.toStringAsFixed(2), // السعر الجديد بعد الحساب برمجياً
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 12,
+                                                color: AppColors.primary,
+                                              ),
+                                            ),
+                                            Text(
+                                              "\$",
+                                              style: TextStyle(
+                                                fontWeight: FontWeight.bold,
+                                                fontSize: 11,
+                                                color: AppColors.textSecondary,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                        hasDiscount
+                                            ? Text(
+                                          "${item.pPrice} \$", // السعر الأصلي مشطوباً
+                                          style: TextStyle(
+                                            fontSize: 11,
+                                            color: AppColors.textSecondary,
+                                            decoration: TextDecoration.lineThrough,
                                           ),
                                         )
                                             : const SizedBox(),
-                                        PositionedDirectional(
-                                          bottom: 6,
-                                          start: 6,
-                                          child: GestureDetector(
-                                            onLongPress: () =>Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen(screenOnly: true))),
-                                            onTap: () {
-                                              // 🚀 استدعاء الدالة من الـ Cubit مباشرة ليقوم هو بكل السحر في الخلفية
-                                              context.read<ProductCubit>().toggleProductFavorite(
-                                                  product: item,
-                                                  isInsideFavoritesScreen: isInsideFavoritesScreen
-                                              );
-                                              if(!isInsideFavoritesScreen){
-                                                item.isFavorite ? HeartOverlayNotifier.show(context) : HeartOverlayNotifier.show(context,isLike: false);
-                                              }
-                                            },
-                                            child: AnimatedContainer(
-                                              duration: const Duration(milliseconds: 200),
-                                              padding: const EdgeInsets.all(4),
-                                              decoration: BoxDecoration(
-                                                color: AppColors.backgroundSecondary,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              child: Icon(
-                                                item.isFavorite ? CupertinoIcons.heart_fill : CupertinoIcons.heart,
-                                                color: item.isFavorite ? Colors.red : AppColors.iconColor,
-                                                size: 18,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        PositionedDirectional(
-                                          bottom: 6,
-                                          end: 6,
-                                          child:ShareButton(product: item,),
-                                        ),
-                                        PositionedDirectional(
-                                          bottom: 96, // فوق آخر أيقونة عندك، عدّل الرقم حسب ترتيب الأيقونات
-                                          start: 8,
-                                          child: WebDraggableImage(imageUrl: ApiEndpoints.productImageUrl(item.pImage)),
-                                        ),
-                                        PositionedDirectional(
-                                          bottom: 66,
-                                          start: 8,
-                                          child: ProductTryOnIcon(imageUrl: ApiEndpoints.productImageUrl(item.pImage)),
-                                        ),
-                                        PositionedDirectional(
-                                          bottom: 36,
-                                          start: 8,
-                                          child: ProductVisualSearchIcon(imageUrl: ApiEndpoints.productImageUrl(item.pImage) ,),
-                                        ),
                                       ],
-                                    ),item.generalAdvertisements.isEmpty
-                                        ? const SizedBox.shrink()
-                                        : RotatingAdBanner(
-                                      advertisements: item.generalAdvertisements,
-                                      productId: item.pId,
-                                      currentAdsId: currentAdsId,
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                      child: SizedBox(
-                                        width: double.infinity,
-                                        child: Text(
-                                          (context.locale.languageCode == 'en')
-                                              ? item.pNameEn ?? ''
-                                              : item.pName ?? '',
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          style: TextStyle(
-                                            fontSize: 13,
-                                            color: AppColors.textColor,
-                                            fontWeight: FontWeight.bold,
+                                    showAddToCart
+                                        ? InkWell(
+                                      onTap: () => ProductDetailsDialog.show(context,item),
+                                      child: Card(
+                                        color: AppColors.backgroundSecondary,
+                                        shape: RoundedRectangleBorder(
+                                          side: BorderSide(color: AppColors.borderColor.withOpacity(0.1)),
+                                          borderRadius: BorderRadius.circular(5.0),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2),
+                                          child: Icon(
+                                            CupertinoIcons.cart_badge_plus,
+                                            color: AppColors.iconColor,
+                                            size: 18,
                                           ),
                                         ),
                                       ),
-                                    ),
-                                    // 💰 السعر من كودك الأصلي تماماً
-                                    Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Row(
-                                            spacing: 8,
-                                            children: [
-                                              Row(
-                                                spacing: 1,
-                                                children: [
-                                                  Text(
-                                                    newPrice.toStringAsFixed(2), // السعر الجديد بعد الحساب برمجياً
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 12,
-                                                      color: AppColors.primary,
-                                                    ),
-                                                  ),
-                                                  Text(
-                                                    "\$",
-                                                    style: TextStyle(
-                                                      fontWeight: FontWeight.bold,
-                                                      fontSize: 11,
-                                                      color: AppColors.textSecondary,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                              hasDiscount
-                                                  ? Text(
-                                                "${item.pPrice} \$", // السعر الأصلي مشطوباً
-                                                style: TextStyle(
-                                                  fontSize: 11,
-                                                  color: AppColors.textSecondary,
-                                                  decoration: TextDecoration.lineThrough,
-                                                ),
-                                              )
-                                                  : const SizedBox(),
-                                            ],
-                                          ),
-                                          showAddToCart
-                                              ? InkWell(
-                                            onTap: () => ProductDetailsDialog.show(context,item),
-                                            child: Card(
-                                              color: AppColors.backgroundSecondary,
-                                              shape: RoundedRectangleBorder(
-                                                side: BorderSide(color: AppColors.borderColor.withOpacity(0.1)),
-                                                borderRadius: BorderRadius.circular(5.0),
-                                              ),
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 2),
-                                                child: Icon(
-                                                  CupertinoIcons.cart_badge_plus,
-                                                  color: AppColors.iconColor,
-                                                  size: 18,
-                                                ),
-                                              ),
-                                            ),
-                                          )
-                                              : const SizedBox(),
-                                        ],
-                                      ),
-                                    ),
+                                    )
+                                        : const SizedBox(),
                                   ],
                                 ),
                               ),
-                            );
-                          }
+                            ],
+                          ),
+                        ),
                       );
-                    },
-                  ),
-                  (context.select((ProductCubit cubit) => cubit.isFetchingMore)) ? Padding(
-                    padding: EdgeInsets.only(bottom: 50.0,top: 10),
-                    child: CircularProgress(),
-                  ) : SizedBox(height: 0,),
-                  SizedBox(height: 30,)
-                ],
-              );
-            }
-            return Center(
-              child:  SizedBox(
-                height: 30,
-                width: 120,
-                child: RefreshButton(onPressed: () async {
-                  await context.read<ProductCubit>().fetchProducts(isRefresh: true);
-                }),
+                    }
+                  );
+                },
               ),
-            );
-          },
+              (context.select((ProductCubit cubit) => cubit.isFetchingMore)) ? Padding(
+                padding: EdgeInsets.only(bottom: 50.0,top: 10),
+                child: CircularProgress(),
+              ) : SizedBox(height: 0,),
+              SizedBox(height: 30,)
+            ],
+          );
+        }
+        return Center(
+          child:  SizedBox(
+            height: 30,
+            width: 120,
+            child: RefreshButton(onPressed: () async {
+              await context.read<ProductCubit>().fetchProducts(isRefresh: true);
+            }),
+          ),
         );
       },
     );
+  },
+);
   }
 }
 

@@ -13,6 +13,7 @@ import '../../views/widgets/flash/flash_screen.dart';
 import '../constants/app_colors.dart';
 import 'app_title.dart';
 import 'circleImage/circle_image.dart';
+import 'customer_photo.dart';
 import 'image_helper.dart';
 
 
@@ -45,16 +46,7 @@ class UserProfile extends StatelessWidget {
                   onTap: isDrawer ? () {} : () {
                     _showLargeImage(context, userData.image);
                   },
-                  child: CircleAvatar(
-                    radius: isDesktop ? 23 : 20,
-                    backgroundColor: Colors.grey.shade200,
-                    backgroundImage: (userData.image.toString().isNotEmpty)
-                        ? MemoryImage(ImageHelper.decodeBase64(userData.image))
-                        : null,
-                    child: (userData.image == '' || userData.image.toString().isEmpty)
-                        ? Icon(Icons.person, size: isDesktop ? 23 : 20, color: Colors.grey)
-                        : null,
-                  ),
+                  child: CustomerPhoto(radius: isDesktop ? 22 : 18, showBorder: true),
                 ),
                 const SizedBox(width: 6),
                 Column(
@@ -105,16 +97,7 @@ class UserProfile extends StatelessWidget {
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              CircleAvatar(
-                radius: 150,
-                backgroundColor: AppColors.background,
-                backgroundImage: (image != null && image.isNotEmpty)
-                    ? MemoryImage(ImageHelper.decodeBase64(image))
-                    : null,
-                child: (image == null || image.isEmpty)
-                    ?  Icon(Icons.person, size: 100, color: AppColors.iconColor)
-                    : null,
-              ),
+              const CustomerPhoto(radius: 150, iconSize: 100, showBorder: true, borderWidth: 3),
               Positioned(
                 bottom: 15,
                 right: 15,

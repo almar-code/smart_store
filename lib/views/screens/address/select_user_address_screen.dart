@@ -1,9 +1,12 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/app_messages.dart';
 import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
+import '../../../logic/user_address/UserAddressCubit.dart';
 import '../../widgets/address/address_header_section.dart';
 import '../../widgets/address/address_list.dart';
 import '../../widgets/address/checkout_address_list.dart';
@@ -17,6 +20,7 @@ class SelectUsrAddress extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
+    final selectedAddress = context.watch<UserAddressCubit>().selectedAddress;
     return SafeArea(
       child: Scaffold(
         extendBody : true,
@@ -90,11 +94,17 @@ class SelectUsrAddress extends StatelessWidget {
                     label: 'next'.tr(),
                     icon: Icons.arrow_back_ios,
                     borderRadius: 13,
-                    onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectPaymentMethodPage())),
+                    onTap: () {
+                      if(selectedAddress == null){
+                        AppToasts.showWarningToast(context,   'عذرا الرجاء اختيار عنوان الشحن');
+                      }else{
+                        Navigator.of(context,).push(MaterialPageRoute(builder: (context) => SelectPaymentMethodPage()));
+                      }
+                    }
                   ),
                 ),
               ),
-      
+
               const SizedBox(width: 12), // مسافة فاصلة بين الزرين
       
               // الزر الثاني: التالي

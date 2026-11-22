@@ -20,8 +20,7 @@ class ProductCommentRepository {
     required String commentAr,
     required String commentEn,
     required double stars,
-    required String sentiment,
-
+    String? sentiment,
   }) async {
     return await apiService.addComment(
       customerId: customerId,
@@ -30,7 +29,6 @@ class ProductCommentRepository {
       commentEn: commentEn,
       stars: stars,
       sentiment: sentiment,
-
     );
   }
 

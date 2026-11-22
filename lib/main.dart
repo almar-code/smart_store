@@ -8,6 +8,7 @@ import 'package:smart_store/logic/countries_cubit/countries_cubit.dart';
 import 'package:smart_store/views/screens/sign/sign_up_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'core/utils/local_notification_helper.dart';
+import 'data/repos/product_comment_repository.dart';
 import 'logic/ads/ads_cubit.dart';
 import 'logic/cart/cart_cubit.dart';
 import 'logic/connection/connection_cubit.dart';
@@ -91,7 +92,7 @@ void main() async {
             create: (_) => VideoCubit(di.sl<VideoRepo>())..getAllVideos(),
           ),
           BlocProvider(
-            create: (_) => CommentsCubit(di.sl<VideoRepo>()),
+            create: (_) => CommentsCubit(di.sl<VideoRepo>(), di.sl<ProductCommentRepository>()),
           ),
           BlocProvider(
             create: (_) => di.sl<CartCubit>()..fetchCart(),

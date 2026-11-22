@@ -668,11 +668,11 @@ class ProductCommentFlash extends StatelessWidget {
       highlightColor: AppColors.highlightColor,
       child: Container(
         width: screenWidth * (isDesktop ? 0.30 : 0.75), // عرض متجاوب مطابق للكارت الحقيقي تماماً
-        margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
-        padding: const EdgeInsets.all(12),
+        margin: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+        padding: const EdgeInsets.symmetric(horizontal: 8,vertical: 3),
         decoration: BoxDecoration(
           color: AppColors.background,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: AppColors.textColor.withOpacity(0.05),
           ),

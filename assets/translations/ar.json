@@ -71,6 +71,7 @@
   "street_required": "اسم الشارع مطلوب",
   "invalid_number_only": "يجب إدخال أرقام فقط",
   "welcome_back": "مرحباً بعودتك",
+  "welcome": "مرحباً",
   "sign_in_to_account": "سجّل الدخول إلى حسابك",
   "email_address": "البريد الإلكتروني",
   "password": "كلمة المرور",
@@ -552,5 +553,19 @@
   "offer_expired": "انتهى العرض",
   "offer_products_title": "منتجات العرض",
   "offer_load_error": "عذراً، حدث خطأ أثناء تحميل العرض",
-  "offer_no_products": "لا توجد منتجات في هذا العرض حالياً"
+  "offer_no_products": "لا توجد منتجات في هذا العرض حالياً",
+  "address_option_home": "البيت",
+  "address_option_work": "العمل",
+  "address_option_office": "المكتب",
+  "address_option_family": "بيت الأهل",
+  "address_option_friend": "بيت صديق",
+  "comment_rejected": "تعليقك غير مقبول لأنه يخالف سياسة التعليقات في متجر NICE",
+  "comment_failed": "تعذر إرسال تعليقك، حاول مرة أخرى",
+  "map_no_results": "لا توجد نتائج لهذا البحث",
+  "map_search_error": "تعذر البحث، تأكد من الاتصال وحاول مرة أخرى",
+  "map_move_to_select": "حرّك الخريطة لتحديد الموقع...",
+  "location_service_off": "خدمة الموقع مغلقة، فعّلها من إعدادات الجهاز",
+  "location_permission_denied": "لم يتم السماح بالوصول إلى موقعك",
+  "location_error": "تعذر تحديد موقعك الحالي",
+  "address_not_found": "لم يتم العثور على عنوان لهذا الموقع"
 }

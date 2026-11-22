@@ -8,6 +8,7 @@ import '../../../data/models/user_address_model.dart';
 import '../../../logic/user_address/UserAddressCubit.dart';
 import '../../../logic/user_address/user_address_state.dart';
 import '../flash/flash_screen.dart';
+import 'empty_address_list.dart';
 
 class CheckoutAddressListView extends StatefulWidget {
   final Function(UserAddressModel selectedAddress)? onAddressSelected;
@@ -64,10 +65,7 @@ class _CheckoutAddressListViewState extends State<CheckoutAddressListView> {
           return Center(
             child: Padding(
               padding: const EdgeInsets.all(20),
-              child: Text(
-                tr('no_addresses_found'),
-                style: TextStyle(color: AppColors.textSecondary, fontSize: 15),
-              ),
+              child: EmptyAddressScreen(),
             ),
           );
         }
@@ -78,7 +76,12 @@ class _CheckoutAddressListViewState extends State<CheckoutAddressListView> {
           final addresses = (state is UserAddressLoaded) ? state.addresses : [];
 
           if (addresses.isEmpty) {
-            return const SizedBox();
+            return Center(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: EmptyAddressScreen(),
+              ),
+            );
           }
 
           return ListView.builder(

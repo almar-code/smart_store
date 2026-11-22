@@ -37,11 +37,8 @@ class ProfileScreen extends StatelessWidget {
     return  BlocBuilder<LoginCubit, bool>(
         builder: (context, state){
 
-          final box = Hive.box('user_info_box');
+          bool hasPhone = UserLocal().hasPhone();
 
-          String? phone = box.get('phone');
-
-          bool hasNoPhone = (phone == null || phone.isEmpty);
           return Scaffold(
             backgroundColor: AppColors.background,
             appBar: AppBar(
@@ -66,7 +63,7 @@ class ProfileScreen extends StatelessWidget {
               ),
               child: Column(
                 children: [
-                  if(hasNoPhone && state ) ...[
+                  if(!hasPhone && state ) ...[
                     AddPhoneNumber(),
                   ],
                   Expanded(child: ProfileList()),

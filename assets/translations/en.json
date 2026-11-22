@@ -553,5 +553,20 @@
   "offer_expired": "The offer has ended",
   "offer_products_title": "Offer products",
   "offer_load_error": "Sorry, something went wrong while loading the offer",
-  "offer_no_products": "There are no products in this offer yet"
+  "offer_no_products": "There are no products in this offer yet",
+  "address_option_home": "Home",
+  "address_option_work": "Work",
+  "address_option_office": "Office",
+  "address_option_family": "Family House",
+  "address_option_friend": "Friend's House",
+  "comment_rejected": "Your comment was rejected because it violates NICE Store's comment policy",
+  "comment_failed": "Couldn't send your comment, please try again",
+  "map_no_results": "No results found",
+  "map_search_error": "Search failed, check your connection and try again",
+  "map_move_to_select": "Move the map to pick a location...",
+  "location_service_off": "Location service is off, enable it in device settings",
+  "location_permission_denied": "Location access was not allowed",
+  "location_error": "Couldn't get your current location",
+  "address_not_found": "No address found for this location",
+  "welcome": "Welcome"
 }

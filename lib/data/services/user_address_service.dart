@@ -8,7 +8,6 @@ class UserAddressService {
   Future<int?> _customerId() => UserLocal().getCustomerId();
   Future<List<dynamic>> getAddresses() async {
     final customerId = await _customerId();
-
     final response = await dio.get(
       ApiEndpoints.userAddresses,
       queryParameters: {'customer_id': customerId},
@@ -19,7 +18,6 @@ class UserAddressService {
   // 2. حفظ العنوان (يدمج customer_id مع بيانات النموذج تلقائياً)
   Future<Map<String, dynamic>> createAddress(Map<String, dynamic> formData) async {
     final customerId = await _customerId();
-
     final Map<String, dynamic> requestData = {
       ...formData,
       'customer_id': customerId, // الإضافة التلقائية هنا

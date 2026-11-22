@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 import '../../../core/widgets/buttons/app_button.dart';
+import '../../../logic/navigation/navigation_cubit.dart';
 import '../../../views/widgets/login/phone_number.dart';
 
 class AddPhoneNumber extends StatelessWidget {
@@ -111,7 +113,9 @@ class AddPhoneNumber extends StatelessWidget {
                         label: tr('add'),
                         icon: Icons.add_call,
                         onTap: () {
-                          PhoneNumber.show(context);
+                          PhoneNumber.show(context,(){
+                            context.read<NavigationCubit>().updateIndex(4);
+                          });
                         },
                       ),
                     ),

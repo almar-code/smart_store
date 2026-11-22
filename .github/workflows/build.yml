@@ -1,0 +1,108 @@
+name: Build App
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+# نفس نسخة فلاتر على الجهاز
+env:
+  FLUTTER_VERSION: '3.47.7'
+
+jobs:
+  # بناء نسخة الأندرويد
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # تحديث نسخ جريدل وكوتلن داخل جيت هاب فقط
+      - name: Patch Android versions
+        run: |
+          sed -i 's#gradle-[0-9.]*-all.zip#gradle-8.14.3-all.zip#' android/gradle/wrapper/gradle-wrapper.properties
+          sed -i 's#\("org.jetbrains.kotlin.android")\) version "[0-9.]*"#\1 version "2.2.20"#' android/settings.gradle.kts
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      # انشاء ملف البيئة من الاسرار
+      - name: Create .env
+        shell: bash
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - run: flutter pub get
+      - run: flutter build apk --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  # بناء نسخة الويب
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          cache: true
+
+      # اضافة دعم الويب
+      - run: flutter create --platforms=web .
+
+      # انشاء ملف البيئة من الاسرار
+      - name: Create .env
+        shell: bash
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
+      - run: flutter pub get
+
+      # اسم المستودع ضروري لمسار الصفحة
+      - run: flutter build web --release --base-href /smart_store/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  # نشر الويب على رابط عام
+  deploy-web:
+    needs: web
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  # نشر نسخة للتحميل عند عمل تاغ
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [android]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/android-apk/app-release.apk
