@@ -538,5 +538,19 @@
   "phone_length_for_country": "رقم الجوال يجب أن يكون {} أرقام",
   "phone_invalid_for_country": "رقم الجوال غير صحيح لهذه الدولة",
   "verify_phone_title": "تأكيد رقم الهاتف",
-  "change_number": "تغيير الرقم"
+  "change_number": "تغيير الرقم",
+  "ad_link_open_error": "تعذر فتح الرابط",
+  "offers_title": "عروض",
+  "offer_ends_in": {
+    "one": "ينتهي العرض خلال يوم واحد",
+    "two": "ينتهي العرض خلال يومين",
+    "few": "ينتهي العرض خلال {} أيام",
+    "many": "ينتهي العرض خلال {} يوماً",
+    "other": "ينتهي العرض خلال {} يوم"
+  },
+  "offer_ends_today": "ينتهي العرض اليوم",
+  "offer_expired": "انتهى العرض",
+  "offer_products_title": "منتجات العرض",
+  "offer_load_error": "عذراً، حدث خطأ أثناء تحميل العرض",
+  "offer_no_products": "لا توجد منتجات في هذا العرض حالياً"
 }

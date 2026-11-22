@@ -542,5 +542,16 @@
   "phone_length_for_country": "Mobile number must be {} digits",
   "phone_invalid_for_country": "Invalid mobile number for this country",
   "verify_phone_title": "Verify phone number",
-  "change_number": "Change number"
+  "change_number": "Change number",
+  "ad_link_open_error": "Could not open the link",
+  "offers_title": "Offers",
+  "offer_ends_in": {
+    "one": "Offer ends in 1 day",
+    "other": "Offer ends in {} days"
+  },
+  "offer_ends_today": "Offer ends today",
+  "offer_expired": "The offer has ended",
+  "offer_products_title": "Offer products",
+  "offer_load_error": "Sorry, something went wrong while loading the offer",
+  "offer_no_products": "There are no products in this offer yet"
 }

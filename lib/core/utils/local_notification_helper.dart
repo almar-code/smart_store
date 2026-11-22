@@ -6,6 +6,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:workmanager/workmanager.dart';
 import '../../data/services/notification_service.dart';
 import '../../views/screens/cart/cart_screen.dart';
+import '../../views/screens/general adProducts/general_adProducts.dart';
+import 'notification_payload.dart';
 import '../../views/screens/orders/orders_screen.dart';
 
 // مفتاح التنقل العام لفتح السلة من الإشعار
@@ -43,7 +45,7 @@ class LocalNotificationHelper {
     final launch = await _plugin.getNotificationAppLaunchDetails();
     if (launch?.didNotificationLaunchApp ?? false) {
       WidgetsBinding.instance.addPostFrameCallback(
-        (_) => _open(launch!.notificationResponse?.payload),
+            (_) => _open(launch!.notificationResponse?.payload),
       );
     }
   }
@@ -110,7 +112,7 @@ class LocalNotificationHelper {
             priority: Priority.high,
           ),
         ),
-        payload: '${n.type}:${n.orderId ?? ''}',
+        payload: NotificationPayload.build(n),
       );
     }
 
@@ -121,12 +123,12 @@ class LocalNotificationHelper {
 
   // فتح الشاشة المناسبة حسب نوع الاشعار
   static void _open(String? payload) {
-    final parts = (payload ?? '').split(':');
-    final orderId = parts.length > 1 ? int.tryParse(parts[1]) : null;
+    final p = NotificationPayload.parse(payload);
 
-    final Widget? screen = switch (parts.first) {
+    final Widget? screen = switch (p.type) {
       'abandoned_cart' => const CartScreen(screenOnly: true),
-      'order_status' => OrdersScreen(openOrderId: orderId),
+      'order_status' => OrdersScreen(openOrderId: p.id),
+      'general_ad' when p.id != null => GeneralAdProductsScreen(adsId: p.id!, adTitle: p.name ?? ''),
       _ => null,
     };
 
