@@ -101,7 +101,7 @@ class ProductCommentService {
     required String commentAr,
     required String commentEn,
     required double stars,
-    required String sentiment,
+    String? sentiment,
   }) async {
     final response = await http.post(
       Uri.parse(ApiEndpoints.addProductComment),

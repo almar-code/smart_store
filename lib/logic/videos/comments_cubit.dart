@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../data/local/user_local.dart';
 import '../../data/models/comment_model.dart';
 import '../../data/models/video_model.dart';
+import '../../data/repos/product_comment_repository.dart';
 import '../../data/repos/video_repo.dart';
 
 // ===================== CommentsState =====================
@@ -24,11 +25,16 @@ class CommentsError extends CommentsState {
   CommentsError(this.message);
 }
 
+// نتيجة إرسال تعليق الفيديو
+enum VideoCommentResult { accepted, rejected, failed, loginRequired }
+
 // ===================== CommentsCubit =====================
 class CommentsCubit extends Cubit<CommentsState> {
   final VideoRepo repository;
+  // نفس خدمة تصنيف تعليقات المنتجات
+  final ProductCommentRepository classifierRepo;
 
-  CommentsCubit(this.repository) : super(CommentsInitial());
+  CommentsCubit(this.repository, this.classifierRepo) : super(CommentsInitial());
 
   // نسخة محلية للتحديث السريع
   List<CommentModel> _currentComments = [];
@@ -46,10 +52,9 @@ class CommentsCubit extends Cubit<CommentsState> {
     }
   }
 
-  // ترجع false اذا لم يسجل الدخول
-  Future<bool> sendComment(VideoModel video, String text) async {
+  Future<VideoCommentResult> sendComment(VideoModel video, String text) async {
     final customerId = await UserLocal().getCustomerId();
-    if (customerId == null) return false;
+    if (customerId == null) return VideoCommentResult.loginRequired;
 
     final user = await UserLocal().getUser();
     final tempId = DateTime.now().millisecondsSinceEpoch;
@@ -69,6 +74,23 @@ class CommentsCubit extends Cubit<CommentsState> {
     video.commentsCount++;
     _emitLoaded(video);
 
+    // تصنيف التعليق، وعند فشل n8n يكمل الحفظ
+    String? classification;
+    try {
+      classification = await classifierRepo.classifyComment(text);
+    } catch (_) {
+      classification = null;
+    }
+
+    // حذف التعليق المؤقت عند الرفض
+    if (classification == 'Inappropriate') {
+      _currentComments.removeWhere((e) => e.id == tempId);
+      video.commentsCount--;
+      _emitLoaded(video);
+      return VideoCommentResult.rejected;
+    }
+
+    var result = VideoCommentResult.accepted;
     try {
       final server = await repository.postComment(video.videoId, customerId, text);
       final i = _currentComments.indexWhere((e) => e.id == tempId);
@@ -87,10 +109,11 @@ class CommentsCubit extends Cubit<CommentsState> {
     } catch (_) {
       _currentComments.removeWhere((e) => e.id == tempId);
       video.commentsCount--;
+      result = VideoCommentResult.failed;
     }
 
     _emitLoaded(video);
-    return true;
+    return result;
   }
 
   void _emitLoaded(VideoModel video) {

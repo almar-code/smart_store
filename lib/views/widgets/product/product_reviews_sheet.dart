@@ -7,6 +7,8 @@ import '../../../core/di/injection_container.dart' as di;
 import '../../../core/utils/avatar_provider.dart';
 import '../../../core/widgets/app_messages.dart';
 import '../../../core/widgets/circularProgress.dart';
+import '../../../core/widgets/customer_photo.dart';
+import '../../../core/widgets/review_input_field.dart';
 import '../../../data/local/user_local.dart';
 import '../../../data/models/product_comment_model.dart';
 import '../../../logic/productcomment/product_comment_cubit.dart';
@@ -14,7 +16,13 @@ import '../../../logic/productcomment/product_comment_state.dart';
 
 class ProductReviewsSheet {
   // cubit اختياري لاستخدام نفس تعليقات صفحة التفاصيل
-  static Future<void> show(BuildContext context, {required int productId, ProductCommentCubit? cubit}) {
+  // firstCommentId لعرض التعليق المضغوط عليه أولا
+  static Future<void> show(
+      BuildContext context, {
+        required int productId,
+        ProductCommentCubit? cubit,
+        int? firstCommentId,
+      }) {
     final owned = cubit == null;
     final c = cubit ?? (di.sl<ProductCommentCubit>()..loadComments(productId));
 
@@ -24,7 +32,10 @@ class ProductReviewsSheet {
       useSafeArea: true,
       backgroundColor: Colors.transparent,
       constraints: const BoxConstraints(maxWidth: 600),
-      builder: (_) => BlocProvider.value(value: c, child: _ReviewsSheet(productId: productId)),
+      builder: (_) => BlocProvider.value(
+        value: c,
+        child: _ReviewsSheet(productId: productId, firstCommentId: firstCommentId),
+      ),
     ).whenComplete(() {
       if (owned) c.close();
     });
@@ -33,7 +44,8 @@ class ProductReviewsSheet {
 
 class _ReviewsSheet extends StatefulWidget {
   final int productId;
-  const _ReviewsSheet({required this.productId});
+  final int? firstCommentId;
+  const _ReviewsSheet({required this.productId, this.firstCommentId});
 
   @override
   State<_ReviewsSheet> createState() => _ReviewsSheetState();
@@ -151,7 +163,13 @@ class _ReviewsSheetState extends State<_ReviewsSheet> {
                   if (state is ProductCommentError) {
                     return Center(child: Text(tr('reviews_error'), style: TextStyle(color: AppColors.textSecondary)));
                   }
-                  final comments = (state as ProductCommentLoaded).comments;
+
+                  // نقل التعليق المختار لأول القائمة
+                  final all = (state as ProductCommentLoaded).comments;
+                  final comments = [
+                    ...all.where((c) => c.commentId == widget.firstCommentId),
+                    ...all.where((c) => c.commentId != widget.firstCommentId),
+                  ];
                   if (comments.isEmpty) return const _EmptyReviews();
 
                   return ListView.separated(
@@ -160,10 +178,20 @@ class _ReviewsSheetState extends State<_ReviewsSheet> {
                     separatorBuilder: (_, __) => const SizedBox(height: 18),
                     itemBuilder: (_, i) {
                       final review = comments[i];
-                      return _ReviewTile(
-                        review: review,
-                        isMine: _myId != null && review.customerId == _myId,
-                        onDelete: () => _delete(review),
+                      final selected = review.commentId == widget.firstCommentId;
+
+                      // تمييز التعليق المختار بخلفية خفيفة
+                      return Container(
+                        padding: selected ? const EdgeInsets.all(10) : EdgeInsets.zero,
+                        decoration: BoxDecoration(
+                          color: selected ? AppColors.primary.withOpacity(0.06) : null,
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        child: _ReviewTile(
+                          review: review,
+                          isMine: _myId != null && review.customerId == _myId,
+                          onDelete: () => _delete(review),
+                        ),
                       );
                     },
                   );
@@ -178,71 +206,12 @@ class _ReviewsSheetState extends State<_ReviewsSheet> {
                 color: AppColors.background,
                 border: Border(top: BorderSide(color: AppColors.borderColor.withOpacity(0.5))),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      Text(tr('your_rating'), style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
-                      const SizedBox(width: 6),
-                      ...List.generate(
-                        5,
-                            (i) => GestureDetector(
-                          onTap: () => setState(() => _stars = i + 1),
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 2),
-                            child: Icon(
-                              i < _stars ? Icons.star_rounded : Icons.star_outline_rounded,
-                              color: Colors.amber,
-                              size: 24,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 8),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: TextField(
-                          controller: _controller,
-                          minLines: 1,
-                          maxLines: 4,
-                          textInputAction: TextInputAction.send,
-                          onSubmitted: (_) => _send(),
-                          style: TextStyle(color: AppColors.textColor, fontSize: 14),
-                          decoration: InputDecoration(
-                            hintText: tr('write_review'),
-                            hintStyle: TextStyle(color: AppColors.textSecondary, fontSize: 14),
-                            filled: true,
-                            fillColor: AppColors.backgroundSecondary,
-                            contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                            border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(24),
-                              borderSide: BorderSide.none,
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Material(
-                        color: AppColors.primary,
-                        shape: const CircleBorder(),
-                        child: InkWell(
-                          customBorder: const CircleBorder(),
-                          onTap: _send,
-                          child: Padding(
-                            padding: const EdgeInsets.all(11),
-                            child: _sending
-                                ? const SizedBox(width: 20, height: 20, child: CircularProgress(color: Colors.white))
-                                : const Icon(Icons.send_rounded, color: Colors.white, size: 20),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
+              child: ReviewInputField(
+                controller: _controller,
+                stars: _stars,
+                onStarsChanged: (v) => setState(() => _stars = v),
+                onSend: _send,
+                sending: _sending,
               ),
             ),
           ],
@@ -275,21 +244,13 @@ class _ReviewTile extends StatelessWidget {
     final isEn = context.locale.languageCode == 'en';
     final text = (isEn && review.commentEn.isNotEmpty) ? review.commentEn : review.commentAr;
     final name = review.customerName.isEmpty ? tr('guest') : review.customerName;
-    final avatar = avatarProvider(review.customerImage);
 
     return Opacity(
       opacity: review.isSending ? 0.5 : 1,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            radius: 18,
-            backgroundColor: AppColors.primary.withOpacity(0.12),
-            backgroundImage: avatar,
-            child: avatar == null
-                ? Text(name.characters.first, style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold))
-                : null,
-          ),
+          CustomerPhoto(radius: 18, image: review.customerImage ?? '', name: name),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
