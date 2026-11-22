@@ -46,6 +46,11 @@ jobs:
     runs-on: windows-latest
     steps:
       - uses: actions/checkout@v4
+      # تحديث نسخ جريدل وكوتلن داخل جيت هاب فقط
+      - name: Patch Android versions
+        run: |
+          sed -i 's#gradle-[0-9.]*-all.zip#gradle-8.14.3-all.zip#' android/gradle/wrapper/gradle-wrapper.properties
+          sed -i 's#\("org.jetbrains.kotlin.android")\) version "[0-9.]*"#\1 version "2.2.20"#' android/settings.gradle.kts
 
       - uses: subosito/flutter-action@v2
         with:
