@@ -1,0 +1,109 @@
+name: Build App
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+jobs:
+  # بناء نسخة الأندرويد
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter pub get
+      - run: flutter build apk --release
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: android-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
+
+  # بناء نسخة الويندوز
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      # اضافة دعم الويندوز اذا لم يكن موجودا
+      - run: flutter create --platforms=windows .
+      - run: flutter pub get
+      - run: flutter build windows --release
+
+      # ضغط ملفات التشغيل
+      - run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath nice-store-windows.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: windows-zip
+          path: nice-store-windows.zip
+
+  # بناء نسخة الويب
+  web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - run: flutter create --platforms=web .
+      - run: flutter pub get
+
+      # اسم المستودع ضروري لمسار الصفحة
+      - run: flutter build web --release --base-href /smart_store/
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/web
+
+  # نشر الويب على رابط عام
+  deploy-web:
+    needs: web
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
+
+  # نشر نسخة للتحميل عند عمل تاغ
+  release:
+    if: startsWith(github.ref, 'refs/tags/')
+    needs: [android, windows]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: dist
+
+      - uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/android-apk/app-release.apk
+            dist/windows-zip/nice-store-windows.zip
