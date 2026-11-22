@@ -21,6 +21,7 @@ class UserAddressCubit extends Cubit<UserAddressState> {
     try {
       final addresses = await repo.getAddresses();
       if (addresses.isEmpty) {
+        selectedAddress =null;
         emit(UserAddressEmpty());
       } else {
         emit(UserAddressLoaded(addresses));
@@ -64,10 +65,13 @@ class UserAddressCubit extends Cubit<UserAddressState> {
   }
 
   // حذف عنوان
-  Future<void> deleteAddress(int id) async {
+  Future<void> deleteAddress(UserAddressModel address) async {
     emit(UserAddressLoading());
     try {
-      await repo.deleteAddress(id);
+      await repo.deleteAddress(address.addressId);
+      if(address.isDefault){
+        selectedAddress = null;
+      }
       emit(UserAddressActionSuccess('delete_address_success'));
       getAddresses();
     } catch (e) {
