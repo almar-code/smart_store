@@ -46,40 +46,6 @@ jobs:
           name: android-apk
           path: build/app/outputs/flutter-apk/app-release.apk
 
-  # بناء نسخة الويندوز
-  windows:
-    runs-on: windows-2022
-    steps:
-      - uses: actions/checkout@v4
-
-      # اداة مطلوبة لمكتبة الويب فيو
-      - uses: NuGet/setup-nuget@v2
-
-      - uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-          flutter-version: ${{ env.FLUTTER_VERSION }}
-          cache: true
-
-      # اضافة دعم الويندوز
-      - run: flutter create --platforms=windows .
-
-      # انشاء ملف البيئة من الاسرار
-      - name: Create .env
-        shell: bash
-        run: echo "${{ secrets.ENV_FILE }}" > .env
-
-      - run: flutter pub get
-      - run: flutter build windows --release
-
-      # ضغط ملفات التشغيل
-      - run: Compress-Archive -Path build\windows\x64\runner\Release\* -DestinationPath nice-store-windows.zip
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: windows-zip
-          path: nice-store-windows.zip
-
   # بناء نسخة الويب
   web:
     runs-on: ubuntu-latest
@@ -123,7 +89,7 @@ jobs:
   # نشر نسخة للتحميل عند عمل تاغ
   release:
     if: startsWith(github.ref, 'refs/tags/')
-    needs: [android, windows]
+    needs: [android]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v4
@@ -134,4 +100,3 @@ jobs:
         with:
           files: |
             dist/android-apk/app-release.apk
-            dist/windows-zip/nice-store-windows.zip
