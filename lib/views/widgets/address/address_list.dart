@@ -182,7 +182,7 @@ class _AddressListViewState extends State<AddressListView> {
                     );
 
                     if (confirm == true && context.mounted) {
-                      context.read<UserAddressCubit>().deleteAddress(address.addressId);
+                      context.read<UserAddressCubit>().deleteAddress(address);
                     }
                   },
                   borderRadius: 12,
@@ -207,7 +207,7 @@ class _AddressListViewState extends State<AddressListView> {
                     );
 
                     if (confirm == true && context.mounted) {
-                      context.read<UserAddressCubit>().deleteAddress(address.addressId);
+                      context.read<UserAddressCubit>().deleteAddress(address);
                     }
                   },
                   borderRadius: 12,

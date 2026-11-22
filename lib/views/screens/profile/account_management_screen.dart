@@ -18,6 +18,7 @@ import '../../../logic/account/account_cubit.dart';
 import '../../../logic/account/account_state.dart';
 import '../../../logic/login/login_cubit.dart';
 import '../../../logic/login/profile_logic.dart';
+import '../../../logic/navigation/navigation_cubit.dart';
 import '../../widgets/account/account_header.dart';
 import '../../widgets/account/account_widgets.dart';
 import '../../widgets/account/edit_name_sheet.dart';
@@ -210,9 +211,13 @@ class AccountManagementView extends StatelessWidget {
                   trailing: AccountPillButton(
                     label: user.phone.isEmpty ? tr('add') : tr('edit'),
                     icon: user.phone.isEmpty ? CupertinoIcons.add : CupertinoIcons.pencil,
-                    onTap: () => PhoneNumber.show(context),
+                    onTap: () => PhoneNumber.show(context,(){
+                      context.read<NavigationCubit>().updateIndex(4);
+                    }),
                   ),
-                  onTap: () => PhoneNumber.show(context),
+                  onTap: () => PhoneNumber.show(context,(){
+                    context.read<NavigationCubit>().updateIndex(4);
+                  }),
                 ),
               ],
             )),

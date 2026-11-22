@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../core/widgets/customer_photo.dart';
 import '../../../core/widgets/image_helper.dart';
 import '../../../data/models/user_model.dart';
 
@@ -23,7 +24,6 @@ class AccountHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 800;
-    final hasImage = user.image.isNotEmpty;
     final radius = isDesktop ? 46.0 : 34.0;
 
     return ClipRRect(
@@ -52,38 +52,29 @@ class AccountHeader extends StatelessWidget {
                     child: Stack(
                       clipBehavior: Clip.none,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.all(3),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.white.withValues(alpha: .35),
-                          ),
-                          child: CircleAvatar(
-                            radius: radius,
-                            backgroundColor: Colors.white,
-                            backgroundImage: hasImage
-                                ? MemoryImage(ImageHelper.decodeBase64(user.image))
-                                : null,
-                            child: isLoading
-                            // تحميل فوق الصورة وقت الحذف
-                                ? Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.black.withValues(alpha: .35),
-                              ),
-                              alignment: Alignment.center,
-                              child: const SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
-                              ),
-                            )
-                                : hasImage
-                                ? null
-                                : Icon(Icons.person, size: radius, color: Colors.grey),
-                          ),
-                        ),
-                        PositionedDirectional(
+                        CustomerPhoto(
+                          radius: radius,
+                          image: user.image,
+                          showBorder: true,
+                          borderColor: Colors.white.withValues(alpha: .35),
+                          borderWidth: 3,
+                          gap: 0,
+                          // تحميل فوق الصورة وقت الحذف
+                          overlay: isLoading
+                              ? Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.black.withValues(alpha: .35),
+                            ),
+                            alignment: Alignment.center,
+                            child: const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
+                            ),
+                          )
+                              : null,
+                        ),                        PositionedDirectional(
                           bottom: 0,
                           end: 0,
                           child: Container(

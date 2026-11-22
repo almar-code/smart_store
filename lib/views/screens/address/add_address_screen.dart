@@ -6,6 +6,7 @@ import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 import '../../../core/constants/app_colors.dart';
+import '../../../core/widgets/app_editable_dropdown.dart';
 import '../../../core/widgets/app_form_field.dart';
 import '../../../core/widgets/app_messages.dart';
 import '../../../core/widgets/app_title.dart';
@@ -115,7 +116,7 @@ class _AddAddressViewState extends State<AddAddressView> {
                 if (state is AddressLoaded) {
                   _formKey.currentState?.patchValue(state.addressData);
                 } else if (state is AddressError) {
-                  AppToasts.showErrorToast(context, state.message);
+                  AppToasts.showErrorToast(context, tr(state.message));
                 }
               },
             ),
@@ -226,11 +227,18 @@ class _AddAddressViewState extends State<AddAddressView> {
                     key: _formKey,
                     child: Column(
                       children: [
-                        CustomFormField(
+                        AppEditableDropdown(
                           name: 'title',
                           label: tr('title'),
                           hint: tr('address_title_hint'),
                           icon: Icons.bookmark_outline_rounded,
+                          options: [
+                            tr('address_option_home'),
+                            tr('address_option_work'),
+                            tr('address_option_office'),
+                            tr('address_option_family'),
+                            tr('address_option_friend'),
+                          ],
                           validators: [FormBuilderValidators.required()],
                         ),
                         const SizedBox(height: 12),
