@@ -1,11 +1,9 @@
 import 'dart:convert';
-import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
-import 'package:internet_connection_checker/internet_connection_checker.dart';
+
 abstract class MapState {}
 class AddressInitial extends MapState {}
 class AddressLoading extends MapState {}
@@ -17,6 +15,7 @@ class AddressError extends MapState {
   final String message;
   AddressError(this.message);
 }
+
 class MapCubit extends Cubit<MapState> {
   MapCubit() : super(AddressInitial());
 
@@ -49,11 +48,14 @@ class MapCubit extends Cubit<MapState> {
           };
           emit(AddressLoaded(addressMap));
         } else {
-          emit(AddressError("لم يتم العثور على عنوان"));
+          emit(AddressError('address_not_found'));
         }
+      } else {
+        // رد غير ناجح من جوجل
+        emit(AddressError('internet_connection_error'));
       }
     } catch (e) {
-      emit(AddressError("خطأ في الاتصال: $e"));
+      emit(AddressError('internet_connection_error'));
     }
   }
 }

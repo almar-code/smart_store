@@ -5,6 +5,7 @@ import 'package:hive/hive.dart';
 import '../../../core/constants/app_colors.dart';
 import 'package:easy_localization/easy_localization.dart';
 
+import '../../../core/widgets/customer_photo.dart';
 import '../../../core/widgets/itemCount.dart';
 import '../../../logic/login/login_cubit.dart';
 
@@ -20,6 +21,7 @@ class ModernBottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    bool isDesktop = MediaQuery.of(context).size.width > 800;
     return BlocBuilder<LoginCubit, bool>(
         builder: (context, state)  {
 
@@ -94,8 +96,9 @@ class ModernBottomNavBar extends StatelessWidget {
             label: 'cart'.tr(),
           ),
           BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.person, size: 22),
-            activeIcon: Icon(CupertinoIcons.person_fill, size: 26),
+            // صورة العميل وتظهر بإطار أخضر عند الاختيار
+            icon: const CustomerPhoto(radius: 11, iconSize: 18),
+            activeIcon: const CustomerPhoto(radius: 12, iconSize: 18, showBorder: true),
             label: labelName,
           ),
         ],

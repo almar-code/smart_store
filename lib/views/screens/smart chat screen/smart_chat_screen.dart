@@ -7,11 +7,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hive/hive.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_endpoints.dart';
 import '../../../core/utils/AiRippleManager.dart';
 import '../../../core/widgets/circleImage/circle_image.dart';
+import '../../../core/widgets/customer_photo.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/icons/smart_robot_icon.dart';
 import '../../../core/widgets/three_dots_loader.dart';
@@ -122,7 +124,8 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
                   itemCount: messages.length,
                   itemBuilder: (context, index) {
                     final message = messages[index];
-
+                    var box = Hive.box('user_info_box');
+                    String userName = (box.isEmpty) ? '' :  box.get('name') ?? "";
                     return Column(
                       children: [
                         if (index == 0)
@@ -135,7 +138,7 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
                                   const SizedBox(height: 150),
                                   const AiRobotAvatar(padding: 15, iconSize: 40),
                                   Text(
-                                    'WELCOME OMAR',
+                                    "${tr("welcome")} $userName",
                                     style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       color: AppColors.textColor,
@@ -313,10 +316,8 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
                                 ),
                                 if (message.isMe) ...[
                                   const SizedBox(width: 8),
-                                  const CircleImage(
-                                    imagePath: "assets/images/Gemini_Generated_Image_ez61caez61caez61.png",
-                                    radius: 11,
-                                  ),
+                                  // صورة العميل بجانب رسالته
+                                  const CustomerPhoto(radius: 11, iconSize: 13),
                                 ],
                               ],
                             ),

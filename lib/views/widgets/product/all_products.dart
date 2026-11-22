@@ -8,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart'; // 🌟 تم تفعيلها ل�
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:smart_store/core/widgets/buttons/refresh_button.dart';
 import 'package:smart_store/logic/search/search_cubit.dart';
+import 'package:smart_store/views/widgets/product/product_quick_sheets.dart';
 import 'package:smart_store/views/widgets/product/productdetailsheet.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_endpoints.dart';
@@ -180,35 +181,40 @@ class AllProducts extends StatelessWidget {
                                   Positioned(
                                     top: 3,
                                     right: 7,
-                                    child: Container(
-                                      padding:  EdgeInsets.symmetric(vertical: (item.colors.length > 1) ? 2 : 0, horizontal: 2),
-                                      decoration: BoxDecoration(
-                                        color: Colors.black.withOpacity(0.3),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: Column(
-                                        spacing: (item.colors.length > 1) ? 5 : 2,
-                                        children: [
-                                          if(item.colors.length == 1)
-                                          SizedBox(),
-                                          ...item.colors.take(3).map((color) {
-                                            return CircleOfColor(
-                                              code: color.colorCode ?? "#FFFFFF",
-                                              width: isDesktop ? 14 : 12,
-                                              height: isDesktop ? 14 : 12,
-                                            );
-                                          }).toList(),
-                                          (item.colors.length <= 3)
-                                              ? const SizedBox()
-                                              : Text(
-                                            "+${item.colors.length - 3}",
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: isDesktop ? 10 : 9,
-                                              fontWeight: FontWeight.bold,
+                                    child: InkWell(
+                                      onTap: () {
+                                        ProductQuickSheets.colors(context, item);
+                                      },
+                                      child: Container(
+                                        padding:  EdgeInsets.symmetric(vertical: (item.colors.length > 1) ? 2 : 0, horizontal: 2),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.3),
+                                          borderRadius: BorderRadius.circular(10),
+                                        ),
+                                        child: Column(
+                                          spacing: (item.colors.length > 1) ? 5 : 2,
+                                          children: [
+                                            if(item.colors.length == 1)
+                                            SizedBox(),
+                                            ...item.colors.take(3).map((color) {
+                                              return CircleOfColor(
+                                                code: color.colorCode ?? "#FFFFFF",
+                                                width: isDesktop ? 14 : 12,
+                                                height: isDesktop ? 14 : 12,
+                                              );
+                                            }).toList(),
+                                            (item.colors.length <= 3)
+                                                ? const SizedBox()
+                                                : Text(
+                                              "+${item.colors.length - 3}",
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: isDesktop ? 10 : 9,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),

@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/widgets/app_messages.dart';
 import '../../../core/widgets/circularProgress.dart';
+import '../../../core/widgets/customer_photo.dart';
 import '../../../core/widgets/image_helper.dart';
 import '../../../data/models/comment_model.dart';
 import '../../../data/models/video_model.dart';
@@ -46,10 +47,20 @@ class _CommentsSheetState extends State<_CommentsSheet> {
     if (text.isEmpty) return;
     _controller.clear();
 
-    final ok = await context.read<CommentsCubit>().sendComment(widget.video, text);
-    if (!ok && mounted) {
-      _controller.text = text;
-      AppToasts.showWarningToast(context, tr('login_to_comment'));
+    final result = await context.read<CommentsCubit>().sendComment(widget.video, text);
+    if (!mounted || result == VideoCommentResult.accepted) return;
+
+    // اعادة النص عند الرفض او الفشل
+    _controller.text = text;
+    switch (result) {
+      case VideoCommentResult.loginRequired:
+        AppToasts.showWarningToast(context, tr('login_to_comment'));
+        break;
+      case VideoCommentResult.rejected:
+        AppToasts.showErrorToast(context, tr('comment_rejected'));
+        break;
+      default:
+        AppToasts.showErrorToast(context, tr('comment_failed'));
     }
   }
 
@@ -178,33 +189,17 @@ class _CommentTile extends StatelessWidget {
     return tr('ago_days', namedArgs: {'n': '${diff.inDays}'});
   }
   // رابط من السيرفر او Base64 من Hive
-  ImageProvider? _avatarProvider(String? image) {
-    if (image == null || image.isEmpty) return null;
-    if (image.startsWith('http')) return CachedNetworkImageProvider(image);
-    try {
-      return MemoryImage(ImageHelper.decodeBase64(image));
-    } catch (_) {
-      return null;
-    }
-  }
+
   @override
   Widget build(BuildContext context) {
     final name = comment.customerName.isEmpty ? tr('guest') : comment.customerName;
-    final avatar = _avatarProvider(comment.customerImage);
 
     return Opacity(
       opacity: comment.isSending ? 0.5 : 1,
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          CircleAvatar(
-            radius: 18,
-            backgroundColor: AppColors.primary.withOpacity(0.12),
-            backgroundImage: avatar,
-            child: avatar == null
-                ? Text(name.characters.first, style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold))
-                : null,
-          ),
+          CustomerPhoto(radius: 18, image: comment.customerImage ?? '', name: name),
           const SizedBox(width: 10),
           Expanded(
             child: Column(

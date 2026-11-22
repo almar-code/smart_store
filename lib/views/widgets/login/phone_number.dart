@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:hive/hive.dart';
 import 'package:pinput/pinput.dart';
 import 'package:smart_store/core/constants/app_colors.dart';
 import 'package:smart_store/core/widgets/buttons/app_button.dart';
@@ -77,6 +78,8 @@ class PhoneNumber extends StatelessWidget {
 
   // خطوة إدخال الرقم
   Widget _buildPhoneForm(BuildContext context) {
+    var box = Hive.box('user_info_box');
+    String userName = (box.isEmpty) ? '' :  box.get('name') ?? "";
     return FormBuilder(
       key: _formKey,
       autovalidateMode: AutovalidateMode.disabled,
@@ -84,7 +87,7 @@ class PhoneNumber extends StatelessWidget {
         // الحاوية على قد المحتوى
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(tr("welcome_back"), style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
+          Text("${tr("welcome")} $userName", style: TextStyle(color: Colors.white, fontSize: 28, fontWeight: FontWeight.bold)),
           SizedBox(height: 5),
           Text(tr("please_add_valid_number"), style: TextStyle(color: Colors.white70, fontSize: 14)),
           SizedBox(height: 30),
@@ -165,14 +168,13 @@ class PhoneNumber extends StatelessWidget {
     );
   }
 
-  static void show(BuildContext mainContext){
+  static void show(BuildContext mainContext, VoidCallback? onSuccess){
     showDialog(
       context: mainContext,
       barrierColor: Colors.black.withOpacity(0.5),
       builder: (context) => PhoneNumber(
-          onSuccess:(){
-            mainContext.read<NavigationCubit>().updateIndex(4);
-          }),
+          onSuccess:onSuccess
+      ),
     );
   }
 }

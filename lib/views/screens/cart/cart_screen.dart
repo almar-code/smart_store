@@ -19,9 +19,11 @@ import '../../../core/widgets/guest_prompt.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/buttons/smart_floating_button.dart';
 import '../../../core/widgets/three_dots_loader.dart';
+import '../../../data/local/user_local.dart';
 import '../../../logic/login/login_cubit.dart';
 import '../../widgets/cart/emptyCart.dart';
 import '../../widgets/flash/flash_screen.dart';
+import '../../widgets/login/phone_number.dart';
 import '../address/select_user_address_screen.dart';
 
 class CartScreen extends StatelessWidget {
@@ -427,16 +429,31 @@ class CartScreen extends StatelessWidget {
                             height: 27,
                             child: AppButton(label: tr('checkout'),
                               icon: Icons.credit_card,
-                                onTap: () {
-                                  context.read<CartCubit>().fetchCart();
+                                onTap: () async {
+                                  bool hasPhone = UserLocal().hasPhone();
                                   if(state is CartEmpty){
-                                    AppToasts.showSuccessToast(context,   'عذرا لا يوجد منتجات في السلة');
+                                    AppToasts.showWarningToast(context,   'عذرا لا يوجد منتجات في السلة');
                                   }
-                                  Navigator.of(context,).push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          SelectUsrAddress(
-                                            displayTotal: state.totalPrice -
-                                                state.totalDiscount,)));}
+                                  if(!hasPhone) {
+                                    AppToasts.showWarningToast(context,   'عذرا الرجاء اضافة رقم هاتف');
+                                     PhoneNumber.show(context,(){
+                                       Navigator.of(context,).push(
+                                           MaterialPageRoute(
+                                               builder: (context) =>
+                                                   SelectUsrAddress(
+                                                     displayTotal: state
+                                                         .totalPrice -
+                                                         state.totalDiscount,)));                                    });
+                                  }else{
+                                    Navigator.of(context,).push(
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                SelectUsrAddress(
+                                                  displayTotal: state
+                                                      .totalPrice -
+                                                      state.totalDiscount,)));
+                                  }
+                                  }
                             )
                           ),
                         ),

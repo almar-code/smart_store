@@ -9,6 +9,7 @@ import 'package:hive/hive.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_icons.dart';
 import '../../../core/widgets/app_logo.dart';
+import '../../../core/widgets/customer_photo.dart';
 import '../../../data/models/product_model.dart';
 import '../../../logic/cart/cart_cubit.dart';
 import '../../../logic/login/login_cubit.dart';
@@ -184,7 +185,13 @@ class _ModernSideRailState extends State<ModernSideRail> {
             ),
 
             _section(tr('menu_account')),
-            _item(4, CupertinoIcons.person, CupertinoIcons.person_fill, labelName),
+            _item(
+              4,
+              CupertinoIcons.person,
+              CupertinoIcons.person_fill,
+              labelName,
+              iconBuilder: (selected) => CustomerPhoto(radius: 12, iconSize: 16, showBorder: selected),
+            ),
             BlocBuilder<NotificationCubit, NotificationState>(
               buildWhen: (a, b) => a.unreadCount != b.unreadCount,
               builder: (context, state) => _item(
@@ -250,6 +257,8 @@ class _ModernSideRailState extends State<ModernSideRail> {
       String label, {
         int count = 0,
         Color? badgeColor,
+        // ويدجت بدل الأيقونة مثل صورة العميل
+        Widget Function(bool selected)? iconBuilder,
       }) {
     final bool selected = widget.currentIndex == index;
     final bool hasCount = count > 0;
@@ -314,7 +323,9 @@ class _ModernSideRailState extends State<ModernSideRail> {
                           children: [
                             AnimatedSwitcher(
                               duration: const Duration(milliseconds: 200),
-                              child: Icon(
+                              child: iconBuilder != null
+                                  ? KeyedSubtree(key: ValueKey(selected), child: iconBuilder(selected))
+                                  : Icon(
                                 selected ? activeIcon : icon,
                                 key: ValueKey(selected),
                                 size: 21,

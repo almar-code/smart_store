@@ -426,7 +426,7 @@ class _SelectPaymentMethodPageState extends State<SelectPaymentMethodPage> {
             borderRadius: BorderRadius.circular(15),
             items: _storeAccounts.map((account) {
               final id = account.storePaymentAccountId.toString();
-              final name = (context.locale.languageCode == 'en') ? account.providerName : account.providerEnName;
+              final name = (context.locale.languageCode == 'ar') ? account.providerName : account.providerEnName;
               final type = account.accountType;
 
               return DropdownMenuItem<String>(
