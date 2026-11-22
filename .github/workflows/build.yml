@@ -28,6 +28,11 @@ jobs:
           channel: stable
           cache: true
 
+      # انشاء ملف البيئة من الاسرار
+      - name: Create .env
+        shell: bash
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
       - run: flutter pub get
       - run: flutter build apk --release
 
@@ -47,8 +52,14 @@ jobs:
           channel: stable
           cache: true
 
-      # اضافة دعم الويندوز اذا لم يكن موجودا
+      # اضافة دعم الويندوز
       - run: flutter create --platforms=windows .
+
+      # انشاء ملف البيئة من الاسرار
+      - name: Create .env
+        shell: bash
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
       - run: flutter pub get
       - run: flutter build windows --release
 
@@ -71,7 +82,14 @@ jobs:
           channel: stable
           cache: true
 
+      # اضافة دعم الويب
       - run: flutter create --platforms=web .
+
+      # انشاء ملف البيئة من الاسرار
+      - name: Create .env
+        shell: bash
+        run: echo "${{ secrets.ENV_FILE }}" > .env
+
       - run: flutter pub get
 
       # اسم المستودع ضروري لمسار الصفحة
