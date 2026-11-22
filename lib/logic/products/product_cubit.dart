@@ -110,6 +110,7 @@ class ProductCubit extends Cubit<ProductState> {
           productId: productId,
           date: date,
           isDiscount: isDiscount,
+          adsId: adsId,
           isFavorite: isFavorite,
           visualImagePath: visualImagePath,
         );
