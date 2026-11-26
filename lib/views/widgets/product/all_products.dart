@@ -307,10 +307,12 @@ class AllProducts extends StatelessWidget {
                                   ),
                                 ],
                               ),item.generalAdvertisements.isEmpty
-                                  ? const SizedBox.shrink()
-                                      : RotatingAdBanner(
-                                  advertisements: item.generalAdvertisements,
-                                  ),
+                            ? const SizedBox.shrink()
+                                : RotatingAdBanner(
+                                advertisements: item.generalAdvertisements,
+                                productId: item.pId,
+                                currentAdsId: currentAdsId,
+                                ),
                               Padding(
                                 padding: const EdgeInsets.symmetric(horizontal: 8.0),
                                 child: SizedBox(
