@@ -8,15 +8,18 @@ class SizePredictionCubit extends Cubit<SizePredictionState> {
 
   SizePredictionCubit(this.repo) : super(SizePredictionInitial());
 
-  // آخر قياسات محفوظة لتعبئة النموذج تلقائياً
-  SizeRequestModel? get savedProfile => repo.getSavedProfile();
+  // آخر طلب مرسل (يستخدم عند حفظ المقاس)
+  SizeRequestModel? lastRequest;
 
   Future<void> predict(SizeRequestModel request) async {
+    lastRequest = request;
     emit(SizePredictionLoading());
     try {
       final result = await repo.predictSize(request);
       if (result.isOk) {
         emit(SizePredictionSuccess(result));
+      } else if (result.isPhotoFailed) {
+        emit(SizePredictionNeedInput(result.messageKey, const ['photo']));
       } else {
         emit(SizePredictionNeedInput(result.messageKey, result.fields));
       }
