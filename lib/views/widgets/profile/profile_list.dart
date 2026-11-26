@@ -18,6 +18,7 @@ import '../../screens/orders/orders_screen.dart';
 import '../../screens/profile/account_management_screen.dart';
 import '../../screens/reels/saved_reels_screen.dart';
 import '../../screens/sizefinder/size_finder_screen.dart';
+import '../../screens/sizefinder/saved_sizes_screen.dart';
 import '../size_finder/size_finder_widgets.dart';
 import 'custom_tile.dart';
 
@@ -37,15 +38,15 @@ class ProfileList extends StatelessWidget {
             icon: CupertinoIcons.person_crop_circle,
             title: "account_management".tr(),
             onTap: () {
-        // تمرير NavigationCubit حق التبويبات للصفحة
-        final navCubit = context.read<NavigationCubit>();
-    Navigator.of(context).push(MaterialPageRoute(
-      builder: (_) => BlocProvider.value(
-        value: navCubit,
-        child: const AccountManagementScreen(),
-      ),
-    ));
-  },
+              // تمرير NavigationCubit حق التبويبات للصفحة
+              final navCubit = context.read<NavigationCubit>();
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (_) => BlocProvider.value(
+                  value: navCubit,
+                  child: const AccountManagementScreen(),
+                ),
+              ));
+            },
           )
               : const SizedBox.shrink(),
         ),
@@ -66,6 +67,7 @@ class ProfileList extends StatelessWidget {
         ),        CustomTile(icon: CupertinoIcons.heart, title: "favorites".tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) => FavoritesScreen( screenOnly: true,)))),
         CustomTile(icon: CupertinoIcons.chat_bubble_2, title: "messages".tr(), onTap: () {}),
         CustomTile(icon: Icons.straighten_rounded, title: 'size'.tr(), onTap: ()=> Navigator.of(context,).push(MaterialPageRoute(builder: (context) =>   SizeFinderScreen(),))),
+        CustomTile(icon: Icons.bookmarks_outlined, title: 'saved_sizes'.tr(), onTap: ()=> Navigator.of(context).push(MaterialPageRoute(builder: (context) => const SavedSizesScreen()))),
         CustomTile(
           icon: CupertinoIcons.globe,
           title: "language".tr(),
