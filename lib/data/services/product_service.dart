@@ -5,11 +5,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../core/constants/app_endpoints.dart';
+import '../../core/network/app_cache.dart';
 
 class ProductService {
-  final Dio dio = Dio();
+  // حفظ الردود للعرض بدون انترنت
+  final Dio dio = Dio()..interceptors.add(AppCache.interceptor);
 
-  Future<Response> getProductsRaw({int? subCatId, int? categoryId,int? productId, required int page ,int? seed,String? date,bool isDiscount = false,int? adsId,bool isFavorite = false , int? customerId}) async {
+  Future<Response> getProductsRaw({int? subCatId, int? categoryId,int? productId, required int page ,int? seed,String? date,String? dateFrom,String? discountFrom,bool isDiscount = false,int? adsId,bool isFavorite = false , int? customerId}) async {
     try {
       // تجهيز رقم الصفحة كمعامل أساسي
       Map<String, dynamic> queryParams = {'page': page};
@@ -23,6 +25,10 @@ class ProductService {
       if (customerId != null) queryParams['customer_id'] = customerId;
       if (seed != null) queryParams['seed'] = seed;
       if (date != null) queryParams['date'] = date;
+      // منتجات من تاريخ حتى اليوم
+      if (dateFrom != null) queryParams['date_from'] = dateFrom;
+      // خصومات مضافة من تاريخ معين
+      if (discountFrom != null) queryParams['discount_from'] = discountFrom;
 
       final response = await dio.get(
         ApiEndpoints.getProducts,

@@ -43,12 +43,20 @@ class ProductScreens extends StatelessWidget {
           create: (context) => SubcategoryCubit(SubcategoryRepo(SubcategoryService()))..getSubcategories(categoryId:categoryID ),
         ),
         BlocProvider<ProductCubit>(
-          create: (context) => ProductCubit(repository: ProductRepo(apiService:ProductService() ))
-            ..fetchProducts(
-              subCatId: subCategoryID,
-              productId: productID,
-              isRefresh: true,
-            ),
+          create: (context) {
+            final cubit = ProductCubit(repository: ProductRepo(apiService: ProductService()));
+            // من الكتالوج المحلي اولا وبدون طلب للسيرفر
+            final fromCache = productID != null &&
+                cubit.loadFromCatalog(productId: productID!, subCatId: subCategoryID);
+            if (!fromCache) {
+              cubit.fetchProducts(
+                subCatId: subCategoryID,
+                productId: productID,
+                isRefresh: true,
+              );
+            }
+            return cubit;
+          },
         ),
       ],
       child: SafeArea(
@@ -75,49 +83,51 @@ class ProductScreens extends StatelessWidget {
             ],
           ),
           body: Builder(
-            builder: (blocContext) {
-              return RefreshIndicator(
+              builder: (blocContext) {
+                return RefreshIndicator(
 
-                onRefresh: () async {
-                  if(categoryID != null){
-                    blocContext.read<SubcategoryCubit>().getSubcategories(categoryId: categoryID);
-                  }
-                  await blocContext.read<ProductCubit>().fetchProducts(
-                      subCatId: subCategoryID,
-                      productId: productID,
-                      isRefresh: true
-                  );
-                },
-                color: AppColors.primary, // لون مؤشر التحميل (يمكنك ربطه بهوية المشروع)
-                backgroundColor: AppColors.backgroundSecondary,
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      if (subCategoryID != null && categoryID != null)
-                        SubcategoryBar(),
-                      Expanded(
-                        child: ScrollWrapper(
-                          bottom: 5,
-                          child: AllProducts(
-                            showAddToCart: true,
-                            onProductTap: (product) {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      ProductDetailsScreen(product: product,),
-                                ),
-                              );
-                            },
+                  onRefresh: () async {
+                    if(categoryID != null){
+                      blocContext.read<SubcategoryCubit>().getSubcategories(categoryId: categoryID);
+                    }
+                    await blocContext.read<ProductCubit>().fetchProducts(
+                        subCatId: subCategoryID,
+                        productId: productID,
+                        isRefresh: true
+                    );
+                  },
+                  color: AppColors.primary, // لون مؤشر التحميل (يمكنك ربطه بهوية المشروع)
+                  backgroundColor: AppColors.backgroundSecondary,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        if (subCategoryID != null && categoryID != null)
+                          SubcategoryBar(),
+                        Expanded(
+                          child: ScrollWrapper(
+                            bottom: 5,
+                            child: AllProducts(
+                              showAddToCart: true,
+                              // تمييز المنتج المضغوط
+                              pinnedProductId: productID,
+                              onProductTap: (product) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        ProductDetailsScreen(product: product,),
+                                  ),
+                                );
+                              },
+                            ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-              );
-            }
+                );
+              }
           ),
           floatingActionButton: Column(
             mainAxisSize: MainAxisSize.min,

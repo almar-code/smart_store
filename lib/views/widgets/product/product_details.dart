@@ -112,6 +112,7 @@ class ProductImageSlider extends StatelessWidget {
       width: width,
       height: _height,
       decoration: BoxDecoration(
+        color: AppColors.background,
         border: Border.all(color: AppColors.borderColor, width: 1),
         borderRadius: BorderRadius.circular(8),
       ),
@@ -123,7 +124,7 @@ class ProductImageSlider extends StatelessWidget {
           loadingBuilder: (context, child, progress) =>
           progress == null ? child : Center(child: ThreeDotsLoader()),
           errorBuilder: (_, __, ___) => Image.asset(
-            'assets/images/image_placeholder.png',
+            'assets/images/app icon/icon.png',
             fit: BoxFit.cover,
           ),
         ),
@@ -165,7 +166,7 @@ class ProductImageGallery extends StatelessWidget {
                         width: double.infinity,
                         height: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.grey[800],
+                          color: AppColors.background,
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: ClipRRect(
@@ -183,7 +184,7 @@ class ProductImageGallery extends StatelessWidget {
                             ),
                             // في حال فشل التحميل أو عدم توفر إنترنت
                             errorWidget: (context, url, error) => Image.asset(
-                              'assets/images/image_placeholder.png',
+                              'assets/images/app icon/icon.png',
                               fit: BoxFit.cover,
                             ),
                           ),
@@ -228,7 +229,7 @@ class ProductImageGallery extends StatelessWidget {
                           width: 45,
                           margin: const EdgeInsets.only(right: 8),
                           decoration: BoxDecoration(
-                            color: Colors.grey[800],
+                            color: AppColors.background,
                             borderRadius: BorderRadius.circular(8),
                             border: Border.all(
                               color: isSelected ? AppColors.primary : Colors.transparent,
@@ -250,7 +251,7 @@ class ProductImageGallery extends StatelessWidget {
                               ),
                               // في حال فشل التحميل أو انقطاع الإنترنت
                               errorWidget: (context, url, error) => Image.asset(
-                                'assets/images/image_placeholder.png',
+                                'assets/images/app icon/icon.png',
                                 fit: BoxFit.cover,
                               ),
                             ),

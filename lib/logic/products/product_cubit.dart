@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../data/local/product_catalog.dart';
 import '../../data/local/search_local.dart';
 import '../../data/local/user_local.dart';
 import 'product_event_bus.dart';
@@ -25,12 +26,17 @@ class ProductCubit extends Cubit<ProductState> {
   List<ProductModel> discountProducts = []; // 🌟 مصفوفة مخصصة للخصومات المفلترة مسبقاً
   int? currentSeed; // لحفظ رقم خلطة البيانات الحالية ومنع التكرار
   int _requestId = 0;
+
+  // اخر استعلام للتحديث الصامت
+  Map<String, dynamic>? _lastQuery;
   Future<void> fetchProducts({
     int? subCatId,
     int? categoryId,
     int? productId,
     int? similarProductId,
     String? date,
+    String? dateFrom, // منتجات من تاريخ حتى اليوم
+    String? discountFrom, // خصومات جديدة من تاريخ
     bool isRefresh = false,
     bool isDiscount = false,
     int? adsId,
@@ -40,6 +46,21 @@ class ProductCubit extends Cubit<ProductState> {
   }) async {
     categoryID = categoryId;
     if (isRefresh) {
+      // البحث البصري لا يعاد تلقائيا
+      _lastQuery = (visualImageBytes != null || (visualImagePath?.isNotEmpty ?? false))
+          ? null
+          : {
+        'subCatId': subCatId,
+        'categoryId': categoryId,
+        'productId': productId,
+        'similarProductId': similarProductId,
+        'date': date,
+        'dateFrom': dateFrom,
+        'discountFrom': discountFrom,
+        'isDiscount': isDiscount,
+        'adsId': adsId,
+        'isFavorite': isFavorite,
+      };
       _requestId++;
       isFetchingMore = false;
       currentPage = 1;
@@ -81,6 +102,8 @@ class ProductCubit extends Cubit<ProductState> {
           isFavorite: isFavorite,
           customerId:  await _customerId(),
           date: date,
+          dateFrom: dateFrom,
+          discountFrom: discountFrom,
         );
       }
 
@@ -92,6 +115,8 @@ class ProductCubit extends Cubit<ProductState> {
       }
 
       allProducts.addAll(newProducts);
+      // حفظ المنتجات في الكتالوج المحلي
+      ProductCatalog.instance.absorb(newProducts);
       final List<ProductModel> newDiscounts = newProducts.where((p) => p.discount != null).toList();
       discountProducts.addAll(newDiscounts);
       currentPage++;
@@ -109,7 +134,10 @@ class ProductCubit extends Cubit<ProductState> {
           categoryId: categoryId,
           productId: productId,
           date: date,
+          dateFrom: dateFrom,
+          discountFrom: discountFrom,
           isDiscount: isDiscount,
+          adsId: adsId,
           isFavorite: isFavorite,
           visualImagePath: visualImagePath,
         );
@@ -120,6 +148,68 @@ class ProductCubit extends Cubit<ProductState> {
       emit(ProductError(e.toString()));
     }
   }
+  /// فتح المنتج ومنتجات فئته من الكتالوج المحلي بدون طلب للسيرفر
+  /// ترجع false اذا لم يوجد المنتج محليا ليتم الجلب من السيرفر
+  bool loadFromCatalog({required int productId, int? subCatId}) {
+    final list = ProductCatalog.instance.related(productId: productId, subCatId: subCatId);
+    if (list.isEmpty) return false;
+
+    _requestId++;
+    isFetchingMore = false;
+    currentPage = 1;
+    allProducts = List.of(list);
+    discountProducts = list.where((p) => p.discount != null).toList();
+    _lastQuery = {'subCatId': subCatId ?? list.first.subCatId, 'productId': productId};
+    emit(ProductLoaded(products: List.from(allProducts), hasMore: false));
+    return true;
+  }
+
+  /// اعادة الجلب بالخلفية بدون شاشة تحميل
+  Future<void> refreshSilently() async {
+    final q = _lastQuery;
+    if (q == null || isClosed) return;
+    final int request = ++_requestId;
+    final List<ProductModel> fresh = [];
+    int page = 1;
+    int? seed;
+
+    try {
+      bool hasMore = true;
+      while (hasMore) {
+        final result = await repository.fetchProductsPaginated(
+          subCatId: q['subCatId'],
+          categoryId: q['categoryId'],
+          productId: q['productId'],
+          seed: seed,
+          page: page,
+          isDiscount: q['isDiscount'] ?? false,
+          adsId: q['adsId'],
+          isFavorite: q['isFavorite'] ?? false,
+          customerId: await _customerId(),
+          date: q['date'],
+          dateFrom: q['dateFrom'],
+          discountFrom: q['discountFrom'],
+        );
+        // تم طلب جديد اثناء التحديث فنلغي هذا
+        if (request != _requestId || isClosed) return;
+        fresh.addAll(result['products'] as List<ProductModel>);
+        hasMore = result['hasMore'] == true;
+        seed ??= result['seed'];
+        page++;
+      }
+    } catch (_) {
+      return; // الفشل الصامت يبقي البيانات الحالية
+    }
+
+    if (q['similarProductId'] != null) {
+      fresh.removeWhere((p) => p.pId == q['similarProductId']);
+    }
+    ProductCatalog.instance.absorb(fresh);
+    allProducts = fresh;
+    discountProducts = fresh.where((p) => p.discount != null).toList();
+    emit(ProductLoaded(products: List.from(allProducts), hasMore: false));
+  }
+
   // داخل كلاس ProductCubit
   Future<void> toggleProductFavorite({required ProductModel product ,bool isInsideFavoritesScreen =false}) async {
     // 1. تحديد الحالة السابقة للرجوع إليها في حال الفشل
@@ -128,6 +218,7 @@ class ProductCubit extends Cubit<ProductState> {
     try {
       // 2. تحديث الحالة محلياً فوراً داخل مصفوفة الـ Cubit وبث الحالة الجديدة للواجهات
       product.isFavorite = !previousStatus;
+      ProductCatalog.instance.setFavorite(product.pId, product.isFavorite);
       if (isInsideFavoritesScreen && !product.isFavorite) {
         allProducts.removeWhere((p) => p.pId == product.pId);
       }
@@ -165,6 +256,7 @@ class ProductCubit extends Cubit<ProductState> {
       }
       return p; // يجب إرجاع العنصر في كل الحالات
     }).toList(); // تحويلها إلى List لتنفيذ العملية فوراً
+    ProductCatalog.instance.setFavorite(product.pId, product.isFavorite);
     emit(ProductLoaded(products: List.from(allProducts), hasMore: false));
   }
   // إيقاف الاستماع عند إغلاق الشاشة
