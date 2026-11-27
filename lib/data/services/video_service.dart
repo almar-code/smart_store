@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart';
 import '../../core/constants/app_endpoints.dart';
+import '../../core/network/app_cache.dart';
 
 class VideoService {
-  final Dio dio = Dio();
+  // حفظ قائمة الريلز للعرض بدون انترنت
+  final Dio dio = Dio()..interceptors.add(AppCache.interceptor);
 
   // دفعة من الريلز
   Future<Map<String, dynamic>> getVideos({

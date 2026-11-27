@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
+import '../../core/utils/reels_cache_helper.dart';
 import '../../data/local/reels_local.dart';
 import '../../data/models/video_model.dart';
 import '../../data/repos/video_repo.dart';
@@ -16,6 +18,10 @@ class VideoCubit extends Cubit<VideoState> {
   int _seed = 1;
   int _version = 0;
 
+  // نفس الخلطة الاخيرة لقراءة الريلز المحفوظة بدون نت
+  static const String _seedKey = 'last_reels_seed';
+  Box get _box => Hive.box('reels_box');
+
   // الدفعة الأولى، silent للتحديث بالسحب
   Future<void> getAllVideos({bool silent = false}) async {
     if (!silent || state is! VideoLoaded) emit(VideoLoading());
@@ -24,24 +30,55 @@ class VideoCubit extends Cubit<VideoState> {
 
     try {
       final page = await repo.getVideos(page: 1, seed: _seed);
-      _videos
-        ..clear()
-        ..addAll(page.videos);
-      _version++;
-
-      if (_videos.isEmpty) return emit(VideoEmpty());
-
-      emit(VideoLoaded(
-        videos: List.of(_videos),
-        hasMore: page.hasMore,
-        total: page.total,
-        totalViews: page.totalViews,
-        totalLikes: page.totalLikes,
-        version: _version,
-      ));
+      // حفظ الخلطة لاستخدامها بدون نت
+      _box.put(_seedKey, _seed);
+      _emitPage(page, offline: false);
+      // تنزيل اول الفيديوهات مسبقا ليشاهدها بدون نت
+      for (final v in _videos.take(4)) {
+        ReelsCacheHelper.preload(v.videoUrl);
+      }
     } catch (_) {
+      // بدون نت: نقرأ اخر ريلز محفوظة بنفس الخلطة السابقة
+      final int? lastSeed = _box.get(_seedKey);
+      if (lastSeed != null) {
+        try {
+          _seed = lastSeed;
+          final page = await repo.getVideos(page: 1, seed: lastSeed);
+          await _emitPage(page, offline: true);
+          return;
+        } catch (_) {}
+      }
       if (state is! VideoLoaded) emit(VideoError(tr('reels_load_error')));
     }
+  }
+
+  // عرض الدفعة وفي حالة عدم الاتصال نعرض فقط الفيديوهات المنزلة على الجهاز
+  Future<void> _emitPage(VideoPage page, {required bool offline}) async {
+    List<VideoModel> list = List<VideoModel>.of(page.videos);
+    if (offline) {
+      final available = <VideoModel>[];
+      for (final v in list) {
+        if (await ReelsCacheHelper.isCached(v.videoUrl)) available.add(v);
+      }
+      list = available;
+    }
+
+    _videos
+      ..clear()
+      ..addAll(list);
+    _version++;
+
+    if (_videos.isEmpty) return emit(VideoEmpty());
+
+    emit(VideoLoaded(
+      videos: List.of(_videos),
+      // بدون نت لا نطلب دفعات اضافية
+      hasMore: offline ? false : page.hasMore,
+      total: page.total,
+      totalViews: page.totalViews,
+      totalLikes: page.totalLikes,
+      version: _version,
+    ));
   }
 
   // الدفعة التالية
