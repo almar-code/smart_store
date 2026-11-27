@@ -69,7 +69,7 @@ class SliderEds extends StatelessWidget {
                 placeholder: (context, url) => FlashAds(
                 ),
                 errorWidget: (context, url, error) => Image.asset(
-                  'assets/images/image_placeholder.png',
+                  'assets/images/app icon/icon.png',
                   fit: BoxFit.fill,
                   width: double.infinity,
                 ),

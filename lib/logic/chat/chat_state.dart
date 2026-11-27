@@ -10,11 +10,13 @@ class ChatMessagesUpdated extends ChatState {
   final Uint8List? selectedImage;
   final bool isLoading;
   final bool isTyping;
+  final bool isVoiceReply; // الرد القادم صوتي
 
   ChatMessagesUpdated({
     required this.messages,
     this.selectedImage,
     this.isLoading = false,
     this.isTyping = false,
+    this.isVoiceReply = false,
   });
 }

@@ -1,13 +1,18 @@
 import 'dart:typed_data';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../data/models/chat_message.dart';
+import '../../data/models/voice_recording.dart';
 import '../../data/repos/chat_repo.dart';
+import '../../data/services/chat_voice_player.dart';
+import '../../data/services/chat_voice_service.dart';
 import 'chat_state.dart';
 
 class ChatCubit extends Cubit<ChatState> {
   final ChatRepository _repository = ChatRepository();
+  final ChatVoiceService _voiceService = ChatVoiceService();
 
   final List<ChatMessage> _messages = [
     ChatMessage(
@@ -22,6 +27,7 @@ class ChatCubit extends Cubit<ChatState> {
   Uint8List? _selectedImage;
   String? _selectedImageName;
   bool _isLoading = false;
+  bool _isVoiceReply = false; // انتظار رد صوتي
 
   // 1. إنشاء نسخة ثابتة (Static Instance)
   static final ChatCubit _instance = ChatCubit._internal();
@@ -53,6 +59,7 @@ class ChatCubit extends Cubit<ChatState> {
       selectedImage: _selectedImage,
       isLoading: _isLoading,
       isTyping: messageController.text.trim().isNotEmpty,
+      isVoiceReply: _isVoiceReply,
     ));
   }
 
@@ -123,6 +130,70 @@ class ChatCubit extends Cubit<ChatState> {
       _messages.add(ChatMessage(text: "عذراً، واجهت مشكلة في الاتصال بالخادم الرئيسي.", isMe: false));
     } finally {
       _isLoading = false;
+      _emitUpdatedState();
+      scrollToBottom();
+    }
+  }
+
+  /// ارسال رسالة صوتية وانتظار رد صوتي
+  Future<void> sendVoiceMessage(VoiceRecording rec) async {
+    final mine = ChatMessage(
+      isMe: true,
+      audioBytes: rec.bytes,
+      audioMime: rec.mimeType,
+      audioPath: rec.localPath,
+      audioDuration: rec.duration,
+      waveform: rec.samples,
+    );
+    _messages.add(mine);
+    _isLoading = true;
+    _isVoiceReply = true;
+    _emitUpdatedState();
+    scrollToBottom();
+
+    try {
+      final reply = await _voiceService.send(rec);
+
+      // اضافة نص ما قاله العميل لرسالته
+      if (reply.transcript.trim().isNotEmpty) {
+        final i = _messages.indexWhere((m) => m.id == mine.id);
+        if (i != -1) {
+          _messages[i] = ChatMessage(
+            id: mine.id,
+            text: reply.transcript.trim(),
+            isMe: true,
+            audioBytes: mine.audioBytes,
+            audioMime: mine.audioMime,
+            audioPath: mine.audioPath,
+            audioDuration: mine.audioDuration,
+            waveform: mine.waveform,
+          );
+        }
+      }
+
+      if (reply.ignored) {
+        _messages.add(ChatMessage(text: tr('voice_not_heard'), isMe: false));
+      } else if (reply.audio != null) {
+        final botVoice = ChatMessage(
+          text: reply.message,
+          isMe: false,
+          similarProducts: reply.products,
+          audioBytes: reply.audio,
+          audioMime: reply.audioMime,
+        );
+        _messages.add(botVoice);
+        // تشغيل الرد تلقائيا
+        ChatVoicePlayer.instance.toggle(botVoice);
+      } else {
+        // لو فشل الصوت نعرض الرد نصا
+        _messages.add(ChatMessage(text: reply.message, isMe: false, similarProducts: reply.products));
+      }
+    } catch (e) {
+      debugPrint('voice send error: $e');
+      _messages.add(ChatMessage(text: tr('voice_error_network'), isMe: false));
+    } finally {
+      _isLoading = false;
+      _isVoiceReply = false;
       _emitUpdatedState();
       scrollToBottom();
     }

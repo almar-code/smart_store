@@ -27,6 +27,7 @@ class CartFloatingButton extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.all(9.0),
               child: Icon(
+                fontWeight: FontWeight.w400,
                 CupertinoIcons.cart,
                 color:AppColors.iconColor,
                 size: 20,
