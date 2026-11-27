@@ -2,10 +2,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../core/constants/app_endpoints.dart';
+import '../../core/network/app_cache.dart';
 
 class SubcategoryService {
-  final Dio dio = Dio();
-
+  // حفظ الردود للعرض بدون انترنت
+  final Dio dio = Dio()..interceptors.add(AppCache.interceptor);
   Future<List<dynamic>> getSubcategories({int? categoryId}) async {
     // تجهيز الـ query parameters إذا تم تمرير الـ id
     Map<String, dynamic> queryParams = {};

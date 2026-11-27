@@ -94,7 +94,7 @@ class SubcategoryBar extends StatelessWidget {
                             fit:BoxFit.fill,
                           placeholder: (context, url) => ImageSubcategory(),
                           errorWidget: (context, url, error) => Image.asset(
-                            'assets/images/image_placeholder.png',
+                            'assets/images/app icon/icon.png',
                             fit: BoxFit.fill,
                             width: isDesktop ? 55 : 45,
                             height: isDesktop ? 55 : 45,
