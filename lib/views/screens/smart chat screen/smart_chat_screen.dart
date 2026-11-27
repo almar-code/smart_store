@@ -1,8 +1,11 @@
+import 'dart:async';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 
 import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_chat_bubble/chat_bubble.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
@@ -18,9 +21,18 @@ import '../../../core/widgets/icons/arrow_back_icon.dart';
 import '../../../core/widgets/icons/smart_robot_icon.dart';
 import '../../../core/widgets/three_dots_loader.dart';
 import '../../../data/models/chat_message.dart';
+import '../../../data/services/chat_voice_player.dart';
+import '../../../logic/chat_recorder/chat_recorder_cubit.dart';
+import '../../../logic/chat_recorder/chat_recorder_state.dart';
+import '../../../logic/login/login_cubit.dart';
+import '../../../logic/navigation/navigation_cubit.dart';
+import '../../widgets/chat/chat_recording_bar.dart';
+import '../../widgets/chat/voice_message_bubble.dart';
 import '../../../logic/chat/chat_cubit.dart';
 import '../../../logic/chat/chat_state.dart';
+import '../../widgets/login/login.dart';
 import '../product/products_screen.dart';
+import '../profile/profile_screen.dart';
 
 class SmartChatScreen extends StatefulWidget {
   final bool screenOnly;
@@ -30,23 +42,39 @@ class SmartChatScreen extends StatefulWidget {
   State<SmartChatScreen> createState() => _SmartChatScreenState();
 }
 
-class _SmartChatScreenState extends State<SmartChatScreen> {
-  // متحكم خاص بكل شاشة
+class _SmartChatScreenState extends State<SmartChatScreen> with WidgetsBindingObserver {  // متحكم خاص بكل شاشة
   final ScrollController _scrollController = ScrollController();
+
+  // كيوبت الدردشة ومسجل الرسائل الصوتية
+  final ChatCubit _chat = ChatCubit();
+  final ChatRecorderCubit _recorder = ChatRecorderCubit();
+  StreamSubscription<RecorderEvent>? _recorderSub;
 
   @override
   void initState() {
     super.initState();
+    // متابعة فتح واغلاق الكيبورد
+    WidgetsBinding.instance.addObserver(this);
+    _recorderSub = _recorder.events.listen(_onRecorderEvent);
     // الذهاب لآخر رسالة عند الدخول
     _scrollToBottom(animate: false);
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _recorderSub?.cancel();
+    ChatVoicePlayer.instance.stop();
+    _recorder.close();
+    _chat.close();
     _scrollController.dispose();
     super.dispose();
   }
-
+  // عند تغير حجم الشاشة بسبب الكيبورد ننزل لاخر رسالة
+  @override
+  void didChangeMetrics() {
+    _scrollToBottom(animate: false);
+  }
   void _scrollToBottom({bool animate = true}) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!_scrollController.hasClients) return;
@@ -56,15 +84,44 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
           : _scrollController.jumpTo(max);
     });
   }
+  // اتجاه النص حسب لغته: عربي يمين وغيره يسار
+  ui.TextDirection _textDirectionOf(String text) {
+    final firstLetter = RegExp(r'[A-Za-z\u0600-\u06FF]').firstMatch(text)?.group(0) ?? '';
+    return RegExp(r'[\u0600-\u06FF]').hasMatch(firstLetter)
+        ? ui.TextDirection.rtl
+        : ui.TextDirection.ltr;
+  }
+  // فتح البروفايل او نافذة تسجيل الدخول للزائر
+  void _openProfile(BuildContext context) {
+    if (!context.read<LoginCubit>().state) {
+      Login().loginDialog(context);
+      return;
+    }
 
+    // داخل الواجهة الرئيسية ننتقل لتبويب البروفايل
+    if (!widget.screenOnly) {
+      try {
+        context.read<NavigationCubit>().updateIndex(4);
+        return;
+      } catch (_) {}
+    }
+
+    // الدردشة مفتوحة كصفحة مستقلة
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const ProfileScreen()),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     bool isDesktop = MediaQuery.of(context).size.width > 900;
     bool isIpad = MediaQuery.of(context).size.width < 900 && MediaQuery.of(context).size.width > 450;
     int itemCount = isDesktop ? 4 : isIpad ? 3 : 2;
 
-    return BlocProvider<ChatCubit>(
-      create: (_) => ChatCubit(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider<ChatCubit>.value(value: _chat),
+        BlocProvider<ChatRecorderCubit>.value(value: _recorder),
+      ],
       child: Scaffold(
         extendBody: true,
         backgroundColor: AppColors.background,
@@ -107,8 +164,10 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
             Uint8List? selectedImage;
             bool isLoading = false;
             bool isTyping = false;
+            bool isVoiceReply = false;
 
             if (state is ChatMessagesUpdated) {
+              isVoiceReply = state.isVoiceReply;
               messages = state.messages;
               selectedImage = state.selectedImage;
               isLoading = state.isLoading;
@@ -157,7 +216,7 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
                               mainAxisAlignment: message.isMe ? MainAxisAlignment.end : MainAxisAlignment.start,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                if (!message.isMe) ...[
+                                if (!message.isMe && !message.isVoice) ...[
                                   const AiRobotAvatar(padding: 4, iconSize: 14),
                                   const SizedBox(width: 8),
                                 ],
@@ -180,6 +239,13 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
                                           : CrossAxisAlignment.start,
                                       mainAxisSize: MainAxisSize.min,
                                       children: [
+                                        // رسالة صوتية
+                                        if (message.isVoice)
+                                          VoiceMessageBubble(
+                                            key: ValueKey('voice_${message.id}'),
+                                            message: message,
+                                          ),
+
                                         if (message.imagePath != null)
                                           ClipRRect(
                                             borderRadius: BorderRadius.circular(10),
@@ -190,27 +256,34 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
                                             ),
                                           ),
 
-                                        if (message.text != null && message.text!.trim().isNotEmpty)
+                                        if (message.text != null &&
+                                            message.text!.trim().isNotEmpty &&
+                                            (!message.isVoice || (message.similarProducts?.isNotEmpty ?? false)))
                                           Container(
                                             constraints: BoxConstraints(
                                               maxWidth: message.imagePath != null ? 220 : 904,
                                             ),
                                             child: Padding(
-                                              padding: const EdgeInsets.only(top: 10),
+                                              padding: EdgeInsets.only(top: message.imagePath != null ? 10 : 0),
                                               child: Column(
                                                 crossAxisAlignment: Directionality.of(context) == ui.TextDirection.rtl
                                                     ? CrossAxisAlignment.end
                                                     : CrossAxisAlignment.start,
                                                 children: [
+                                                  if (!message.isVoice)
                                                   Text(
                                                     message.text!,
-                                                    textDirection: Directionality.of(context),
+                                                    textDirection: _textDirectionOf(message.text!),
                                                     textAlign: TextAlign.start,
                                                     softWrap: true,
+                                                    textHeightBehavior: const TextHeightBehavior(
+                                                      applyHeightToFirstAscent: false,
+                                                      applyHeightToLastDescent: false,
+                                                    ),
                                                     style: TextStyle(
                                                       color: AppColors.textColor,
                                                       fontSize: 14,
-                                                      height: 2,
+                                                      height: 1.7,
                                                     ),
                                                   ),
 
@@ -316,8 +389,18 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
                                 ),
                                 if (message.isMe) ...[
                                   const SizedBox(width: 8),
-                                  // صورة العميل بجانب رسالته
-                                  const CustomerPhoto(radius: 11, iconSize: 13),
+                                  // صورة العميل تفتح البروفايل او تسجيل الدخول
+                                  MouseRegion(
+                                    cursor: SystemMouseCursors.click,
+                                    child: GestureDetector(
+                                      behavior: HitTestBehavior.opaque,
+                                      onTap: () => _openProfile(context),
+                                      child: const Padding(
+                                        padding: EdgeInsets.all(2),
+                                        child: CustomerPhoto(radius: 11, iconSize: 13),
+                                      ),
+                                    ),
+                                  ),
                                 ],
                               ],
                             ),
@@ -328,48 +411,64 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
                   },
                 ),
 
-                // مؤشر التحميل أثناء معالجة الطلب
-                if (isLoading)
-                  Positioned(
-                    bottom: 120,
-                    left: 20,
-                    child: Directionality(
-                      textDirection: ui.TextDirection.ltr,
-                      child: Row(
-                        spacing: 8,
-                        children: [
-                          AiRobotAvatar(padding: 4, iconSize: 14),
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                            decoration: BoxDecoration(
-                              color: AppColors.backgroundSecondary,
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: ThreeDotsLoader(isSmall: true),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                // الحقل العائم
+                // الحقل مع المؤشر والزر العائم فوقه مباشرة
                 Align(
                   alignment: Alignment.bottomCenter,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 14, right: 14, bottom: 14),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withOpacity(0.08),
-                            blurRadius: 20,
-                            offset: const Offset(0, 5),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Directionality(
+                          textDirection: ui.TextDirection.ltr,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              // مؤشر الكتابة او التسجيل
+                              if (isLoading)
+                                Row(
+                                  spacing: 8,
+                                  children: [
+                                    const AiRobotAvatar(padding: 4, iconSize: 14),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                                      decoration: BoxDecoration(
+                                        color: AppColors.backgroundSecondary,
+                                        borderRadius: BorderRadius.circular(20),
+                                      ),
+                                      child: isVoiceReply
+                                          ? const _BotRecordingIndicator()
+                                          : ThreeDotsLoader(isSmall: true),
+                                    ),
+                                  ],
+                                ),
+                              const Spacer(),
+                              // زر المساعد الصوتي
+                              _buildRobotFab(context),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                      child: _buildMessageInput(context, cubit, selectedImage, isTyping),
-                    ),
+                      const SizedBox(height: 4),
+
+                      // الحقل العائم
+                      Padding(
+                        padding: const EdgeInsets.only(left: 14, right: 14, bottom: 14),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.08),
+                                blurRadius: 20,
+                                offset: const Offset(0, 5),
+                              ),
+                            ],
+                          ),
+                          child: _buildMessageInput(context, cubit, selectedImage, isTyping),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -379,6 +478,59 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
       ),
     );
   }
+
+  // نتيجة التسجيل او رسالة تنبيه
+  void _onRecorderEvent(RecorderEvent event) {
+    if (!mounted) return;
+    if (event.messageKey != null) {
+      _showSnack(tr(event.messageKey!));
+      return;
+    }
+    final rec = event.recording;
+    if (rec == null) return;
+    _chat.sendVoiceMessage(rec);
+  }
+
+  void _showSnack(String text) {
+    ScaffoldMessenger.of(context)
+      ..hideCurrentSnackBar()
+      ..showSnackBar(
+        SnackBar(
+          content: Text(text),
+          behavior: SnackBarBehavior.floating,
+          duration: const Duration(seconds: 2),
+          margin: const EdgeInsets.only(left: 20, right: 20, bottom: 110),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        ),
+      );
+  }
+
+  // زر الروبوت العائم يفتح المساعد الصوتي
+  Widget _buildRobotFab(BuildContext context) {
+    return Tooltip(
+      message: tr("voice_open_assistant"),
+      child: Container(
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          boxShadow: [
+            BoxShadow(
+              color: AppColors.primary.withOpacity(0.35),
+              blurRadius: 14,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: AiRobotAvatar(
+          padding: 12,
+          iconSize: 24,
+          onTap: () => AiRippleManager.toggleRipple(context),
+        ),
+      ),
+    );
+  }
+
+  // تلميح عند الضغط العادي على الميكروفون
+  void _showHoldToRecordHint(BuildContext context) => _showSnack(tr("voice_hold_to_record"));
 
   Widget _buildMessageInput(BuildContext context, ChatCubit cubit, Uint8List? selectedImage, bool isTyping) {
     return Container(
@@ -428,98 +580,80 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
                   ],
                 ),
               ),
-            Row(
-              children: [
-                Expanded(
-                  child: Stack(
+            // الحقل او شريط التسجيل مع زر الارسال
+            BlocBuilder<ChatRecorderCubit, ChatRecorderState>(
+              builder: (context, rec) => _buildInputRow(context, cubit, selectedImage, isTyping, rec),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInputRow(
+    BuildContext context,
+    ChatCubit cubit,
+    Uint8List? selectedImage,
+    bool isTyping,
+    ChatRecorderState rec,
+  ) {
+    final locked = rec.phase == RecorderPhase.locked;
+    final showSend = isTyping || selectedImage != null || locked;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        // الحقل العادي او شريط التسجيل
+        AnimatedSwitcher(
+          duration: const Duration(milliseconds: 200),
+          child: rec.isActive
+              ? ChatRecordingBar(
+                  key: const ValueKey('recording_bar'),
+                  state: rec,
+                  onCancel: _recorder.cancel,
+                )
+              : Container(
+                  key: const ValueKey('text_field'),
+                  decoration: BoxDecoration(
+                    color: AppColors.background,
+                    borderRadius: BorderRadius.circular(24),
+                    border: Border.all(
+                      color: AppColors.textColor.withOpacity(0.05),
+                      width: 1,
+                    ),
+                  ),
+                  child: Row(
                     children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: AppColors.background,
-                          borderRadius: BorderRadius.circular(24),
-                          border: Border.all(
-                            color: AppColors.textColor.withOpacity(0.05),
-                            width: 1,
-                          ),
+                      IconButton(
+                        icon: Icon(
+                          Icons.photo_library,
+                          color: AppColors.textColor.withOpacity(0.5),
+                          size: 20,
                         ),
-                        child: Row(
-                          children: [
-                            IconButton(
-                              icon: Icon(
-                                Icons.photo_library,
-                                color: AppColors.textColor.withOpacity(0.5),
-                                size: 20,
-                              ),
-                              onPressed: cubit.pickAttachmentImage,
-                            ),
-                            Expanded(
-                              child: TextField(
-                                controller: cubit.messageController,
-                                maxLines: null,
-                                style: TextStyle(color: AppColors.textColor, fontSize: 14),
-                                decoration: InputDecoration(
-                                  hintText: "اسال Almar...",
-                                  hintStyle: TextStyle(
-                                    color: AppColors.textColor.withOpacity(0.35),
-                                    fontSize: 13,
-                                  ),
-                                  border: InputBorder.none,
-                                  contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 4),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
+                        onPressed: cubit.pickAttachmentImage,
                       ),
-                      PositionedDirectional(
-                        top: 7,
-                        end: 10,
-                        child: GestureDetector(
-                          onTap: isTyping || selectedImage != null
-                              ? cubit.sendMessage
-                              : () => AiRippleManager.toggleRipple(context),
-                          child: AnimatedContainer(
-                            duration: const Duration(milliseconds: 300),
-                            curve: Curves.easeIn,
-                            padding: const EdgeInsets.all(10),
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: const LinearGradient(
-                                colors: [Color(0xD703C383), Color(0xE025F5FC)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              boxShadow: isTyping || selectedImage != null
-                                  ? [
-                                BoxShadow(
-                                  color: AppColors.primary.withOpacity(0.3),
-                                  blurRadius: 8,
-                                  offset: const Offset(0, 3),
-                                ),
-                              ]
-                                  : null,
+                      Expanded(
+                        child: TextField(
+                          controller: cubit.messageController,
+                          maxLines: null,
+                          // لون المؤشر بلون الهوية
+                          cursorColor: AppColors.primary,
+                          cursorWidth: 2,
+                          cursorRadius: const Radius.circular(2),
+                          style: TextStyle(color: AppColors.textColor, fontSize: 14),
+                          decoration: InputDecoration(
+                            hintText: tr("chat_input_hint"),
+                            hintStyle: TextStyle(
+                              color: AppColors.textColor.withOpacity(0.35),
+                              fontSize: 13,
                             ),
-                            child: AnimatedSwitcher(
-                              duration: const Duration(milliseconds: 250),
-                              transitionBuilder: (Widget child, Animation<double> animation) {
-                                return ScaleTransition(
-                                  scale: animation,
-                                  child: RotationTransition(turns: animation, child: child),
-                                );
-                              },
-                              child: isTyping || selectedImage != null
-                                  ? SvgPicture.asset(
-                                "assets/images/paper-plane-tilt.svg",
-                                width: 17,
-                                key: const ValueKey('send_active'),
-                                colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
-                              )
-                                  : Icon(
-                                Icons.smart_toy_outlined,
-                                key: const ValueKey('mic_inactive'),
-                                color: Colors.white.withOpacity(0.9),
-                                size: 17,
-                              ),
+                            border: InputBorder.none,
+                            // الفراغ جهة الزر فقط ويتبع اتجاه اللغة
+                            contentPadding: const EdgeInsetsDirectional.only(
+                              start: 2,
+                              end: 52,
+                              top: 10,
+                              bottom: 10,
                             ),
                           ),
                         ),
@@ -527,11 +661,140 @@ class _SmartChatScreenState extends State<SmartChatScreen> {
                     ],
                   ),
                 ),
-              ],
+        ),
+
+        // مؤشر القفل فوق الزر
+        PositionedDirectional(
+          end: 9,
+          bottom: 56,
+          child: RecordingLockHint(
+            progress: rec.lift,
+            visible: rec.phase == RecorderPhase.recording,
+          ),
+        ),
+
+        // زر الارسال او الميكروفون
+        PositionedDirectional(
+          top: 4,
+          end: 6,
+          child: _buildActionButton(context, cubit, showSend, locked, rec),
+        ),
+      ],
+    );
+  }
+
+  // زر واحد: ارسال او تسجيل بالضغط المطول
+  Widget _buildActionButton(
+    BuildContext context,
+    ChatCubit cubit,
+    bool showSend,
+    bool locked,
+    ChatRecorderState rec,
+  ) {
+    final rtl = Directionality.of(context) == ui.TextDirection.rtl;
+    final recordingNow = rec.phase == RecorderPhase.recording;
+
+    void onTap() {
+      if (locked) {
+        _recorder.finish();
+      } else if (showSend) {
+        cubit.sendMessage();
+      } else {
+        _showHoldToRecordHint(context);
+      }
+    }
+
+    return RawGestureDetector(
+      gestures: {
+        TapGestureRecognizer: GestureRecognizerFactoryWithHandlers<TapGestureRecognizer>(
+          () => TapGestureRecognizer(),
+          (r) => r.onTap = onTap,
+        ),
+        if (!showSend)
+          LongPressGestureRecognizer: GestureRecognizerFactoryWithHandlers<LongPressGestureRecognizer>(
+            () => LongPressGestureRecognizer(duration: const Duration(milliseconds: 250)),
+            (r) {
+              // اقواس تمنع تداخل السلسلة مع الدوال
+              r.onLongPressStart = (_) {
+                ChatVoicePlayer.instance.stop();
+                _recorder.start();
+              };
+              r.onLongPressMoveUpdate = (d) {
+                _recorder.drag(d.offsetFromOrigin, rtl: rtl);
+              };
+              r.onLongPressEnd = (_) {
+                _recorder.release();
+              };
+            },
+          ),
+      },
+      child: AnimatedScale(
+        scale: recordingNow ? 1.3 : 1,
+        duration: const Duration(milliseconds: 180),
+        child: AnimatedContainer(
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: const LinearGradient(
+              colors: [Color(0xD703C383), Color(0xE025F5FC)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
             ),
-          ],
+            boxShadow: showSend || recordingNow
+                ? [
+                    BoxShadow(
+                      color: AppColors.primary.withOpacity(0.3),
+                      blurRadius: 8,
+                      offset: const Offset(0, 3),
+                    ),
+                  ]
+                : null,
+          ),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 250),
+            transitionBuilder: (Widget child, Animation<double> animation) {
+              return ScaleTransition(scale: animation, child: child);
+            },
+            child: showSend
+                ? SvgPicture.asset(
+                    "assets/images/paper-plane-tilt.svg",
+                    width: 17,
+                    key: const ValueKey('send_active'),
+                    colorFilter: const ColorFilter.mode(Colors.white, BlendMode.srcIn),
+                  )
+                : Icon(
+                    Icons.mic_rounded,
+                    key: const ValueKey('mic_idle'),
+                    color: Colors.white.withOpacity(0.95),
+                    size: 17,
+                  ),
+          ),
         ),
       ),
+    );
+  }
+}
+
+// مؤشر Almar يسجل رسالة صوتية
+class _BotRecordingIndicator extends StatelessWidget {
+  const _BotRecordingIndicator();
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Icon(Icons.mic_rounded, size: 15, color: AppColors.primary)
+            .animate(onPlay: (c) => c.repeat(reverse: true))
+            .fade(begin: 1, end: 0.3, duration: const Duration(milliseconds: 600)),
+        const SizedBox(width: 6),
+        Text(
+          tr('voice_bot_recording'),
+          style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+        ),
+      ],
     );
   }
 }
