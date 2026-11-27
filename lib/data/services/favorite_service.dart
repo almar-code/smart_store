@@ -3,10 +3,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import '../../core/constants/app_endpoints.dart';
+import '../../core/network/app_cache.dart';
 
 class FavoriteService {
-  final Dio dio = Dio();
-
+  // حفظ الردود للعرض بدون انترنت
+  final Dio dio = Dio()..interceptors.add(AppCache.interceptor);
   Future<Response> getFavoriteCountRaw({required int? customerId}) async {
     try {
       final response = await dio.get(

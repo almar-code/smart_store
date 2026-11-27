@@ -11,6 +11,7 @@ import '../../core/theme/bloc/theme_state.dart';
 import '../../core/widgets/app_messages.dart';
 import '../../core/widgets/buttons/smart_floating_button.dart';
 import '../../core/widgets/internet_check.dart';
+import '../../core/widgets/lazy_indexed_stack.dart';
 import '../../core/widgets/network_service.dart';
 import '../../core/widgets/no_internet_overlay.dart';
 import '../../logic/login/login_cubit.dart';
@@ -114,8 +115,9 @@ class MainWrapperScreen extends StatelessWidget {
 
                                 // 5. محتوى الصفحات (Home, Reels, etc.)
                                 Expanded(
-                                  child: IndexedStack(
+                                  child: LazyIndexedStack(
                                     index: currentIndex,
+                                    preload: const {0, 1, 2, 3},
                                     children: screens,
                                   ),
                                 ),

@@ -1,10 +1,12 @@
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import '../../core/constants/app_endpoints.dart';
+import '../../core/network/app_cache.dart';
 import '../local/user_local.dart';
 
 class UserAddressService {
-  final Dio dio = Dio();
+  // حفظ الردود للعرض بدون انترنت
+  final Dio dio = Dio()..interceptors.add(AppCache.interceptor);
   Future<int?> _customerId() => UserLocal().getCustomerId();
   Future<List<dynamic>> getAddresses() async {
     final customerId = await _customerId();

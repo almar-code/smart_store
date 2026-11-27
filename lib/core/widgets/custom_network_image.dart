@@ -18,7 +18,7 @@ class CustomNetworkImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const String placeholderPath = 'assets/images/image_placeholder.png';
+    const String placeholderPath = 'assets/images/app icon/icon.png';
 
     // 1. التأكد أولاً ما إذا كان الرابط موجود نهائياً أم لا
     if (imageUrl == null || imageUrl!.trim().isEmpty) {

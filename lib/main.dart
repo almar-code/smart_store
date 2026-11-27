@@ -4,9 +4,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
-import 'package:smart_store/logic/countries_cubit/countries_cubit.dart';
-import 'package:smart_store/views/screens/sign/sign_up_screen.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'core/network/app_cache.dart';
+import 'core/utils/app_auto_refresh.dart';
 import 'core/utils/local_notification_helper.dart';
 import 'data/repos/product_comment_repository.dart';
 import 'logic/ads/ads_cubit.dart';
@@ -29,6 +29,7 @@ import 'logic/subcategories/subcategory_cubit.dart';
 import 'logic/user_address/UserAddressCubit.dart';
 import 'logic/videos/comments_cubit.dart';
 import 'logic/videos/video_cubit.dart';
+import 'logic/voice/voice_assistant_cubit.dart';
 import 'my_app.dart';
 import 'core/theme/bloc/theme_bloc.dart';
 import 'logic/categories/category_cubit.dart';
@@ -37,12 +38,13 @@ import 'data/repos/category_repo.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'logic/products/product_cubit.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
   await EasyLocalization.ensureInitialized();
   await Hive.initFlutter();
+  // تجهيز حفظ ردود السيرفر للعرض بدون انترنت
+  await AppCache.init();
   await Hive.openBox('search_history_box');
   await Hive.openBox('user_info_box');
   await Hive.openBox('reels_box');
@@ -119,15 +121,16 @@ void main() async {
           BlocProvider(lazy: false, create: (_) => di.sl<NotificationCubit>()..fetch()..startAutoRefresh()),
           // فحص الإنترنت عند فتح التطبيق
           BlocProvider(lazy: false, create: (_) => ConnectionCubit()..check()),
+          BlocProvider(create: (_) => VoiceAssistantCubit()), // المساعد الصوتي
         ],
 
 
-          child: (kIsWeb)? BlocBuilder<LoginCubitWeb, bool>(
-              builder: (context, state) {
-              return MyApp();
-            }
-          ): MyApp(),
+        child: AppAutoRefresh(
+          child: (kIsWeb)
+              ? BlocBuilder<LoginCubitWeb, bool>(builder: (context, state) => MyApp())
+              : MyApp(),
         ),
+      ),
       ),
   );
 }

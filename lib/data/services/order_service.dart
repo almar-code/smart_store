@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
 import '../../core/constants/app_endpoints.dart';
+import '../../core/network/app_cache.dart';
 import '../models/order_model.dart';
 
 class OrderService {
-  final Dio dio = Dio();
-
+  // حفظ الردود للعرض بدون انترنت
+  final Dio dio = Dio()..interceptors.add(AppCache.interceptor);
 
   Future<List<OrderModel>> getOrders(int? customerId) async {
     final response = await dio.get(ApiEndpoints.getOrders(customerId));

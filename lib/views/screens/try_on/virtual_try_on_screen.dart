@@ -136,7 +136,7 @@ class VirtualTryOnScreen extends StatelessWidget {
                     loadingBuilder: (context, child, progress) =>
                     progress == null ? child : const Center(child: ThreeDotsLoader()),
                     errorBuilder: (context, error, stackTrace) =>
-                        Image.asset('assets/images/image_placeholder.png', fit: BoxFit.contain),
+                        Image.asset('assets/images/app icon/icon.png', fit: BoxFit.contain),
                   ),
                 ),
               ),

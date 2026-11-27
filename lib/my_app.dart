@@ -1,5 +1,6 @@
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/gestures.dart';
@@ -65,7 +66,21 @@ class MyApp extends StatelessWidget {
               type: BottomNavigationBarType.fixed,
             ),
           ),
-              builder: (context, child) => LiveTryOnOverlay(child: child!),
+              builder: (context, child) => AnnotatedRegion<SystemUiOverlayStyle>(
+                // شريط الحالة شفاف وايقوناته حسب الوضع الليلي او النهاري
+                value: SystemUiOverlayStyle(
+                  statusBarColor: Colors.transparent,
+                  statusBarIconBrightness: state.isDark ? Brightness.light : Brightness.dark,
+                  statusBarBrightness: state.isDark ? Brightness.dark : Brightness.light,
+                  systemNavigationBarColor: AppColors.background,
+                  systemNavigationBarIconBrightness: state.isDark ? Brightness.light : Brightness.dark,
+                ),
+                // خلفية خلف شريط الحالة بلون التطبيق بدل الاسود
+                child: ColoredBox(
+                  color: AppColors.background,
+                  child: LiveTryOnOverlay(child: child!),
+                ),
+              ),
               home: MainWrapperScreen()
         );
       }

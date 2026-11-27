@@ -9,8 +9,11 @@ class ApiEndpoints {
   static String get userAddresses => '$_baseUrl/api/user-addresses';
   // روابط ثابتة للفيديوهات
   static String get getAllVideos => '$_baseUrl/api/get-all-videos';
+  // رابط المساعد الصوتي
+  static String get n8nVoiceAgent => 'https://smartstroe.app.n8n.cloud/webhook/abaya-voice';
 // أضف هذا السطر داخل كلاس ApiEndpoints الموجود لديك
-  static String get n8nChatAgent => 'https://smartstroe.app.n8n.cloud/webhook/abaya-customer-service';
+//   static String get n8nChatAgent => 'https://smartstroe.app.n8n.cloud/webhook/abaya-customer-service';
+  static String get n8nChatAgent => 'https://smartstroe.app.n8n.cloud/webhook/abaya-chat';
   // ==================== روابط ملفات الصور (عبر /api/media لدعم CORS على الويب) ====================
   static String _media(String folder, String? image) =>
       '$_baseUrl/api/media/uploads/$folder/$image';
@@ -21,8 +24,8 @@ class ApiEndpoints {
   static String videoUrl(String file) => _media('videos', file);
 //   static String get n8nChatAgent => 'https://n8n-production-7bdd.up.railway.app/webhook/abaya-customer-service';
   // ====================  رابط التنبؤ بمقاس العباية (n8n) ====================
-  static String get n8nSizePredictor => 'https://almar33.app.n8n.cloud/webhook/abaya-size';
-  static const String classifyProductComment = 'https://almar33.app.n8n.cloud/webhook/comment';
+  static String get n8nSizePredictor => 'https://almar3.app.n8n.cloud/webhook/abaya-size';
+  static const String classifyProductComment = 'https://almar3.app.n8n.cloud/webhook/comment';
   // روابط ديناميكية (تعتمد على معرف الفيديو videoId)
   static String toggleLike(int videoId) => '$_baseUrl/api/videos/$videoId/like';
   static String incrementShare(int videoId) => '$_baseUrl/api/videos/$videoId/share';
@@ -53,7 +56,8 @@ class ApiEndpoints {
   static String updateCartItem(int id) => '$_baseUrl/api/cart/update/$id';
   // لحذف صنف من السلة (DELETE) -> تعتمد على معرف السجل في السلة id
   static String deleteCartItem(int id) => '$_baseUrl/api/cart/delete/$id';
-
+  // لحذف كل اصناف السلة (DELETE)
+  static String get clearCart => '$_baseUrl/api/cart/clear';
   // روابط الإعلانات
   static String get getAllAds => '$_baseUrl/api/get-ads';
   static String generalAdProducts(int adsId) => '$_baseUrl/api/ads/$adsId/products';

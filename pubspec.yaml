@@ -113,9 +113,10 @@ dependencies:
   workmanager: ^0.9.3
   flutter_cache_manager: ^3.4.1 # كاش الفيديوهات
   phone_numbers_parser: ^9.0.19 # التحقق من الأرقام حسب الدولة
-
-
-# تثبيت نسخة متوافقة مع Kotlin 2.1 في المشروع
+  record: 6.0.0
+  path_provider: ^2.1.6
+  dio_cache_interceptor: ^4.0.7
+  http_cache_hive_store: ^5.1.1
 dependency_overrides:
   google_maps_flutter_android: 2.18.3
 
@@ -149,6 +150,7 @@ flutter:
      - assets/videos/
      - assets/fonts/Parastoo-Regular.ttf
      - assets/fonts/Parastoo-Bold.ttf
+     - assets/audio/
      - .env
   #   - images/a_dot_ham.jpeg
 

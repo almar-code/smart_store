@@ -249,7 +249,7 @@ class SearchImage extends StatelessWidget {
     return Image.file(File(p), fit: BoxFit.cover, errorBuilder: (_, __, ___) => _fakeImage());
   }
 
-  Widget _fakeImage() => Image.asset('assets/images/image_placeholder.png', fit: BoxFit.cover);
+  Widget _fakeImage() => Image.asset('assets/images/app icon/icon.png', fit: BoxFit.cover);
 }
 
 // ===================== طبقة التحليل =====================
