@@ -1,7 +1,10 @@
+import 'dart:async';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_store/core/widgets/app_messages.dart';
 import 'package:smart_store/data/models/cart_model.dart';
+import '../../data/models/product_model.dart';
 import '../../data/repos/cart_repo.dart';
 import 'cart_state.dart';
 
@@ -12,30 +15,41 @@ class CartCubit extends Cubit<CartState> {
   List<CartModel> allProducts = [];
   double totalPrice = 0;
   double totalDiscount = 0;
-  int itemCount = 0 ;
+  int itemCount = 0;
 
-  // 📥 1. جلب محتويات السلة
-  Future<void> fetchCart() async {
-    emit(CartLoading());
-    try {
-      allProducts.clear();
-      final List<CartModel> items = await _cartRepository.getCartItems();
-      if (items.isEmpty) {
-        emit(CartEmpty());
-        return;
-      }
-      allProducts.addAll(items);
+  // مؤقتات تأخير ارسال الكمية لكل صنف
+  final Map<int, Timer> _quantityTimers = {};
+  // اخر كمية مؤكدة من السيرفر لكل صنف
+  final Map<int, int> _confirmedQuantities = {};
 
-      // حساب الإجمالي أولاً قبل عمل emit للحالة Loaded
-      totalAccount();
-
+  // اصدار الحالة بعد اعادة الحساب
+  void _emitCart() {
+    totalAccount();
+    if (allProducts.isEmpty) {
+      emit(CartEmpty());
+    } else {
       emit(CartLoaded(List.from(allProducts), totalDiscount: totalDiscount, totalPrice: totalPrice));
+    }
+  }
+
+  // 1. جلب محتويات السلة (silent بدون حالة تحميل للسحب للتحديث)
+  Future<void> fetchCart({bool silent = false}) async {
+    if (!silent || state is! CartLoaded) emit(CartLoading());
+    try {
+      final List<CartModel> items = await _cartRepository.getCartItems();
+      allProducts
+        ..clear()
+        ..addAll(items);
+      _confirmedQuantities
+        ..clear()
+        ..addEntries(items.map((e) => MapEntry(e.cartItemId, e.quantity)));
+      _emitCart();
     } catch (e) {
       emit(CartError(e.toString()));
     }
   }
 
-  // ➕ 2. إضافة صنف جديد للسلة
+  // 2. إضافة صنف جديد للسلة
   Future<void> addToCart({
     required int productId,
     int? colorId,
@@ -58,105 +72,161 @@ class CartCubit extends Cubit<CartState> {
     }
   }
 
-  // 🔄 3. تحديث كمية المنتج (زيادة أو نقصان)
-  Future<void> updateItemQuantity({
+  // 3. تحديث الكمية فورا بالواجهة وارسالها للسيرفر بعد توقف الضغط
+  void updateItemQuantity({
     required CartModel product,
     required int newQuantity,
-  }) async {
+  }) {
+    if (newQuantity < 1) return;
+    final index = allProducts.indexWhere((p) => p.cartItemId == product.cartItemId);
+    if (index == -1) return;
+
+    allProducts[index].quantity = newQuantity;
+    _emitCart();
+
+    _quantityTimers[product.cartItemId]?.cancel();
+    _quantityTimers[product.cartItemId] = Timer(const Duration(milliseconds: 450), () {
+      _sendQuantity(product.cartItemId, newQuantity);
+    });
+  }
+
+  Future<void> _sendQuantity(int cartItemId, int quantity) async {
+    _quantityTimers.remove(cartItemId);
+    bool success = false;
     try {
-      int oldQuantity = 0;
-      allProducts = allProducts.map((p) {
-        if (p.cartItemId == product.cartItemId) {
-          oldQuantity = p.quantity;
-          p.quantity = newQuantity;
-        }
-        return p;
-      }).toList();
+      success = await _cartRepository.updateQuantity(cartItemId: cartItemId, quantity: quantity);
+    } catch (_) {}
 
-      // إعادة الحساب فوراً لكي تظهر القيم الجديدة للعميل في الواجهة مباشرة
-      totalAccount();
-      emit(CartLoaded(List.from(allProducts), totalDiscount: totalDiscount, totalPrice: totalPrice));
-
-      final success = await _cartRepository.updateQuantity(cartItemId: product.cartItemId, quantity: newQuantity);
-
-      if (!success) {
-        allProducts = allProducts.map((p) {
-          if (p.cartItemId == product.cartItemId) {
-            p.quantity = oldQuantity;
-          }
-          return p;
-        }).toList();
-        totalAccount();
-        emit(CartLoaded(List.from(allProducts), totalDiscount: totalDiscount, totalPrice: totalPrice));
-      }
-    } catch (e) {
-      emit(CartError(e.toString()));
+    if (isClosed) return;
+    final index = allProducts.indexWhere((p) => p.cartItemId == cartItemId);
+    if (success) {
+      _confirmedQuantities[cartItemId] = quantity;
+    } else if (index != -1) {
+      // ارجاع اخر كمية مؤكدة عند الفشل
+      allProducts[index].quantity = _confirmedQuantities[cartItemId] ?? allProducts[index].quantity;
+      _emitCart();
     }
   }
 
-  // ❌ 4. حذف صنف من السلة
+  // 4. حذف صنف من السلة
   Future<void> deleteItemFromCart({
     required int cartItemId,
     required CartModel product,
-    required BuildContext context
+    required BuildContext context,
+    bool showToast = true,
   }) async {
+    _quantityTimers.remove(cartItemId)?.cancel();
     final int itemIndex = allProducts.indexWhere((p) => p.cartItemId == cartItemId);
+    if (itemIndex != -1) {
+      allProducts.removeAt(itemIndex);
+      _emitCart();
+    }
+
+    bool success = false;
     try {
-      if (itemIndex != -1) {
-        allProducts.removeAt(itemIndex);
-        if (allProducts.isEmpty) {
-          emit(CartEmpty());
-        } else {
-          totalAccount(); // إعادة الحساب فور الحذف المحامي بالواجهة
-          emit(CartLoaded(List.from(allProducts), totalDiscount: totalDiscount, totalPrice: totalPrice));
-        }
-      }
+      success = await _cartRepository.deleteItem(cartItemId: cartItemId);
+    } catch (_) {}
 
-      final success = await _cartRepository.deleteItem(cartItemId: cartItemId);
-
-      if (success) {
-        if (allProducts.isEmpty) {
-          emit(CartEmpty());
-        }else{
-          AppToasts.showSuccessToast(context, 'تم حذف المنتج بنجاح');
-        }
-      } else {
-        if (itemIndex != -1) {
-          allProducts.insert(itemIndex, product);
-          totalAccount();
-          emit(CartLoaded(List.from(allProducts), totalDiscount: totalDiscount, totalPrice: totalPrice));
-        }
-        AppToasts.showErrorToast(context, 'لم يتم حذف المنتج ');
-      }
-    } catch (e) {
+    if (isClosed) return;
+    if (success) {
+      _confirmedQuantities.remove(cartItemId);
+      if (showToast && context.mounted) AppToasts.showSuccessToast(context, tr('cart_item_deleted'));
+    } else {
+      // ارجاع الصنف عند الفشل
       if (itemIndex != -1) {
-        allProducts.insert(itemIndex, product);
-        totalAccount();
-        emit(CartLoaded(List.from(allProducts), totalDiscount: totalDiscount, totalPrice: totalPrice));
+        allProducts.insert(itemIndex.clamp(0, allProducts.length), product);
+        _emitCart();
       }
-      AppToasts.showErrorToast(context, 'لم يتم حذف المنتج ');
+      if (context.mounted) AppToasts.showErrorToast(context, tr('cart_item_delete_failed'));
     }
   }
 
-  // 🧮 دالة الحساب بعد التعديل الجذري
+  // 5. تعديل لون او مقاس الصنف
+  Future<bool> updateItemOptions({
+    required CartModel product,
+    ColorModel? color,
+    SizeModel? size,
+    required BuildContext context,
+  }) async {
+    final index = allProducts.indexWhere((p) => p.cartItemId == product.cartItemId);
+    if (index == -1) return false;
+
+    final old = allProducts[index];
+    allProducts[index] = old.copyWith(selectedColor: color, selectedSize: size);
+    _emitCart();
+
+    try {
+      final merged = await _cartRepository.updateOptions(
+        cartItemId: product.cartItemId,
+        colorId: color?.colorId,
+        sizeId: size?.sizeId,
+      );
+      if (merged) {
+        // اعادة الجلب بعد دمج الصنف مع صنف مطابق
+        await fetchCart(silent: true);
+        if (context.mounted) AppToasts.showSuccessToast(context, tr('cart_item_merged'));
+      } else if (context.mounted) {
+        AppToasts.showSuccessToast(context, tr('cart_item_updated'));
+      }
+      return true;
+    } catch (e) {
+      final i = allProducts.indexWhere((p) => p.cartItemId == product.cartItemId);
+      if (i != -1) allProducts[i] = old;
+      _emitCart();
+      if (context.mounted) {
+        AppToasts.showErrorToast(context, e.toString().replaceAll("Exception: ", ""));
+      }
+      return false;
+    }
+  }
+
+  // 6. حذف كل المنتجات من السلة
+  Future<void> clearCart({required BuildContext context}) async {
+    for (final t in _quantityTimers.values) {
+      t.cancel();
+    }
+    _quantityTimers.clear();
+
+    final backup = List<CartModel>.from(allProducts);
+    allProducts.clear();
+    _emitCart();
+
+    bool success = false;
+    try {
+      success = await _cartRepository.clearCart();
+    } catch (_) {}
+
+    if (isClosed) return;
+    if (success) {
+      _confirmedQuantities.clear();
+      if (context.mounted) AppToasts.showSuccessToast(context, tr('cart_cleared'));
+    } else {
+      allProducts.addAll(backup);
+      _emitCart();
+      if (context.mounted) AppToasts.showErrorToast(context, tr('cart_clear_failed'));
+    }
+  }
+
+  // دالة حساب الاجماليات
   void totalAccount() {
-    // 🌟 1. تصفير العدادات في بداية الدالة لمنع تراكم الأرقام وتضاعفها مع كل تحديث
     totalPrice = 0;
     totalDiscount = 0;
     itemCount = 0;
 
-    // 🌟 2. استخدام حلقة for...in صريحة ومباشرة لتجنب كسل دالة .map()
-    if(allProducts.isNotEmpty) {
-      for (var p in allProducts) {
-        // السعر الإجمالي = السعر الأصلي للمنتج × الكمية المطلوبة
-        itemCount += p.quantity;
-        totalPrice += (p.productPrice * p.quantity);
-        // إجمالي الخصم = قيمة الخصم للمنتج الواحد × الكمية المطلوبة
-        if (p.discount != null && p.discount!.discountPerce != null) {
-          totalDiscount += (p.discount!.discountPerce! * p.quantity);
-        }
+    for (var p in allProducts) {
+      itemCount += p.quantity;
+      totalPrice += (p.productPrice * p.quantity);
+      if (p.discount != null && p.discount!.discountPerce != null) {
+        totalDiscount += (p.discount!.discountPerce! * p.quantity);
       }
     }
+  }
 
+  @override
+  Future<void> close() {
+    for (final t in _quantityTimers.values) {
+      t.cancel();
+    }
+    return super.close();
   }
 }

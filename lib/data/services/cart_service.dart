@@ -1,17 +1,18 @@
 import 'package:dio/dio.dart';
 import 'package:hive/hive.dart';
 import '../../core/constants/app_endpoints.dart';
+import '../../core/network/app_cache.dart';
 import '../local/user_local.dart';
 
 class CartApiService {
-  final Dio _dio = Dio();
+  final Dio dio = Dio()..interceptors.add(AppCache.interceptor);
   Future<int?> _customerId() => UserLocal().getCustomerId();
 
   // 1. جلب محتويات السلة لعميل معين
   Future<Response> getCartRaw() async {
     try {
       final customerId =  await _customerId();
-      final response = await _dio.get(
+      final response = await dio.get(
         ApiEndpoints.getCart,
         queryParameters: {'customer_id': customerId},
         options: Options(headers: {'Accept': 'application/json'}),
@@ -30,7 +31,7 @@ class CartApiService {
   }) async {
     try {
       final customerId =  await _customerId();
-      final response = await _dio.post(
+      final response = await dio.post(
         ApiEndpoints.addToCart,
         data: {
           'customer_id': customerId,
@@ -50,7 +51,7 @@ class CartApiService {
   // 3. تحديث كمية المنتج في السلة (الزيادة والنقصان)
   Future<Response> updateCartQuantityRaw({required int cartItemId, required int quantity}) async {
     try {
-      final response = await _dio.put(
+      final response = await dio.put(
         ApiEndpoints.updateCartItem(cartItemId),
         data: {'quantity': quantity},
         options: Options(headers: {'Accept': 'application/json'}),
@@ -64,13 +65,46 @@ class CartApiService {
   // 4. حذف صنف تماماً من السلة
   Future<Response> deleteCartItemRaw({required int cartItemId}) async {
     try {
-      final response = await _dio.delete(
+      final response = await dio.delete(
         ApiEndpoints.deleteCartItem(cartItemId),
         options: Options(headers: {'Accept': 'application/json'}),
       );
       return response;
     } catch (e) {
       throw Exception("فشل في حذف الصنف من السلة: $e");
+    }
+  }
+  // 5. تعديل لون او مقاس صنف في السلة
+  Future<Response> updateCartOptionsRaw({required int cartItemId, int? colorId, int? sizeId}) async {
+    try {
+      final response = await dio.put(
+        ApiEndpoints.updateCartItem(cartItemId),
+        data: {
+          if (colorId != null) 'color_id': colorId,
+          if (sizeId != null) 'size_id': sizeId,
+        },
+        options: Options(headers: {'Accept': 'application/json'}),
+      );
+      return response;
+    } on DioException catch (e) {
+      // ارجاع رد السيرفر لعرض رسالته
+      if (e.response != null) return e.response!;
+      throw Exception("فشل في تعديل الصنف: $e");
+    }
+  }
+
+  // 6. حذف كل اصناف السلة
+  Future<Response> clearCartRaw() async {
+    try {
+      final customerId = await _customerId();
+      final response = await dio.delete(
+        ApiEndpoints.clearCart,
+        queryParameters: {'customer_id': customerId},
+        options: Options(headers: {'Accept': 'application/json'}),
+      );
+      return response;
+    } catch (e) {
+      throw Exception("فشل في حذف السلة: $e");
     }
   }
 }

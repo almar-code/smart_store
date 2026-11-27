@@ -55,4 +55,18 @@ class CartRepository {
     final response = await _cartApiService.deleteCartItemRaw(cartItemId: cartItemId);
     return response.statusCode == 200;
   }
+  // تعديل اللون او المقاس وارجاع هل تم الدمج مع صنف مطابق
+  Future<bool> updateOptions({required int cartItemId, int? colorId, int? sizeId}) async {
+    final response = await _cartApiService.updateCartOptionsRaw(cartItemId: cartItemId, colorId: colorId, sizeId: sizeId);
+    if (response.statusCode == 200 && response.data['status'] == true) {
+      return response.data['merged'] == true;
+    }
+    throw Exception(response.data['message'] ?? 'تعذر تعديل الصنف');
+  }
+
+  // حذف كل اصناف السلة
+  Future<bool> clearCart() async {
+    final response = await _cartApiService.clearCartRaw();
+    return response.statusCode == 200;
+  }
 }

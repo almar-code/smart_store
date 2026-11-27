@@ -1,526 +1,476 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:smart_store/core/widgets/scroll_wrapper.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:smart_store/logic/cart/cart_cubit.dart';
 import 'package:smart_store/logic/cart/cart_state.dart';
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_endpoints.dart';
-import '../../../core/constants/app_shadow.dart';
-import '../../../core/utils/badge_count.dart';
 import '../../../core/widgets/app_messages.dart';
-import '../../../core/widgets/buttons/app_button.dart';
 import '../../../core/widgets/app_title.dart';
 import '../../../core/widgets/buttons/refresh_button.dart';
-import '../../../core/widgets/colors/circleOfColor.dart';
 import '../../../core/widgets/guest_prompt.dart';
 import '../../../core/widgets/icons/arrow_back_icon.dart';
+import '../../../core/widgets/icons/share_icon.dart';
 import '../../../core/widgets/buttons/smart_floating_button.dart';
-import '../../../core/widgets/three_dots_loader.dart';
 import '../../../data/local/user_local.dart';
+import '../../../data/models/cart_model.dart';
 import '../../../logic/login/login_cubit.dart';
+import '../../widgets/cart/cart_edit_sheet.dart';
+import '../../widgets/cart/cart_item_card.dart';
+import '../../widgets/cart/cart_quick_menu.dart';
+import '../../widgets/cart/cart_summary.dart';
 import '../../widgets/cart/emptyCart.dart';
-import '../../widgets/flash/flash_screen.dart';
 import '../../widgets/login/phone_number.dart';
 import '../address/select_user_address_screen.dart';
+import '../product/product_details_screen.dart';
+import '../similar products/similar_products.dart';
+import '../try_on/virtual_try_on_screen.dart';
 
 class CartScreen extends StatelessWidget {
   final bool screenOnly;
-  const CartScreen({super.key,this.screenOnly =false});
+  const CartScreen({super.key, this.screenOnly = false});
+
   @override
-  Widget build(BuildContext context){
-    bool isDesktop = MediaQuery.of(context).size.width > 1000;
-    bool isIpad = MediaQuery.of(context).size.width < 1000 &&  MediaQuery.of(context).size.width > 450;
-    int itemCount = isDesktop ? 3 : isIpad ? 2 : 1;
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final isDesktop = width > 1000;
+
     return SafeArea(
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(
           backgroundColor: AppColors.background,
-            elevation: 0,
-            scrolledUnderElevation: 0,
-          leading:Icon(
-            CupertinoIcons.cart,
-            color:  AppColors.iconColor,
-            size: isDesktop ? 22 : 20,
-          ),
-          titleSpacing:isDesktop ? 0 : 0,
-          title: AppTitle(firstPart: tr('cartShopping'),secondPart: tr('shopping'),fontSize: isDesktop?18: 15,spacing: ' ',),
+          elevation: 0,
+          scrolledUnderElevation: 0,
+          leading: Icon(CupertinoIcons.cart, color: AppColors.iconColor, size: isDesktop ? 22 : 20),
+          titleSpacing: 0,
+          title: AppTitle(firstPart: tr('cartShopping'), secondPart: tr('shopping'), fontSize: isDesktop ? 18 : 15, spacing: ' '),
           actions: [
-          screenOnly ? ArrowBack() : SizedBox(),
+            // زر مشاركة السلة
+            BlocBuilder<CartCubit, CartState>(
+              buildWhen: (p, c) => c is CartLoaded || c is CartEmpty,
+              builder: (context, state) => state is CartLoaded && context.read<LoginCubit>().state
+                  ? IconButton(
+                tooltip: tr('share_cart'),
+                icon: Icon(CupertinoIcons.share, color: AppColors.iconColor, size: isDesktop ? 21 : 19),
+                onPressed: () => _CartActions.shareCart(context),
+              )
+                  : const SizedBox(),
+            ),
+            screenOnly ? ArrowBack() : const SizedBox(),
           ],
         ),
-        body:RefreshIndicator(
-          onRefresh: () async {
-            context.read<CartCubit>().fetchCart();
-          },
-          color: AppColors.primary, // لون مؤشر التحميل (يمكنك ربطه بهوية المشروع)
-          backgroundColor: AppColors.backgroundSecondary,
-          child: Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0,horizontal: 20),
-            child: BlocBuilder<LoginCubit,bool>(
-              builder: (context, loginState) {
-                if(!loginState) {
-                  return GuestPrompt(subtitle: tr('cart_guest_subtitle'),);
-                }
-              return BlocBuilder<CartCubit,CartState>(
-                builder: (context,state) {
-                if (state is CartLoading) {
-                  return MasonryGridShimmer();
-                }
-                if (state is CartEmpty) {
-                  return EmptyCartScreen();
-                }
-                if (state is CartError) {
-                  return Center(
-                    child:  SizedBox(
-                      height: 30,
-                      width: 120,
-                      child: RefreshButton(onPressed: () async {
-                        await context.read<CartCubit>().fetchCart();
-                      }),
-                    ),
-                  );
-                }
-                if (state is CartLoaded) {
-                  final products = state.cartItems;
-                  if (products.isEmpty) {
-                    return EmptyCartScreen();
-                  }
-                  return ScrollWrapper(
-                    bottom: 0,
-                    child: ConstrainedBox(
-                      constraints: const BoxConstraints(
-                        minHeight: 600, // 🌟 هذا هو الحد الأدنى للطول (أصغر حجم مسموح به)
-                      ),
-                      child: Column(
-                        children: [
-                          MasonryGridView.count(
-                              scrollDirection: Axis.vertical,
-                              crossAxisCount: itemCount,
-                              mainAxisSpacing: 15,
-                              //مسافة بين العنصر والذي تحتة
-                              crossAxisSpacing: 12,
-                              //مسافة بين العنصر والذي جنبة
-                              shrinkWrap: true,
-                              //حجم حسب الاب
-                              itemCount: products.length,
-                              physics: NeverScrollableScrollPhysics(),
-                              //توقيف الشريط
-                              itemBuilder: (context, index) {
-                                var item = products[index];
-                                int currentId = item.productId;
-                                // 🌟 منطق حساب الخصومات الديناميكية القادمة من لارافيل
-                                bool hasDiscount = item.discount != null;
-
-                                double discountAmount = hasDiscount ? (item.discount!.discountPerce ?? 0) : 0;
-
-                                double newPrice = hasDiscount ? (item.productPrice - discountAmount) : item.productPrice;
-
-                                double discountPercent = 0;
-                                if (hasDiscount && item.productPrice > 0) {
-                                  discountPercent = ((discountAmount / item.productPrice) * 100).round().toDouble();                                }
-                                return Container(
-                                  key: ValueKey(item.cartItemId),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.backgroundSecondary,
-                                    border: Border.all(color: AppColors.borderColor),
-                                    borderRadius: BorderRadius.circular(7),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.05),
-                                        blurRadius: 15,
-                                        offset: const Offset(0, 5),
-                                      ),
-                                      ...AppShadow.commonShadow, // دمج ظلالك الخاصة
-                                    ],
-                                  ),
-                                  child: Stack(
-                                    children: [
-                                      Row(
-                                        children: [
-
-                                          Padding(
-                                            padding: const EdgeInsets.symmetric(
-                                                horizontal: 2.0),
-                                            child: ClipRRect(
-                                              borderRadius: BorderRadius.circular(7),
-                                              child:  Image.network(
-                                                ApiEndpoints.productImageUrl(item.selectedColor?.images.first.imgUrl ),
-                                                width: 100,
-                                                height: 100,
-                                                fit: BoxFit.cover,
-                                                loadingBuilder: (context, child, loadingProgress) {
-                                                  if (loadingProgress == null) {
-                                                    return child;
-                                                  }
-                                                  return Container(
-                                                    color: AppColors.background,
-                                                    width:100,
-                                                    height: 100, // طول الصورة الأصلي الثابت في كودك
-                                                    child: Center(child: ThreeDotsLoader()),
-                                                  );
-                                                },
-                                                errorBuilder: (context, error, stackTrace) {
-                                                  return Image.asset(
-                                                    width:100,
-                                                    height: 100, // طول الصورة الأصلي الثابت في كودك
-                                                    'assets/images/image_placeholder.png',
-                                                    fit: BoxFit.cover,
-                                                  );
-                                                },
-                                              ),
-                                            ),
-                                          ),
-
-                                          Expanded(
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(10),
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment
-                                                    .start,
-                                                children: [
-                                                  Text(
-                                                    context.locale.languageCode =='ar' ? item.productName : item.productNameEn ?? "",
-                                                    maxLines: 1,
-                                                    overflow: TextOverflow.ellipsis,
-                                                    style: TextStyle(
-                                                      fontSize: 14,
-                                                      fontWeight: FontWeight.bold,
-                                                    ),
-                                                  ),
-
-                                                  const SizedBox(height: 6),
-
-                                                  /// المقاس
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        tr('size'),
-                                                        style: TextStyle(fontSize: 12,
-                                                            color: AppColors
-                                                                .textSecondary),
-                                                      ),
-                                                      const SizedBox(width: 4),
-                                                      Text(
-                                                        item.selectedSize?.sizeName ?? "",
-                                                        style: const TextStyle(
-                                                          fontSize: 12,
-                                                          fontWeight: FontWeight.bold,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-
-                                                  const SizedBox(height: 6),
-
-                                                  ///  اللون
-                                                  Row(
-                                                    children: [
-                                                      Text(
-                                                        tr('color'),
-                                                        style: TextStyle(fontSize: 12,
-                                                            color: AppColors
-                                                                .textSecondary),
-                                                      ),
-                                                      SizedBox(width: 6),
-                                                      CircleOfColor(width: 12,
-                                                          height: 12,
-                                                          code: item.selectedColor?.colorCode ?? "#000000")
-                                                    ],
-                                                  ),
-                                                  const SizedBox(height: 10),
-
-                                                  ///  السعر
-                                                  Row(
-                                                    spacing: 8,
-                                                    children: [
-                                                      Row(
-                                                        spacing: 1,
-                                                        children: [
-                                                          Text(
-                                                            newPrice.toStringAsFixed(2), // السعر الجديد بعد الحساب برمجياً
-                                                            style: TextStyle(
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 12,
-                                                              color: AppColors.primary,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            "\$",
-                                                            style: TextStyle(
-                                                              fontWeight: FontWeight.bold,
-                                                              fontSize: 11,
-                                                              color: AppColors.textSecondary,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      hasDiscount
-                                                          ? Text(
-                                                        "${item.productPrice} \$", // السعر الأصلي مشطوباً
-                                                        style: TextStyle(
-                                                          fontSize: 11,
-                                                          color: AppColors.textSecondary,
-                                                          decoration: TextDecoration.lineThrough,
-                                                        ),
-                                                      )
-                                                          : const SizedBox(),
-                                                    ],
-                                                  )
-
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                      PositionedDirectional(
-                                        bottom: 15,
-                                        end: 15,
-                                        child: Container(
-                                          height: 32,
-                                          decoration: BoxDecoration(
-                                            border: Border.all(
-                                                color: Colors.grey.shade300),
-                                            borderRadius: BorderRadius.circular(8),
-                                          ),
-                                          child: Row(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-
-                                              const SizedBox(width: 8),
-                                              InkWell(
-                                                  onTap: ()async{
-                                                    if(item.quantity > 1) {
-                                                      context.read<CartCubit>().updateItemQuantity(
-                                                        product: item,
-                                                        newQuantity: item.quantity - 1,
-                                                      );
-                                                    }else{
-                                                      final confirm = await AppToasts.showConfirmDialog(
-                                                        context: context,
-                                                        title: tr('confirm_delete_title'),
-                                                        message: tr('confirm_delete_cartItem_msg'),
-                                                      );
-
-                                                      if (confirm == true && context.mounted) {
-                                                        context.read<CartCubit>().deleteItemFromCart( cartItemId: item.cartItemId,product: item,context: context);
-                                                      }
-
-                                                    }
-                                                    },
-                                                  child: item.quantity == 1 ? Icon(Icons.delete_outline, size: 16) : Icon(Icons.remove, size: 16)),
-
-                                              const SizedBox(width: 10),
-                                               Text(
-                                                 badgeCount(item.quantity),
-                                                style: TextStyle(
-                                                    fontWeight: FontWeight.bold),
-                                              ),
-
-                                              const SizedBox(width: 10),
-                                              InkWell(
-                                                onTap: (){
-                                                  context.read<CartCubit>().updateItemQuantity(
-                                                    product: item,
-                                                    newQuantity: item.quantity + 1,
-                                                  );
-                                                },
-                                                  child: const Icon(Icons.add, size: 16)),
-
-                                              const SizedBox(width: 8),
-                                            ],
-                                          ),
-                                        ),)
-                                    ],
-                                  ),
-                                );
-                              }
-                          ),
-                          SizedBox(height: 60,),
-                        ],
-                      ),
-                    ),
-                  );
-                }
-                return Center(
-                  child:  SizedBox(
-                    height: 30,
-                    width: 120,
-                    child: RefreshButton(onPressed: () async {
-                      await context.read<CartCubit>().fetchCart();
-                    }),
-                  ),
-                );;
-              }
+        body: BlocBuilder<LoginCubit, bool>(
+          builder: (context, loggedIn) {
+            if (!loggedIn) {
+              return GuestPrompt(subtitle: tr('cart_guest_subtitle'));
+            }
+            return BlocBuilder<CartCubit, CartState>(
+              buildWhen: (p, c) => c is! CartAdding,
+              builder: (_, state) => _CartBody(state: state, screenContext: context),
             );
-  },
-),
-          ),
+          },
         ),
         floatingActionButton: SmartFloatingButton(),
-        bottomNavigationBar: BlocBuilder<CartCubit,CartState>(
-          builder: (context,state) {
-            if (state is CartLoaded) {
-              return Container(
-                height: isDesktop ? 55 : 90,
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 14, vertical: 3),
-                decoration: BoxDecoration(
-                  color: AppColors.background.withOpacity(0.1),
-                ),
-                child: Column(
-                  spacing: isDesktop ? 0 : 10,
-                  children: [
-                    !isDesktop ? Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      spacing: 10,
-                      children: [
-
-                        /// الإجمالي
-                        _priceItem("${state.totalPrice}", tr('total')),
-
-                        /// الخصم
-                        _priceItem("${state.totalDiscount}", tr('discount'), isDiscount: true),
-
-                        /// الصافي
-                        _priceItem("${state.totalPrice - state.totalDiscount}", tr('subtotal'), isTotal: true),
-                      ],
-                    ) : SizedBox(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
-                      children: [
-                        isDesktop ? Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          spacing: 10,
-                          children: [
-
-                            /// الإجمالي
-                            _priceItem("${state.totalPrice}", tr('total')),
-
-                            /// الخصم
-                            _priceItem("${state.totalDiscount}", tr('discount'), isDiscount: true),
-
-                            /// الصافي
-                            _priceItem("${state.totalPrice - state.totalDiscount}", tr('subtotal'), isTotal: true),
-                          ],
-                        ) : SizedBox(),
-                        SizedBox(width: isDesktop ? 30 : 0,),
-                        isDesktop ? SizedBox(
-                          width: 600,
-                          child: AppButton(label: tr('checkout'),
-                            icon: Icons.credit_card,
-                            onTap: () {
-                              context.read<CartCubit>().fetchCart();
-                              if(state is CartEmpty){
-                              AppToasts.showSuccessToast(context,   'عذرا لا يوجد منتجات في السلة');
-                            }
-                            Navigator.of(context,).push(MaterialPageRoute(
-                                builder: (context) =>
-                                    SelectUsrAddress(
-                                      displayTotal: state.totalPrice -
-                                          state.totalDiscount,)));}
-                          )
-                        ) : Expanded(
-                          child: SizedBox(
-                            height: 27,
-                            child: AppButton(label: tr('checkout'),
-                              icon: Icons.credit_card,
-                                onTap: () async {
-                                  bool hasPhone = UserLocal().hasPhone();
-                                  if(state is CartEmpty){
-                                    AppToasts.showWarningToast(context,   'عذرا لا يوجد منتجات في السلة');
-                                  }
-                                  if(!hasPhone) {
-                                    AppToasts.showWarningToast(context,   'عذرا الرجاء اضافة رقم هاتف');
-                                     PhoneNumber.show(context,(){
-                                       Navigator.of(context,).push(
-                                           MaterialPageRoute(
-                                               builder: (context) =>
-                                                   SelectUsrAddress(
-                                                     displayTotal: state
-                                                         .totalPrice -
-                                                         state.totalDiscount,)));                                    });
-                                  }else{
-                                    Navigator.of(context,).push(
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                SelectUsrAddress(
-                                                  displayTotal: state
-                                                      .totalPrice -
-                                                      state.totalDiscount,)));
-                                  }
-                                  }
-                            )
-                          ),
-                        ),
-                        SizedBox(width: 10,),
-                        Container(
-                          padding: const EdgeInsets.all(9),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [ Color(0xFF25F5FC), Color(0xFF03C383)],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            shape: BoxShape.circle,
-                          ),
-                          child:  Text(
-                            badgeCount(context.watch<CartCubit>().itemCount),
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-            }
-            return SizedBox();
-  },
-),
+        // شريط الملخص للجوال والايباد
+        bottomNavigationBar: isDesktop
+            ? null
+            : BlocBuilder<LoginCubit, bool>(
+          builder: (context, loggedIn) => BlocBuilder<CartCubit, CartState>(
+            buildWhen: (p, c) => c is! CartAdding,
+            builder: (context, state) {
+              if (!loggedIn || state is! CartLoaded || state.cartItems.isEmpty) return const SizedBox.shrink();
+              return CartSummaryBar(
+                totalPrice: state.totalPrice,
+                totalDiscount: state.totalDiscount,
+                itemCount: context.read<CartCubit>().itemCount,
+                onCheckout: () => _CartActions.checkout(context),
+              ).animate().slideY(begin: 1, end: 0, duration: const Duration(milliseconds: 350), curve: Curves.easeOutCubic);
+            },
+          ),
+        ),
       ),
     );
   }
-  Widget _priceItem(
-      String price,
-      String label, {
-        bool isDiscount = false,
-        bool isTotal = false,
-      }) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      mainAxisSize: MainAxisSize.min,
+}
+
+// محتوى السلة حسب الحالة وحجم الشاشة
+class _CartBody extends StatelessWidget {
+  final CartState state;
+  final BuildContext screenContext;
+
+  const _CartBody({required this.state, required this.screenContext});
+
+  @override
+  Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+    final isDesktop = width > 1000;
+    final isIpad = width > 450 && width <= 1000;
+    final hPadding = isDesktop ? 24.0 : isIpad ? 20.0 : 14.0;
+
+    final list = LayoutBuilder(
+      builder: (context, constraints) {
+        // عدد الاعمدة حسب المساحة المتاحة
+        final listWidth = constraints.maxWidth - hPadding * 2;
+        final columns = isDesktop ? (listWidth / 340).floor().clamp(1, 3) : (listWidth >= 640 ? 2 : 1);
+
+        return RefreshIndicator(
+          onRefresh: () => context.read<CartCubit>().fetchCart(silent: true),
+          color: AppColors.primary,
+          backgroundColor: AppColors.backgroundSecondary,
+          child: CustomScrollView(
+            physics: const AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+            slivers: _slivers(context, columns, hPadding),
+          ),
+        );
+      },
+    );
+
+    if (!isDesktop || state is! CartLoaded) return list;
+
+    final loaded = state as CartLoaded;
+    // الشاشات الكبيرة: القائمة مع لوحة ملخص جانبية
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 10,
-            color: Colors.grey[600],
+        Expanded(child: list),
+        SizedBox(
+          width: 360,
+          child: SingleChildScrollView(
+            padding: EdgeInsetsDirectional.only(end: hPadding, top: 8, bottom: 24),
+            child: CartSummaryPanel(
+              totalPrice: loaded.totalPrice,
+              totalDiscount: loaded.totalDiscount,
+              itemCount: context.read<CartCubit>().itemCount,
+              onCheckout: () => _CartActions.checkout(screenContext),
+            ).animate().fadeIn(duration: const Duration(milliseconds: 300)).slideX(begin: 0.05, end: 0),
           ),
         ),
-        Text(
-          "$price",
-          style: TextStyle(
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
-            color: isDiscount
-                ? Colors.red
-                : isTotal
-                ? AppColors.primary
-                : AppColors.textColor,
+      ],
+    );
+  }
+
+  List<Widget> _slivers(BuildContext context, int columns, double hPadding) {
+    final s = state;
+
+    if (s is CartLoading || s is CartInitial) {
+      return [
+        SliverPadding(
+          padding: EdgeInsets.fromLTRB(hPadding, 8, hPadding, 24),
+          sliver: SliverMasonryGrid.count(
+            crossAxisCount: columns,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childCount: 6,
+            itemBuilder: (_, __) => const _CartItemShimmer(),
           ),
+        ),
+      ];
+    }
+
+    if (s is CartError) {
+      return [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: Center(
+            child: SizedBox(
+              height: 30,
+              width: 120,
+              child: RefreshButton(onPressed: () async => context.read<CartCubit>().fetchCart()),
+            ),
+          ),
+        ),
+      ];
+    }
+
+    if (s is CartLoaded && s.cartItems.isNotEmpty) {
+      final products = s.cartItems;
+      return [
+        SliverPadding(
+          padding: EdgeInsets.fromLTRB(hPadding, 4, hPadding, 12),
+          sliver: SliverToBoxAdapter(child: _CartHeader(count: products.length, screenContext: screenContext)),
+        ),
+        SliverPadding(
+          padding: EdgeInsets.fromLTRB(hPadding, 0, hPadding, 90),
+          sliver: SliverMasonryGrid.count(
+            crossAxisCount: columns,
+            mainAxisSpacing: 12,
+            crossAxisSpacing: 12,
+            childCount: products.length,
+            itemBuilder: (_, index) => _CartItemTile(
+              key: ValueKey('cart_tile_${products[index].cartItemId}'),
+              item: products[index],
+              index: index,
+              screenContext: screenContext,
+            ),
+          ),
+        ),
+      ];
+    }
+
+    // السلة فارغة مع امكانية السحب للتحديث
+    return [
+      const SliverFillRemaining(hasScrollBody: false, child: EmptyCartScreen()),
+    ];
+  }
+}
+
+// راس القائمة: العدد وحذف الكل وتلميح الاستخدام
+class _CartHeader extends StatelessWidget {
+  final int count;
+  final BuildContext screenContext;
+
+  const _CartHeader({required this.count, required this.screenContext});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withOpacity(0.12),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                tr('cart_items_count', args: ['$count']),
+                style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold, color: AppColors.primary),
+              ),
+            ),
+            const Spacer(),
+            TextButton.icon(
+              onPressed: () => _CartActions.clearAll(screenContext),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.redColor,
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              ),
+              icon: const Icon(CupertinoIcons.trash, size: 16),
+              label: Text(tr('cart_clear_all'), style: const TextStyle(fontSize: 12.5, fontWeight: FontWeight.w600)),
+            ),
+          ],
+        ),
+        const SizedBox(height: 4),
+        Row(
+          children: [
+            Icon(Icons.swipe_outlined, size: 14, color: AppColors.textSecondary),
+            const SizedBox(width: 5),
+            Expanded(
+              child: Text(
+                tr('cart_swipe_hint'),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
+              ),
+            ),
+          ],
         ),
       ],
     );
   }
 }
 
+// بطاقة الصنف مع السحب للحذف والضغط المطول
+class _CartItemTile extends StatelessWidget {
+  final CartModel item;
+  final int index;
+  final BuildContext screenContext;
 
+  const _CartItemTile({super.key, required this.item, required this.index, required this.screenContext});
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<CartCubit>();
+
+    final tile = Dismissible(
+      key: ValueKey('cart_dismiss_${item.cartItemId}'),
+      // الاتجاه ينعكس تلقائيا حسب لغة التطبيق
+      direction: DismissDirection.endToStart,
+      dismissThresholds: const {DismissDirection.endToStart: 0.35},
+      confirmDismiss: (_) => _CartActions.confirmDelete(screenContext),
+      onDismissed: (_) => cubit.deleteItemFromCart(cartItemId: item.cartItemId, product: item, context: screenContext),
+      background: const _DeleteBackground(),
+      child: Builder(
+        builder: (cardContext) => GestureDetector(
+          onLongPress: () async {
+            final action = await CartQuickMenu.show(cardContext, item);
+            if (action != null && screenContext.mounted) {
+              _CartActions.handleMenu(screenContext, action, item);
+            }
+          },
+          child: CartItemCard(
+            item: item,
+            onEdit: () => CartEditSheet.show(screenContext, item),
+            onIncrement: () => cubit.updateItemQuantity(product: item, newQuantity: item.quantity + 1),
+            onDecrement: () async {
+              if (item.quantity > 1) {
+                cubit.updateItemQuantity(product: item, newQuantity: item.quantity - 1);
+              } else {
+                await _CartActions.delete(screenContext, item);
+              }
+            },
+          ),
+        ),
+      ),
+    );
+
+    // حركة ظهور متتابعة للبطاقات
+    return tile
+        .animate()
+        .fadeIn(delay: Duration(milliseconds: (index * 50).clamp(0, 400)), duration: const Duration(milliseconds: 300))
+        .slideY(begin: 0.08, end: 0, curve: Curves.easeOutCubic);
+  }
+}
+
+// خلفية السحب للحذف
+class _DeleteBackground extends StatelessWidget {
+  const _DeleteBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: AlignmentDirectional.centerEnd,
+      padding: const EdgeInsetsDirectional.only(end: 24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          begin: AlignmentDirectional.centerStart,
+          end: AlignmentDirectional.centerEnd,
+          colors: [AppColors.redColor.withOpacity(0.15), AppColors.redColor],
+        ),
+        borderRadius: BorderRadius.circular(16),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(CupertinoIcons.trash, color: Colors.white, size: 22),
+          const SizedBox(height: 4),
+          Text(tr('delete'), style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.bold)),
+        ],
+      ),
+    );
+  }
+}
+
+// تحميل وهمي بشكل البطاقة الجديدة
+class _CartItemShimmer extends StatelessWidget {
+  const _CartItemShimmer();
+
+  @override
+  Widget build(BuildContext context) {
+    Widget bar(double w, double h) => Container(
+      width: w,
+      height: h,
+      decoration: BoxDecoration(color: AppColors.backgroundSecondary, borderRadius: BorderRadius.circular(6)),
+    );
+
+    return Shimmer.fromColors(
+      baseColor: AppColors.baseColor,
+      highlightColor: AppColors.highlightColor,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(color: AppColors.backgroundSecondary, borderRadius: BorderRadius.circular(16)),
+        child: Row(
+          children: [
+            bar(92, 116),
+            const SizedBox(width: 10),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  bar(140, 14),
+                  const SizedBox(height: 10),
+                  bar(110, 20),
+                  const SizedBox(height: 34),
+                  Row(children: [bar(60, 16), const Spacer(), bar(96, 34)]),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// عمليات السلة المشتركة
+class _CartActions {
+  // رسالة تاكيد حذف صنف
+  static Future<bool> confirmDelete(BuildContext context) async {
+    final ok = await AppToasts.showConfirmDialog(
+      context: context,
+      title: tr('confirm_delete_title'),
+      message: tr('confirm_delete_cartItem_msg'),
+    );
+    return ok == true;
+  }
+
+  static Future<void> delete(BuildContext context, CartModel item) async {
+    if (await confirmDelete(context) && context.mounted) {
+      context.read<CartCubit>().deleteItemFromCart(cartItemId: item.cartItemId, product: item, context: context);
+    }
+  }
+
+  // حذف الكل مع التاكيد
+  static Future<void> clearAll(BuildContext context) async {
+    final ok = await AppToasts.showConfirmDialog(
+      context: context,
+      title: tr('cart_clear_all'),
+      message: tr('confirm_clear_cart_msg'),
+    );
+    if (ok == true && context.mounted) {
+      context.read<CartCubit>().clearCart(context: context);
+    }
+  }
+
+  // مشاركة السلة (لاحقا)
+  static void shareCart(BuildContext context) {
+    AppToasts.showWarningToast(context, tr('share_cart_soon'));
+  }
+
+  static void handleMenu(BuildContext context, CartQuickAction action, CartModel item) {
+    final imageUrl = ApiEndpoints.productImageUrl(item.productImage ?? item.displayImage);
+    switch (action) {
+      case CartQuickAction.edit:
+        CartEditSheet.show(context, item);
+      case CartQuickAction.details:
+        Navigator.push(context, MaterialPageRoute(builder: (_) => ProductDetailsScreen(product: item.toProduct())));
+      case CartQuickAction.similar:
+        Navigator.push(context, MaterialPageRoute(builder: (_) => SimilarProducts(imagePath: imageUrl)));
+      case CartQuickAction.tryOn:
+        Navigator.push(context, MaterialPageRoute(builder: (_) => VirtualTryOnScreen(garmentUrl: imageUrl)));
+      case CartQuickAction.share:
+        ProductShareHelper.share(context, item.toProduct());
+      case CartQuickAction.delete:
+        delete(context, item);
+    }
+  }
+
+  // الانتقال للدفع مع التحقق من رقم الهاتف
+  static void checkout(BuildContext context) {
+    final cubit = context.read<CartCubit>();
+    if (cubit.allProducts.isEmpty) {
+      AppToasts.showWarningToast(context, tr('cart_empty_warning'));
+      return;
+    }
+
+    void goToAddress() => Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => SelectUsrAddress(displayTotal: cubit.totalPrice - cubit.totalDiscount),
+      ),
+    );
+
+    if (!UserLocal().hasPhone()) {
+      AppToasts.showWarningToast(context, tr('cart_add_phone_first'));
+      PhoneNumber.show(context, goToAddress);
+    } else {
+      goToAddress();
+    }
+  }
+}
