@@ -53,5 +53,7 @@
 		<false/>
 		<key>NSCameraUsageDescription</key>
         <string>نحتاج الكاميرا لتجربة العبايات مباشرة</string>
+        <key>NSMicrophoneUsageDescription</key>
+        <string>نحتاج الميكروفون لتتحدثي مع المساعدة ألمار بالصوت</string>
 	</dict>
 </plist>

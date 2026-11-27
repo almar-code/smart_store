@@ -1,40 +1,43 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:smart_store/core/widgets/ripple_0verlay.dart';
+import 'package:smart_store/logic/voice/voice_assistant_cubit.dart';
 
 class AiRippleManager {
-  // نسخة ثابتة واحدة في الذاكرة لتتبع حالة التموج من أي مكان
+  // نسخة واحدة للتموج يمكن التحكم بها من اي مكان
   static OverlayEntry? _rippleEntry;
+  static VoiceAssistantCubit? _cubit;
+
+  static bool get isOpen => _rippleEntry != null;
 
   static void toggleRipple(BuildContext context, {VoidCallback? onStateChanged}) {
     if (_rippleEntry != null) {
-      // إذا كان التموج يعمل، نقوم بإغلاقه فوراً
-      _rippleEntry!.remove();
-      _rippleEntry = null;
-
-      // لتحديث واجهة الزر (setState) إذا مررتها له
-      if (onStateChanged != null) onStateChanged();
-    } else {
-      // إنشاء التموج الجديد
-      _rippleEntry = OverlayEntry(
-        builder: (overlayContext) => GestureDetector(
-          // عند الضغط على الشاشة المعتمة، يستدعي الدالة نفسها للإغلاق
-          onTap: () => toggleRipple(context, onStateChanged: onStateChanged),
-          child: const ContinuousRippleOverlay(),
-        ),
-      );
-
-      // إدخال التموج فوق واجهة التطبيق
-      Overlay.of(context).insert(_rippleEntry!);
-
-      if (onStateChanged != null) onStateChanged();
+      closeRipple();
+      return;
     }
+
+    _cubit = context.read<VoiceAssistantCubit>();
+
+    _rippleEntry = OverlayEntry(
+      builder: (_) => ContinuousRippleOverlay(
+        cubit: _cubit!,
+        onClose: closeRipple,
+      ),
+    );
+
+    Overlay.of(context).insert(_rippleEntry!);
+
+    // بدء المحادثة الصوتية
+    _cubit!.start();
+    onStateChanged?.call();
   }
 
-  // دالة إضافية للإغلاق المباشر (تفيدك عند الخروج من الصفحات كإجراء أمان)
+  // اغلاق التموج وانهاء المحادثة
   static void closeRipple() {
-    if (_rippleEntry != null) {
-      _rippleEntry!.remove();
-      _rippleEntry = null;
-    }
+    if (_rippleEntry == null) return;
+    _rippleEntry!.remove();
+    _rippleEntry = null;
+    _cubit?.stop();
+    _cubit = null;
   }
 }
