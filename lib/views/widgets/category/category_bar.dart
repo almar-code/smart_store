@@ -24,7 +24,7 @@ class CategoryBar extends StatelessWidget {
         ),
       ),
       width: double.infinity,
-      height: 34,
+      height: 38,
       child: BlocBuilder<CategoryCubit, CategoryState>(
         builder: (context, state) {
 
@@ -114,7 +114,7 @@ class CategoryBar extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.symmetric(
         horizontal: 4,
-        vertical: 0,
+        vertical: 2,
       ),
       padding: const EdgeInsets.symmetric(
         horizontal: 8,

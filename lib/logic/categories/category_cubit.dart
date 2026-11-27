@@ -7,16 +7,19 @@ class CategoryCubit extends Cubit<CategoryState> {
 
   CategoryCubit(this.repo) : super(CategoryInitial());
 
-  Future<void> getCategories() async {
-    emit(CategoryLoading());
+  // silent يحدث بالخلفية بدون شاشة تحميل ويبقي البيانات عند الفشل
+  Future<void> getCategories({bool silent = false}) async {
+    if (!silent) emit(CategoryLoading());
     try {
       final categories = await repo.getCategories();
+      if (isClosed) return;
       if (categories.isEmpty) {
         emit(CategoryEmpty());
       } else {
         emit(CategoryLoaded(categories));
       }
     } catch (e) {
+      if (silent || isClosed) return;
       emit(
         CategoryError('فشل في جلب البيانات'),
       );
