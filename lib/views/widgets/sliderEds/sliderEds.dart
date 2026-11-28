@@ -1,9 +1,12 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/app_colors.dart';
 import '../../../core/constants/app_endpoints.dart';
+import '../../../core/widgets/app_messages.dart';
 import '../../../core/widgets/three_dots_loader.dart';
 import '../../../data/models/AdModel.dart';
 import '../../screens/general adProducts/general_adProducts.dart';
@@ -58,7 +61,11 @@ class SliderEds extends StatelessWidget {
                   ),
                 );
               }
-              // 3️⃣ إذا كان إعلان خاص أو صورة فقط -> لا تفعل شيئاً (صورة فقط)
+              // إعلان برابط: فتح الرابط خارج التطبيق
+              else if (ad.type == 'link' && (ad.adsLink ?? '').isNotEmpty) {
+                _openLink(context, ad.adsLink!);
+              }
+              // إعلان خاص: صورة فقط
             },
             child: ClipRRect(
               borderRadius: BorderRadius.circular(16),
@@ -79,5 +86,14 @@ class SliderEds extends StatelessWidget {
         }).toList(),
       ),
     );
+  }
+
+  // فتح رابط الإعلان وإظهار رسالة عند الفشل
+  Future<void> _openLink(BuildContext context, String link) async {
+    final uri = Uri.tryParse(link);
+    final opened = uri != null && await launchUrl(uri, mode: LaunchMode.externalApplication).catchError((_) => false);
+    if (!opened && context.mounted) {
+      AppToasts.showErrorToast(context, tr('ad_link_open_error'));
+    }
   }
 }

@@ -117,6 +117,10 @@ dependencies:
   path_provider: ^2.1.6
   dio_cache_interceptor: ^4.0.7
   http_cache_hive_store: ^5.1.1
+  url_launcher: ^6.3.3 # فتح روابط الإعلانات الخارجية
+
+
+# تثبيت نسخة متوافقة مع Kotlin 2.1 في المشروع
 dependency_overrides:
   google_maps_flutter_android: 2.18.3
 

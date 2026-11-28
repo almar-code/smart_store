@@ -16,6 +16,7 @@ import '../../data/repos/order_repo.dart';
 import '../../data/repos/payment_repo.dart';
 import '../../data/repos/product_comment_repository.dart';
 import '../../data/repos/product_repo.dart';
+import '../../data/repos/saved_sizes_repo.dart';
 import '../../data/repos/subcategory_repo.dart';
 import '../../data/repos/try_on_repo.dart';
 import '../../data/repos/user_address_repo.dart';
@@ -30,6 +31,7 @@ import '../../data/services/product_comment_service.dart';
 import '../../data/services/order_service.dart';
 import '../../data/services/payment_service.dart';
 import '../../data/services/product_service.dart';
+import '../../data/services/saved_sizes_service.dart';
 import '../../data/services/subcategory_service.dart';
 import '../../data/services/try_on_service.dart';
 import '../../data/services/user_address_service.dart';
@@ -43,6 +45,7 @@ import '../../logic/productcomment/product_comment_cubit.dart';
 import '../../logic/orders/order_cubit.dart';
 import '../../logic/payments/payment_cubit.dart';
 import '../../logic/products/product_cubit.dart';
+import '../../logic/saved_sizes/saved_sizes_cubit.dart';
 import '../../logic/search/search_cubit.dart';
 import '../../logic/try_on/try_on_cubit.dart';
 import '../../logic/user_address/UserAddressCubit.dart';
@@ -113,6 +116,10 @@ Future<void> init() async {
   sl.registerLazySingleton(() => SizePredictionService());
   sl.registerLazySingleton(() => SizePredictionRepo(sl<SizePredictionService>()));
   sl.registerFactory(() => SizePredictionCubit(sl<SizePredictionRepo>()));
+  // المقاسات المحفوظة
+  sl.registerLazySingleton(() => SavedSizesService());
+  sl.registerLazySingleton(() => SavedSizesRepo(sl<SavedSizesService>()));
+  sl.registerFactory(() => SavedSizesCubit(sl<SavedSizesRepo>()));
 
   sl.registerLazySingleton(() => AuthRepo(service: AuthService(), local: UserLocal()));
   sl.registerFactory(() => AccountCubit(sl<AuthRepo>()));

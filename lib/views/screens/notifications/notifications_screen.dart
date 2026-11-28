@@ -13,6 +13,7 @@ import '../../../logic/notifications/notification_state.dart';
 import '../../widgets/flash/flash_screen.dart';
 import '../../widgets/notifications/notification_card.dart';
 import '../cart/cart_screen.dart';
+import '../general adProducts/general_adProducts.dart';
 import '../orders/orders_screen.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -38,6 +39,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     final Widget? screen = switch (item.type) {
       'abandoned_cart' => const CartScreen(screenOnly: true),
       'order_status' => OrdersScreen(openOrderId: item.orderId),
+      'general_ad' when item.adsId != null =>
+          GeneralAdProductsScreen(adsId: item.adsId!, adTitle: item.adsName ?? ''),
       _ => null,
     };
 
@@ -120,7 +123,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       _EmptyNotifications(hasError: state.hasError)
                     else
                       ...state.items.map(
-                        (item) => NotificationCard(
+                            (item) => NotificationCard(
                           item: item,
                           onTap: () => _onTap(item),
                           onDelete: () => context.read<NotificationCubit>().delete(item.id),

@@ -8,6 +8,8 @@ class NotificationModel {
   final String createdAt;
   final bool isRead;
   final int? orderId; // رقم الطلب لاشعارات الطلبات
+  final int? adsId; // رقم الإعلان العام
+  final String? adsName; // اسم الإعلان العام
 
   const NotificationModel({
     required this.id,
@@ -18,7 +20,9 @@ class NotificationModel {
     required this.bodyEn,
     required this.createdAt,
     required this.isRead,
-    this.orderId
+    this.orderId,
+    this.adsId,
+    this.adsName,
   });
 
   // النص حسب لغة التطبيق
@@ -36,6 +40,8 @@ class NotificationModel {
       createdAt: json['created_at'] ?? '',
       isRead: json['read_at'] != null,
       orderId: json['data'] is Map ? int.tryParse('${json['data']['order_id']}') : null,
+      adsId: json['data'] is Map ? int.tryParse('${json['data']['ads_id']}') : null,
+      adsName: json['data'] is Map ? json['data']['ads_name']?.toString() : null,
     );
   }
 
@@ -50,6 +56,8 @@ class NotificationModel {
       createdAt: createdAt,
       isRead: isRead ?? this.isRead,
       orderId: orderId,
+      adsId: adsId,
+      adsName: adsName,
     );
   }
 }

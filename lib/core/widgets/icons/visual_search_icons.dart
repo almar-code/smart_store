@@ -18,7 +18,7 @@ class CameraSearchIcon extends StatelessWidget {
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
       constraints: const BoxConstraints(maxWidth: 480),
-      builder: (_) => const _ImageSourceSheet(),
+      builder: (_) => const ImageSourceSheet(),
     );
     if (source != null && context.mounted) {
       await _pickAndSearch(context, source);
@@ -71,9 +71,18 @@ class CameraSearchIcon extends StatelessWidget {
   }
 }
 
-// تصميم القائمة المنسدلة
-class _ImageSourceSheet extends StatelessWidget {
-  const _ImageSourceSheet();
+// قائمة اختيار الكاميرا أو المعرض (مشتركة بين البحث بالصورة وقياس المقاس)
+class ImageSourceSheet extends StatelessWidget {
+  final String titleKey;
+  final String subtitleKey;
+  final IconData icon;
+
+  const ImageSourceSheet({
+    super.key,
+    this.titleKey = 'visual_search_title',
+    this.subtitleKey = 'visual_search_subtitle',
+    this.icon = Icons.center_focus_strong_outlined,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -113,16 +122,16 @@ class _ImageSourceSheet extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: AppColors.primary.withOpacity(0.10),
               ),
-              child: Icon(Icons.center_focus_strong_outlined, color: AppColors.primary, size: 26),
+              child: Icon(icon, color: AppColors.primary, size: 26),
             ),
             const SizedBox(height: 12),
             Text(
-              tr('visual_search_title'),
+              tr(titleKey),
               style: TextStyle(fontSize: 17, fontWeight: FontWeight.bold, color: AppColors.textColor),
             ),
             const SizedBox(height: 4),
             Text(
-              tr('visual_search_subtitle'),
+              tr(subtitleKey),
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
             ),

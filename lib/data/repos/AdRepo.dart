@@ -19,6 +19,8 @@ class AdRepo {
 
     return {
       'ad_name': result['ad_name'],
+      // بيانات الإعلان لعرض الصورة وتاريخ الانتهاء
+      'ad': result['ad'] is Map<String, dynamic> ? AdModel.fromJson(result['ad']) : null,
       'products': products,
     };
   }

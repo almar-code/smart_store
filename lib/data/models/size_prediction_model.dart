@@ -12,6 +12,8 @@ class SizeRequestModel {
   final String? build; // slim, average, curvy, full, plus
   final String pref; // normal, heels, ankle
   final String? storeId;
+  final String? imageFront; // صورة أمامية base64 (لا تحفظ محلياً)
+  final String? imageSide; // صورة جانبية base64 (لا تحفظ محلياً)
 
   const SizeRequestModel({
     this.heightCm,
@@ -24,20 +26,24 @@ class SizeRequestModel {
     this.build,
     this.pref = 'normal',
     this.storeId,
+    this.imageFront,
+    this.imageSide,
   });
 
   Map<String, dynamic> toJson() => {
-        if (heightCm != null) 'height_cm': heightCm,
-        if (heightFt != null) 'height_ft': heightFt,
-        if (heightIn != null) 'height_in': heightIn,
-        if (heightRange != null) 'height_range': heightRange,
-        if (weightKg != null) 'weight_kg': weightKg,
-        if (bustCm != null) 'bust_cm': bustCm,
-        if (clothing != null) 'clothing': clothing,
-        if (build != null) 'build': build,
-        'pref': pref,
-        if (storeId != null) 'store_id': storeId,
-      };
+    if (heightCm != null) 'height_cm': heightCm,
+    if (heightFt != null) 'height_ft': heightFt,
+    if (heightIn != null) 'height_in': heightIn,
+    if (heightRange != null) 'height_range': heightRange,
+    if (weightKg != null) 'weight_kg': weightKg,
+    if (bustCm != null) 'bust_cm': bustCm,
+    if (clothing != null) 'clothing': clothing,
+    if (build != null) 'build': build,
+    'pref': pref,
+    if (storeId != null) 'store_id': storeId,
+    if (imageFront != null) 'image_front': imageFront,
+    if (imageSide != null) 'image_side': imageSide,
+  };
 
   // لحفظ آخر قياسات العميلة محلياً وإعادة تعبئة النموذج
   factory SizeRequestModel.fromJson(Map<dynamic, dynamic> json) {
@@ -77,7 +83,7 @@ class SizeSpecsModel {
 
 /// نتيجة التنبؤ القادمة من n8n
 class SizeResultModel {
-  final String status; // ok, need_more, invalid
+  final String status; // ok, need_more, invalid, photo_failed
   final int? abayaSize;
   final int? cutLengthTo; // التقصير المطلوب (null = لا يحتاج)
   final int? altSize; // بديل بقصة واسعة إذا المتجر لا يقصّر
@@ -108,6 +114,8 @@ class SizeResultModel {
   });
 
   bool get isOk => status == 'ok' && abayaSize != null;
+  // فشل تحليل الصورة (العميلة تعيد التصوير)
+  bool get isPhotoFailed => status == 'photo_failed';
   bool get needsAlteration => cutLengthTo != null;
 
   factory SizeResultModel.fromJson(Map<String, dynamic> json) {

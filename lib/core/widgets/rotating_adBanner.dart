@@ -4,13 +4,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import '../../data/models/AdModel.dart';
+import '../../views/screens/general adProducts/general_adProducts.dart';
 
 class RotatingAdBanner extends StatefulWidget {
   final List<AdModel> advertisements;
+  final int? productId; // المنتج الذي يظهر أولا في صفحة العرض
+  final int? currentAdsId; // لا ننتقل إذا كنا داخل نفس العرض
 
   const RotatingAdBanner({
     super.key,
     required this.advertisements,
+    this.productId,
+    this.currentAdsId,
   });
 
   @override
@@ -54,11 +59,32 @@ class _RotatingAdBannerState extends State<RotatingAdBanner> {
     // تحويل تاريخ الانتهاء النصي إلى DateTime بأمان
     DateTime expiryDate = DateTime.tryParse(currentAd.expiresAt) ?? DateTime.now();
 
-    return Padding(
+    final banner = Padding(
       padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 6),
       child: ProductAdBanner(
         title: currentAd.adsName, // اسم الإعلان الديناميكي الحقيقي
         endDate: expiryDate,     // تاريخ الانتهاء الحقيقي
+      ),
+    );
+
+    if (currentAd.adsId == widget.currentAdsId) return banner;
+
+    // فتح صفحة العرض مع إظهار المنتج أولا
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => GeneralAdProductsScreen(
+              adsId: currentAd.adsId,
+              adTitle: currentAd.adsName,
+              focusProductId: widget.productId,
+            ),
+          ),
+        ),
+        child: banner,
       ),
     );
   }
